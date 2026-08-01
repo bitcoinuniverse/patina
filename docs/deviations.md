@@ -1,8 +1,11 @@
 # Deviations and interpretations
 
-The frozen implementation baseline is authoritative. No value in it was changed.
-This file records every place where the baseline was silent and a decision had to
-be made, plus every concern worth revisiting at the next version byte.
+The frozen implementation baseline remains authoritative for identifiers, state,
+reason codes, and historical encodings. The BIP-110 compatibility amendment adds
+one equivalent commit-leaf serialization without changing any existing value or
+invalidating any previously accepted PATINA history. This file records that
+amendment and every place where the baseline was silent and a decision had to be
+made, plus every concern worth revisiting at the next version byte.
 
 Each entry says what the baseline gives, what this implementation does, and why.
 
@@ -200,3 +203,24 @@ Implementation: they do not. The event root covers state changing events only.
 Why: an indexer that prunes its invalid event log must still reach the same state
 root as one that keeps it. Roots commit to state, and a rejected attempt is not
 state.
+
+## 15. BIP-110-compatible commit-leaf serialization
+
+Baseline: the only commit leaf was
+`<claimant_xonly> OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF`.
+Its commitment is in a false branch, but execution still reaches `OP_IF`. A new
+reveal of that form can therefore be rejected while BIP-110 reduced-data rules
+are active unless its commit output is grandfathered by confirmation height.
+
+Implementation: parsers permanently accept both that 70 byte legacy form and the
+68 byte reduced-data form
+`<claimant_xonly> OP_CHECKSIG PUSH32(commitment) OP_DROP`. New construction uses
+the reduced-data form. A persisted commit/reveal job records its exact envelope
+mode and must reveal with the same mode; code must never silently rewrite an
+already-created taproot commitment.
+
+Why: both scripts commit to the same claimant key and 32 byte PATINA commitment,
+and both leave the signature result as the final stack value. The added form
+removes the reached conditional without changing authorization, identifiers, or
+state-machine semantics. Permanent dual parsing preserves historical replay and
+pending legacy jobs, while the new default remains valid during BIP-110 ACTIVE.

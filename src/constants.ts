@@ -41,6 +41,9 @@ export const OP_IF = 0x63;
 /** Bitcoin script opcode OP_ENDIF. */
 export const OP_ENDIF = 0x68;
 
+/** Bitcoin script opcode OP_DROP. */
+export const OP_DROP = 0x75;
+
 /** Bitcoin script opcode OP_1, the taproot witness version. */
 export const OP_1 = 0x51;
 
@@ -109,6 +112,9 @@ export const COMMITMENT_BYTES = 32;
 
 /** Byte length of the tapscript leaf that carries a PATINA commitment. */
 export const COMMIT_LEAF_BYTES = 70;
+
+/** Byte length of the BIP-110-compatible PATINA commit leaf. */
+export const REDUCED_DATA_COMMIT_LEAF_BYTES = 68;
 
 /** Domain tag for the commit commitment digest. */
 export const TAG_COMMIT = 'PTNA/commit';

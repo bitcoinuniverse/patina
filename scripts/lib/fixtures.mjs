@@ -13,7 +13,7 @@
 import { createHash } from 'node:crypto';
 
 import {
-  buildCommitLeafScript,
+  buildLegacyCommitLeafScript,
   buildScriptPubKey,
   commitCommitment,
   encodeMarker,
@@ -94,7 +94,10 @@ export function keepPayloadRaw(count, entryBytes) {
 export function commitInput({ label, height, salt, key, commitment, value = 200000 }) {
   const claimant = key ?? xonlyFor(label);
   const commit = commitment ?? commitCommitment(claimant, salt).toString('hex');
-  const leaf = buildCommitLeafScript(claimant, commit).toString('hex');
+  // The frozen v1 vectors intentionally retain their original byte encoding.
+  // New application construction uses the reduced-data builder; keeping this
+  // explicit proves that old commits and historical fixtures remain readable.
+  const leaf = buildLegacyCommitLeafScript(claimant, commit).toString('hex');
   const control = `c0${digest(`internal/${label}`).toString('hex')}`;
   return {
     txid: txidFor(`commit/${label}`),

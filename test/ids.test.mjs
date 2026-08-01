@@ -6,11 +6,15 @@ import {
   artifactId,
   attestationMessage,
   buildCommitLeafScript,
+  buildCommitLeafScriptForMode,
+  buildLegacyCommitLeafScript,
+  buildReducedDataCommitLeafScript,
   commitCommitment,
   extractTapscript,
   isTaprootScriptPubKey,
   outpointKey,
   parseCommitLeafScript,
+  parseCommitLeafScriptWithMode,
   parseOutpointKey,
   txidToWire,
   wireToTxid,
@@ -84,37 +88,66 @@ test('commit commitment rejects wrong sized inputs', () => {
   assert.throws(() => commitCommitment(XONLY, '00'.repeat(15)), /16 bytes/);
 });
 
-test('the commit leaf script has the exact shape from the spec', () => {
+test('new commit leaves use the reduced-data shape without a conditional', () => {
   const commitment = commitCommitment(XONLY, SALT);
   const script = buildCommitLeafScript(XONLY, commitment);
-  assert.equal(script.length, 70);
+  assert.equal(script.length, 68);
   assert.equal(script[0], 0x20);
   assert.equal(script.subarray(1, 33).toString('hex'), XONLY);
   assert.equal(script[33], 0xac);
-  assert.equal(script[34], 0x00);
-  assert.equal(script[35], 0x63);
-  assert.equal(script[36], 0x20);
-  assert.equal(script.subarray(37, 69).toString('hex'), commitment.toString('hex'));
-  assert.equal(script[69], 0x68);
+  assert.equal(script[34], 0x20);
+  assert.equal(script.subarray(35, 67).toString('hex'), commitment.toString('hex'));
+  assert.equal(script[67], 0x75);
+  assert.equal(script.includes(0x63), false);
+  assert.deepEqual(script, buildReducedDataCommitLeafScript(XONLY, commitment));
 });
 
-test('the commit leaf script round trips', () => {
+test('the historical commit leaf remains explicitly constructable', () => {
+  const commitment = commitCommitment(XONLY, SALT);
+  const script = buildLegacyCommitLeafScript(XONLY, commitment);
+  assert.equal(script.length, 70);
+  assert.equal(script.subarray(34, 37).toString('hex'), '006320');
+  assert.equal(script.subarray(37, 69).toString('hex'), commitment.toString('hex'));
+  assert.equal(script[69], 0x68);
+  assert.deepEqual(
+    script,
+    buildCommitLeafScriptForMode(XONLY, commitment, 'legacy envelope'),
+  );
+});
+
+test('both permanent commit leaf encodings round trip', () => {
   const commitment = commitCommitment(XONLY, SALT).toString('hex');
-  const script = buildCommitLeafScript(XONLY, commitment);
-  assert.deepEqual(parseCommitLeafScript(script), { claimantXOnly: XONLY, commitment });
-  assert.deepEqual(parseCommitLeafScript(script.toString('hex')), { claimantXOnly: XONLY, commitment });
+  for (const [mode, script] of [
+    ['legacy envelope', buildLegacyCommitLeafScript(XONLY, commitment)],
+    ['reduced-data envelope', buildCommitLeafScript(XONLY, commitment)],
+  ]) {
+    assert.deepEqual(parseCommitLeafScript(script), { claimantXOnly: XONLY, commitment });
+    assert.deepEqual(parseCommitLeafScript(script.toString('hex')), { claimantXOnly: XONLY, commitment });
+    assert.deepEqual(parseCommitLeafScriptWithMode(script), {
+      claimantXOnly: XONLY,
+      commitment,
+      mode,
+    });
+  }
 });
 
 test('the commit leaf parser rejects near misses', () => {
   const good = buildCommitLeafScript(XONLY, '33'.repeat(32));
   assert.equal(parseCommitLeafScript(Buffer.concat([good, Buffer.from([0x51])])), null, 'trailing byte');
-  assert.equal(parseCommitLeafScript(good.subarray(0, 69)), null, 'truncated');
+  assert.equal(parseCommitLeafScript(good.subarray(0, 67)), null, 'truncated');
   assert.equal(parseCommitLeafScript(Buffer.concat([Buffer.from([0x51]), good.subarray(1)])), null, 'wrong first push');
 
-  for (const [offset, byte] of [[33, 0xad], [34, 0x51], [35, 0x64], [36, 0x21], [69, 0x69]]) {
+  for (const [offset, byte] of [[33, 0xad], [34, 0x21], [67, 0x76]]) {
     const bad = Buffer.from(good);
     bad[offset] = byte;
     assert.equal(parseCommitLeafScript(bad), null, `byte ${offset}`);
+  }
+
+  const legacy = buildLegacyCommitLeafScript(XONLY, '33'.repeat(32));
+  for (const [offset, byte] of [[33, 0xad], [34, 0x51], [35, 0x64], [36, 0x21], [69, 0x69]]) {
+    const bad = Buffer.from(legacy);
+    bad[offset] = byte;
+    assert.equal(parseCommitLeafScript(bad), null, `legacy byte ${offset}`);
   }
 });
 

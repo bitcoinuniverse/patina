@@ -92,32 +92,29 @@ console.log(createHash("sha256").update(pre).digest("hex"));
 '</code></pre>
 
       <h2>Commit output shape</h2>
-      <p>A qualifying commit is a Taproot output whose spend reveals this tapscript leaf:</p>
-      <pre data-label="Commit leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code></pre>
+      <p>A qualifying commit is a Taproot output whose spend reveals one of the two exact leaves below. New commits use the reduced-data leaf:</p>
+      <pre data-label="Reduced-data commit leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG PUSH32(commitment) OP_DROP</code></pre>
       <div class="tablewrap">
         <table>
-          <caption>The 70 byte leaf, byte by byte.</caption>
+          <caption>The 68 byte reduced-data leaf, byte by byte.</caption>
           <thead><tr><th>Offset</th><th>Bytes</th><th>Meaning</th></tr></thead>
           <tbody>
             <tr><td>0</td><td><code>20</code></td><td>Push 32 bytes</td></tr>
             <tr><td>1</td><td><code>f13dc99d ... 1878866a</code></td><td>claimant x-only public key</td></tr>
             <tr><td>33</td><td><code>ac</code></td><td>OP_CHECKSIG</td></tr>
-            <tr><td>34</td><td><code>00</code></td><td>OP_0</td></tr>
-            <tr><td>35</td><td><code>63</code></td><td>OP_IF</td></tr>
-            <tr><td>36</td><td><code>20</code></td><td>Push 32 bytes</td></tr>
-            <tr><td>37</td><td><code>ac2e3090 ... aa2afdd6</code></td><td>commitment</td></tr>
-            <tr><td>69</td><td><code>68</code></td><td>OP_ENDIF</td></tr>
+            <tr><td>34</td><td><code>20</code></td><td>Push 32 bytes</td></tr>
+            <tr><td>35</td><td><code>ac2e3090 ... aa2afdd6</code></td><td>commitment</td></tr>
+            <tr><td>67</td><td><code>75</code></td><td>OP_DROP</td></tr>
           </tbody>
         </table>
       </div>
-      <pre data-label="Leaf script, 70 bytes"><code>20f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866aac006320ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd668</code></pre>
-      <p>The <code>OP_0 OP_IF ... OP_ENDIF</code> envelope never executes, so the commitment is carried as data
-        while the spend condition stays a plain signature check. This is the same envelope technique that
-        inscriptions already use at scale.</p>
+      <pre data-label="Leaf script, 68 bytes"><code>20f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866aac20ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd675</code></pre>
+      <p><code>OP_CHECKSIG</code> leaves the authorization result on the stack. The commitment is pushed and dropped afterwards, so the result and claimant control are unchanged and no conditional opcode executes.</p>
+      <p>The permanent legacy leaf <code>&lt;claimant_xonly&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code> remains accepted for historical and already-committed reveals. It is 70 bytes and is not used for new construction because active BIP-110 rules reject execution reaching its <code>OP_IF</code>.</p>
       <p>For completeness, the BIP-341 tapleaf hash of that script with leaf version <code>0xc0</code>, which is
         standard Taproot and not a PATINA rule:</p>
-      <pre data-label="BIP-341 tapleaf hash"><code>tagged_hash("TapLeaf", 0xc0 || compact_size(70) || leaf_script)
-= 4f65e447fdcd3a0837aae4ff482e173f9e1c0900711bc667e7d6c2b0caa3d6c3</code></pre>
+      <pre data-label="BIP-341 tapleaf hash"><code>tagged_hash("TapLeaf", 0xc0 || compact_size(68) || leaf_script)
+= 9ce5c961ee584cc444555feecd3d7d26201e69b85cf23ea4a830d237ac081111</code></pre>
 
       <h2>Artifact id</h2>
       <pre data-label="Definition"><code>artifact_id = SHA256("PTNA/artifact" || reveal_txid_wire(32) || carrier_vout_le(4))</code></pre>

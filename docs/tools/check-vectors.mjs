@@ -26,8 +26,8 @@ const salt = sha256(ascii('PATINA docs example salt')).subarray(0, 16);
 const commitment = sha256(Buffer.concat([ascii('PTNA/commit'), claimant, salt]));
 const leaf = Buffer.concat([
   Buffer.from([0x20]), claimant,
-  Buffer.from([0xac, 0x00, 0x63, 0x20]), commitment,
-  Buffer.from([0x68]),
+  Buffer.from([0xac, 0x20]), commitment,
+  Buffer.from([0x75]),
 ]);
 const leafHash = tagged('TapLeaf', Buffer.concat([Buffer.from([0xc0, leaf.length]), leaf]));
 const revealWire = sha256(ascii('PATINA docs example reveal transaction'));

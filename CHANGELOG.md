@@ -4,6 +4,25 @@ This project follows semantic versioning for the package. The protocol itself is
 versioned by the marker version byte, which is a separate and much slower moving
 number.
 
+## 1.1.0
+
+Added:
+
+- BIP-110-compatible PATINA commit leaves using
+  `<claimant_xonly> OP_CHECKSIG <commitment> OP_DROP`.
+- Permanent dual parsing for reduced-data and historical conditional commit
+  leaves.
+- Explicit legacy, reduced-data, and persisted-mode builders so a pending
+  reveal can never be rebuilt against a different Taproot commitment.
+- Conformance tests and updated protocol, operator, and byte-vector
+  documentation for both encodings.
+
+Changed:
+
+- New `buildCommitLeafScript` construction uses the reduced-data envelope.
+  Existing jobs use `buildCommitLeafScriptForMode` with their stored mode.
+- Deployment records are stamped to the updated normative specification hash.
+
 ## 1.0.0
 
 First release. Marker version 1 is frozen.

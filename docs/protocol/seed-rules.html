@@ -38,8 +38,9 @@
         </li>
         <li>
           <h3>Exactly one input reveals a qualifying commit leaf</h3>
-          <p>The input must be a Taproot script path spend whose revealed leaf is exactly:</p>
-          <pre data-label="Required leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code></pre>
+          <p>The input must be a Taproot script path spend whose revealed leaf is exactly either the reduced-data form or the permanent legacy form:</p>
+          <pre data-label="Reduced-data leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG PUSH32(commitment) OP_DROP</code></pre>
+          <pre data-label="Legacy leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code></pre>
           <p>The commitment in the leaf must equal
             <code>SHA256("PTNA/commit" || claimant_xonly || salt)</code>, using the claimant key from the leaf and
             the salt from the SEED payload.</p>

@@ -61,8 +61,8 @@
         <dd><code>SHA256("PTNA/commit" || claimant_xonly || salt)</code>. Stored inside the commit leaf.</dd>
 
         <dt>Commit leaf</dt>
-        <dd>The tapscript
-          <code>&lt;claimant_xonly&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code>, 70 bytes.</dd>
+        <dd>The 68 byte reduced-data tapscript
+          <code>&lt;claimant_xonly&gt; OP_CHECKSIG PUSH32(commitment) OP_DROP</code>, or its permanent 70 byte legacy conditional encoding.</dd>
 
         <dt>Default rule</dt>
         <dd>When no valid KEEP entry applies, the successor is the lowest index output that is not an OP_RETURN and

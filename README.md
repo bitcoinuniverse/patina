@@ -49,6 +49,8 @@ Node 22 or newer. No runtime dependencies.
 import {
   applyBlock,
   artifactId,
+  buildCommitLeafScript,
+  buildCommitLeafScriptForMode,
   buildMarkerScript,
   decodeScriptPubKey,
   initialState,
@@ -58,6 +60,16 @@ import {
 } from '@bitcoinuniverse/patina';
 
 const deployment = loadShippedDeployment('regtest');
+
+// New commits use the BIP-110-compatible reduced-data leaf.
+const commitLeaf = buildCommitLeafScript(claimantXOnly, commitment);
+
+// A pending job must retain and reuse the exact mode used by its commit.
+const pendingLeaf = buildCommitLeafScriptForMode(
+  claimantXOnly,
+  commitment,
+  persistedEnvelopeMode,
+);
 
 // Build a SEED marker output.
 const script = buildMarkerScript({

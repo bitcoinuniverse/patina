@@ -191,15 +191,15 @@ tier  = the highest threshold that is not greater than depth</pre>
     <p class="eyebrow">Claim safety</p>
     <h2>The commit output</h2>
     <div class="prose">
-      <p>A qualifying commit is a taproot output whose spend reveals this tapscript leaf:</p>
+      <p>A qualifying commit is a taproot output whose spend reveals the reduced-data leaf below or its permanent legacy encoding.</p>
     </div>
     <div class="code">
       <div class="code-head"><span>commit leaf</span></div>
-      <pre>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</pre>
+      <pre>&lt;claimant_xonly(32)&gt; OP_CHECKSIG PUSH32(commitment) OP_DROP</pre>
     </div>
     <div class="table-scroll">
       <table class="byte-table">
-        <caption>The leaf script, 70 bytes.</caption>
+        <caption>The reduced-data leaf script, 68 bytes.</caption>
         <thead>
           <tr><th scope="col" class="num">Offset</th><th scope="col" class="num">Length</th><th scope="col">Bytes</th><th scope="col">Meaning</th></tr>
         </thead>
@@ -207,16 +207,15 @@ tier  = the highest threshold that is not greater than depth</pre>
           <tr><td class="num">0</td><td class="num">1</td><td class="mono">20</td><td>Push 32 bytes.</td></tr>
           <tr><td class="num">1</td><td class="num">32</td><td class="mono">claimant key</td><td>The claimant x only public key.</td></tr>
           <tr><td class="num">33</td><td class="num">1</td><td class="mono">ac</td><td>OP_CHECKSIG. Only the claimant can spend this leaf.</td></tr>
-          <tr><td class="num">34</td><td class="num">1</td><td class="mono">00</td><td>OP_0, pushes an empty value.</td></tr>
-          <tr><td class="num">35</td><td class="num">1</td><td class="mono">63</td><td>OP_IF, which never executes because the value above is false.</td></tr>
-          <tr><td class="num">36</td><td class="num">1</td><td class="mono">20</td><td>Push 32 bytes.</td></tr>
-          <tr><td class="num">37</td><td class="num">32</td><td class="mono">commitment</td><td>SHA-256 over the tag, the claimant key and the salt.</td></tr>
-          <tr><td class="num">69</td><td class="num">1</td><td class="mono">68</td><td>OP_ENDIF.</td></tr>
+          <tr><td class="num">34</td><td class="num">1</td><td class="mono">20</td><td>Push 32 bytes.</td></tr>
+          <tr><td class="num">35</td><td class="num">32</td><td class="mono">commitment</td><td>SHA-256 over the tag, the claimant key and the salt.</td></tr>
+          <tr><td class="num">67</td><td class="num">1</td><td class="mono">75</td><td>OP_DROP removes the commitment after authorization.</td></tr>
         </tbody>
       </table>
     </div>
     <div class="prose">
-      <p>The <code>OP_0 OP_IF ... OP_ENDIF</code> envelope keeps the commitment out of execution, which is the same technique inscriptions already use at scale. The signature check is what makes the claim unstealable: the leaf is spendable only by the key committed inside it.</p>
+      <p>The signature check makes the claim unstealable. Pushing and dropping the commitment afterwards leaves that result unchanged and executes no conditional opcode.</p>
+      <p>The historical 70 byte <code>OP_0 OP_IF ... OP_ENDIF</code> leaf remains accepted for existing commits, but new construction does not use it.</p>
       <p>The leaf must be revealed in the SEED transaction's own witness, as a script path spend.</p>
     </div>
   </section>

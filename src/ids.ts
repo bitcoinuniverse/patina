@@ -12,8 +12,10 @@ import {
   OP_0,
   OP_1,
   OP_CHECKSIG,
+  OP_DROP,
   OP_ENDIF,
   OP_IF,
+  REDUCED_DATA_COMMIT_LEAF_BYTES,
   SALT_BYTES,
   TAG_ARTIFACT,
   TAG_ATTEST,
@@ -58,22 +60,94 @@ export function artifactId(revealTxidDisplay: string, carrierVout: number): stri
 }
 
 /**
- * Build the tapscript leaf that carries a PATINA commitment.
+ * The two commit-leaf encodings understood by PATINA.
+ *
+ * The reduced-data envelope is the construction default. The legacy envelope
+ * remains available for an already-created commit/reveal job and is parsed
+ * permanently.
+ */
+export type CommitLeafMode = 'legacy envelope' | 'reduced-data envelope';
+
+function commitLeafParts(
+  claimantXOnly: string | Bytes,
+  commitment: string | Bytes,
+): { key: Buffer; commitment: Buffer } {
+  const key =
+    typeof claimantXOnly === 'string'
+      ? fromHex(claimantXOnly, XONLY_BYTES)
+      : Buffer.from(claimantXOnly);
+  const digest =
+    typeof commitment === 'string'
+      ? fromHex(commitment, COMMITMENT_BYTES)
+      : Buffer.from(commitment);
+  if (key.length !== XONLY_BYTES)
+    throw new RangeError(`claimant key must be ${XONLY_BYTES} bytes`);
+  if (digest.length !== COMMITMENT_BYTES)
+    throw new RangeError(`commitment must be ${COMMITMENT_BYTES} bytes`);
+  return { key, commitment: digest };
+}
+
+/**
+ * Build the historical tapscript leaf that carries a PATINA commitment.
  *
  *   <claimant_xonly(32)> OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF
  */
-export function buildCommitLeafScript(claimantXOnly: string | Bytes, commitment: string | Bytes): Buffer {
-  const key = typeof claimantXOnly === 'string' ? fromHex(claimantXOnly, XONLY_BYTES) : Buffer.from(claimantXOnly);
-  const c = typeof commitment === 'string' ? fromHex(commitment, COMMITMENT_BYTES) : Buffer.from(commitment);
-  if (key.length !== XONLY_BYTES) throw new RangeError(`claimant key must be ${XONLY_BYTES} bytes`);
-  if (c.length !== COMMITMENT_BYTES) throw new RangeError(`commitment must be ${COMMITMENT_BYTES} bytes`);
+export function buildLegacyCommitLeafScript(
+  claimantXOnly: string | Bytes,
+  commitment: string | Bytes,
+): Buffer {
+  const parts = commitLeafParts(claimantXOnly, commitment);
   return Buffer.concat([
     Buffer.from([XONLY_BYTES]),
-    key,
+    parts.key,
     Buffer.from([OP_CHECKSIG, OP_0, OP_IF, COMMITMENT_BYTES]),
-    c,
+    parts.commitment,
     Buffer.from([OP_ENDIF]),
   ]);
+}
+
+/**
+ * Build the BIP-110-compatible leaf.
+ *
+ *   <claimant_xonly(32)> OP_CHECKSIG PUSH32(commitment) OP_DROP
+ *
+ * The commitment is dropped after the signature check, so it cannot change
+ * authorization or the final truth value. No conditional opcode executes.
+ */
+export function buildReducedDataCommitLeafScript(
+  claimantXOnly: string | Bytes,
+  commitment: string | Bytes,
+): Buffer {
+  const parts = commitLeafParts(claimantXOnly, commitment);
+  return Buffer.concat([
+    Buffer.from([XONLY_BYTES]),
+    parts.key,
+    Buffer.from([OP_CHECKSIG, COMMITMENT_BYTES]),
+    parts.commitment,
+    Buffer.from([OP_DROP]),
+  ]);
+}
+
+/** Build a commit leaf using an explicit persisted envelope mode. */
+export function buildCommitLeafScriptForMode(
+  claimantXOnly: string | Bytes,
+  commitment: string | Bytes,
+  mode: CommitLeafMode,
+): Buffer {
+  return mode === 'legacy envelope'
+    ? buildLegacyCommitLeafScript(claimantXOnly, commitment)
+    : buildReducedDataCommitLeafScript(claimantXOnly, commitment);
+}
+
+/**
+ * Build a new PATINA commit leaf. New construction defaults to the compatible
+ * reduced-data envelope; pending jobs must call the explicit mode builder.
+ */
+export function buildCommitLeafScript(
+  claimantXOnly: string | Bytes,
+  commitment: string | Bytes,
+): Buffer {
+  return buildReducedDataCommitLeafScript(claimantXOnly, commitment);
 }
 
 /** A commit leaf that parsed cleanly. */
@@ -84,20 +158,53 @@ export interface CommitLeaf {
   readonly commitment: string;
 }
 
-/** Parse a tapscript leaf. Returns null when the shape does not match exactly. */
-export function parseCommitLeafScript(script: Bytes | string): CommitLeaf | null {
+/** A parsed commit leaf with the exact serialized mode retained. */
+export interface CommitLeafWithMode extends CommitLeaf {
+  readonly mode: CommitLeafMode;
+}
+
+/** Parse either permanent commit-leaf encoding and retain its exact mode. */
+export function parseCommitLeafScriptWithMode(
+  script: Bytes | string,
+): CommitLeafWithMode | null {
   const buf = typeof script === 'string' ? fromHex(script) : Buffer.from(script);
-  if (buf.length !== COMMIT_LEAF_BYTES) return null;
-  if (buf[0] !== XONLY_BYTES) return null;
-  if (buf[33] !== OP_CHECKSIG) return null;
-  if (buf[34] !== OP_0) return null;
-  if (buf[35] !== OP_IF) return null;
-  if (buf[36] !== COMMITMENT_BYTES) return null;
-  if (buf[69] !== OP_ENDIF) return null;
-  return {
-    claimantXOnly: toHex(buf.subarray(1, 33)),
-    commitment: toHex(buf.subarray(37, 69)),
-  };
+  if (buf[0] !== XONLY_BYTES || buf[33] !== OP_CHECKSIG) return null;
+  if (
+    buf.length === COMMIT_LEAF_BYTES &&
+    buf[34] === OP_0 &&
+    buf[35] === OP_IF &&
+    buf[36] === COMMITMENT_BYTES &&
+    buf[69] === OP_ENDIF
+  ) {
+    return {
+      claimantXOnly: toHex(buf.subarray(1, 33)),
+      commitment: toHex(buf.subarray(37, 69)),
+      mode: 'legacy envelope',
+    };
+  }
+  if (
+    buf.length === REDUCED_DATA_COMMIT_LEAF_BYTES &&
+    buf[34] === COMMITMENT_BYTES &&
+    buf[67] === OP_DROP
+  ) {
+    return {
+      claimantXOnly: toHex(buf.subarray(1, 33)),
+      commitment: toHex(buf.subarray(35, 67)),
+      mode: 'reduced-data envelope',
+    };
+  }
+  return null;
+}
+
+/** Parse either permanent encoding while preserving the original API shape. */
+export function parseCommitLeafScript(script: Bytes | string): CommitLeaf | null {
+  const parsed = parseCommitLeafScriptWithMode(script);
+  return parsed
+    ? {
+        claimantXOnly: parsed.claimantXOnly,
+        commitment: parsed.commitment,
+      }
+    : null;
 }
 
 /** True when a scriptPubKey is a version 1 taproot output. */

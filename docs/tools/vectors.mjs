@@ -101,10 +101,8 @@ say('');
 const leaf = Buffer.concat([
   Buffer.from([0x20]), claimant,        // PUSH32 <claimant_xonly>
   Buffer.from([0xac]),                  // OP_CHECKSIG
-  Buffer.from([0x00]),                  // OP_0
-  Buffer.from([0x63]),                  // OP_IF
   Buffer.from([0x20]), commitment,      // PUSH32 <commitment>
-  Buffer.from([0x68]),                  // OP_ENDIF
+  Buffer.from([0x75]),                  // OP_DROP
 ]);
 say('## Commit tapscript leaf');
 say(`  script length ${leaf.length} bytes`);

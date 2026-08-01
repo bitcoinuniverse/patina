@@ -56,14 +56,12 @@ salt            2fe862993a92197e084e4070cc8aa1c3</code></pre>
         </li>
         <li>
           <h3>Build the commit leaf</h3>
-          <p>A tapscript that requires your signature and carries the commitment inside a branch that never
-            executes.</p>
-          <pre data-label="Commit leaf script"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF
+          <p>A tapscript that requires your signature, pushes the commitment, and drops it without executing a conditional.</p>
+          <pre data-label="Commit leaf script"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG PUSH32(commitment) OP_DROP
 
-70 bytes:
-20f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866aac006320ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd668</code></pre>
-          <p>The <code>OP_0 OP_IF ... OP_ENDIF</code> wrapper is the same envelope technique that inscriptions
-            use. It stores data in a script without ever running it.</p>
+68 bytes:
+20f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866aac20ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd675</code></pre>
+          <p>Do not rebuild a pending commit with a different leaf. Historical 70 byte conditional leaves remain parseable and must reveal with their original script.</p>
         </li>
         <li>
           <h3>Fund the commit output</h3>

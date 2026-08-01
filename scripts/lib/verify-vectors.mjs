@@ -14,7 +14,7 @@ import {
   artifactId,
   attestationMessage,
   blocksToNextTier,
-  buildCommitLeafScript,
+  buildLegacyCommitLeafScript,
   buildScriptPubKey,
   commitCommitment,
   decodeScriptPubKey,
@@ -156,7 +156,7 @@ export function verifyVectors(input = readVectors()) {
   for (const item of golden.derivations.commitLeaf) {
     check.equal(
       `commitLeaf ${item.name}`,
-      buildCommitLeafScript(item.claimantXOnly, item.commitment).toString('hex'),
+      buildLegacyCommitLeafScript(item.claimantXOnly, item.commitment).toString('hex'),
       item.scriptHex,
     );
   }

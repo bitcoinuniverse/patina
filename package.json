@@ -1,6 +1,6 @@
 {
   "name": "@bitcoinuniverse/patina",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Canonical PATINA protocol specification, codec, validator and deterministic state reducer.",
   "license": "MIT",
   "private": false,

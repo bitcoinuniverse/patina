@@ -170,7 +170,8 @@ These values are frozen for marker version 1.
 | `MAX_SCRIPT_PUBKEY_BYTES` | 83 | ceiling on a marker scriptPubKey |
 | `MAX_MARKER_PAYLOAD_BYTES` | 80 | ceiling on a marker push payload |
 | `SALT_BYTES` | 16 | salt length in a SEED payload |
-| `COMMIT_LEAF_BYTES` | 70 | length of the commit leaf script |
+| `COMMIT_LEAF_BYTES` | 70 | length of the legacy commit leaf script |
+| `REDUCED_DATA_COMMIT_LEAF_BYTES` | 68 | length of the reduced-data commit leaf script |
 
 Tier ladder. Tier is the highest index whose threshold is not greater than the
 depth. Tier 0 has no threshold and applies to every depth below 1008.
@@ -307,7 +308,30 @@ offset  size  value
 
 ## 7. Commit output shape
 
-A qualifying commit is a P2TR output whose spend reveals this tapscript leaf:
+A qualifying commit is a P2TR output whose spend reveals one of two exact
+tapscript leaves. New construction uses the reduced-data envelope:
+
+```
+<claimant_xonly(32)> OP_CHECKSIG PUSH32(commitment) OP_DROP
+```
+
+Exact bytes, 68 total:
+
+```
+offset  size  value
+0       1     20            push 32 bytes
+1      32     ..            claimant_xonly
+33      1     ac            OP_CHECKSIG
+34      1     20            push 32 bytes
+35     32     ..            commitment
+67      1     75            OP_DROP
+```
+
+`OP_CHECKSIG` leaves its truth value on the stack. The commitment is pushed and
+dropped afterwards, leaving the authorization result unchanged and executing
+no conditional opcode.
+
+The permanent legacy envelope is:
 
 ```
 <claimant_xonly(32)> OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF
@@ -327,9 +351,12 @@ offset  size  value
 69      1     68            OP_ENDIF
 ```
 
-The `OP_0 OP_IF ... OP_ENDIF` envelope never executes, so the commitment costs
-nothing at spend time. The leading key and OP_CHECKSIG mean only the claimant can
-spend the output.
+The legacy `OP_IF` is reached even though its false branch body does not run.
+That form therefore cannot be used for a post-activation, non-grandfathered
+reveal under active BIP-110 rules. It remains valid PATINA history and remains
+parseable so confirmed preactivation commitments and post-expiry operation are
+not stranded. Both forms enforce the same claimant signature and bind the same
+commitment digest.
 
 An input reveals a commit leaf when all of the following hold:
 
@@ -341,7 +368,8 @@ An input reveals a commit leaf when all of the following hold:
    revealed script.
 3. The control block is at least 33 bytes, at most 33 plus 32 times 128 bytes,
    and its length minus 33 is a multiple of 32.
-4. The revealed script matches the 70 byte shape above exactly.
+4. The revealed script matches either the 68 byte reduced-data shape or the 70
+   byte legacy shape above exactly.
 
 An implementation MUST NOT accept a leaf that merely contains the shape as a
 prefix or a suffix. The length check is part of the match.
