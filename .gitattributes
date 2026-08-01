@@ -1,0 +1,15 @@
+# The specification is identified by the sha256 of its bytes. Line ending
+# conversion would change that hash, so every text file checks out with LF
+# on every platform.
+* text=auto eol=lf
+
+patina-protocol.md text eol=lf
+vectors/*.json text eol=lf
+deployments/*.json text eol=lf
+
+*.tgz binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
