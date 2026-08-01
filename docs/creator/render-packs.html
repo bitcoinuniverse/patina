@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Publish a render pack | PATINA docs</title>
+<meta name="description" content="The layout of a PATINA render pack, what the manifest declares, and the checks to run before publishing one.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="creator/render-packs.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Publish a render pack</h1>
+      <p class="lede">A pack is a self contained folder that turns artifact state into a picture. Anyone can
+        publish one, and nobody needs permission.</p>
+
+      <h2>Layout</h2>
+      <pre data-label="Pack directory"><code>my-pack/
+  manifest.json      what this pack is and what it claims
+  render.js          the pure render function
+  tiers/             one asset set per tier, if the pack uses assets
+  fonts/             any font the pack needs, bundled not linked
+  samples/           rendered examples with their inputs
+  README.md          how to use it, and the derivation the pack uses
+  LICENSE</code></pre>
+      <p>Everything the render needs ships inside the folder. A pack that fetches an asset from someone else's
+        server stops working the day that server does, and it stops being verifiable long before that.</p>
+
+      <h2>Manifest</h2>
+      <pre data-label="manifest.json"><code>{
+  "name": "my-pack",
+  "author": "who made it",
+  "license": "SPDX identifier",
+  "protocol_id": "PTNA",
+  "inputs": ["artifact_id", "founding", "status", "depth", "tier", "rings", "height"],
+  "outputs": ["svg"],
+  "tiers": ["Raw", "Sheen", "Cast", "Verdigris", "Umber", "Bronze", "Oxide", "Elder"],
+  "deterministic": true,
+  "network_access": false,
+  "reduced_motion": "static output only",
+  "derivation": "how per artifact variation is derived from artifact_id"
+}</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>Fields that carry a promise.</caption>
+          <thead><tr><th>Field</th><th>Promise</th></tr></thead>
+          <tbody>
+            <tr><td><code>inputs</code></td><td>These are the only inputs the render reads. Listing an input you do not read is sloppy. Reading one you did not list is dishonest.</td></tr>
+            <tr><td><code>deterministic</code></td><td>Same inputs produce identical output bytes</td></tr>
+            <tr><td><code>network_access</code></td><td>False, always. A render that needs the network is not a render pack.</td></tr>
+            <tr><td><code>derivation</code></td><td>Anyone can reproduce your variant choices from the artifact id</td></tr>
+            <tr><td><code>tiers</code></td><td>All eight names, spelled as the protocol spells them</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The render function</h2>
+      <pre data-label="Signature"><code>// Returns a string of SVG, or a buffer, depending on the declared output.
+// No network, no clock, no randomness, no globals.
+function render(state) {
+  // state: { artifact_id, founding, status, depth, tier, rings, height }
+  // ...
+  return svg;
+}</code></pre>
+      <ul>
+        <li>Take the whole state object and read only what you declared.</li>
+        <li>Do not mutate the input.</li>
+        <li>Handle every case: depth zero, Elder, relic, zero rings, many rings.</li>
+        <li>Fail loudly on missing fields rather than substituting a default. A render that quietly draws Raw when
+          it was given nothing is a render that lies.</li>
+      </ul>
+
+      <h2>Samples are part of the pack</h2>
+      <p>Ship at least these, each with the exact input JSON that produced it:</p>
+      <ol>
+        <li>One per tier, Raw through Elder.</li>
+        <li>A founding artifact and a non founding one at the same tier.</li>
+        <li>A relic.</li>
+        <li>An artifact with zero rings and one with at least three.</li>
+        <li>An artifact that is deep now, and one that was deep once and is Raw now.</li>
+      </ol>
+      <p>The last pair is the important one. It shows whether the pack tells the truth about a reset.</p>
+
+      <h2>Checks before you publish</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Run all of these. A pack that fails any of them is not ready.</caption>
+          <thead><tr><th>Check</th><th>How</th></tr></thead>
+          <tbody>
+            <tr><td>Determinism</td><td>Render each sample twice, compare hashes</td></tr>
+            <tr><td>Portability</td><td>Render on a second machine, compare hashes</td></tr>
+            <tr><td>Offline</td><td>Disconnect the network and render every sample</td></tr>
+            <tr><td>No external requests</td><td>Grep the source for URLs, and watch the network panel while rendering</td></tr>
+            <tr><td>Tier legibility</td><td>Put all eight side by side. Each must be tellable from its neighbours.</td></tr>
+            <tr><td>Relic legibility</td><td>A relic must not be mistakable for a live artifact</td></tr>
+            <tr><td>Height stamp</td><td>Present and readable at the smallest size the pack supports</td></tr>
+            <tr><td>Contrast</td><td>Any text passes AA against its background</td></tr>
+            <tr><td>Reduced motion</td><td>Animation is optional, and the static form carries the same facts</td></tr>
+            <tr><td>Text alternative</td><td>Every meaningful element has one</td></tr>
+            <tr><td>Size</td><td>Reasonable for a share card. State the output size in the README.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Publishing</h2>
+      <ol>
+        <li>Put the folder in a public repository with its license.</li>
+        <li>Include the manifest, the samples, and their inputs.</li>
+        <li>State plainly that the pack is a view of the state, not the state, and that the protocol does not
+          endorse it.</li>
+        <li>If you change the pack, publish it as a separate pack rather than silently changing the pictures people
+          already shared. A render is a claim about state at a height, and rewriting it later breaks that.</li>
+      </ol>
+      <div class="warn">
+        <span class="lbl">No version labels in the name</span>
+        <p>Name a revised pack for what changed, not with a number. The program has no version labels in names,
+          folders, or URLs anywhere, and packs follow the same rule.</p>
+      </div>
+
+      <h2>What a pack may never do</h2>
+      <p>The full list is on <a href="render-rules.html">Rules that keep renders honest</a>. The short form: a pack
+        may make an artifact beautiful, and may not make it look like something it is not.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

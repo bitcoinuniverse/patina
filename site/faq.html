@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Questions and answers, PATINA</title>
+<meta name="description" content="Plain answers about PATINA: what depth is, why moving resets it, what a Firstlight Seal costs, whether buying keeps depth, what ownership does not guarantee, and what happens if you lose your keys.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/faq.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Questions and answers, PATINA">
+<meta property="og:description" content="What depth is, why moving resets it, what it costs, and what owning one does not guarantee.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/faq.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Questions and answers, PATINA">
+<meta name="twitter:description" content="What depth is, why moving resets it, what it costs, and what owning one does not guarantee.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a href="faq.html" aria-current="page">Questions</a></li>
+        <li><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <p class="eyebrow">Answers, including the unflattering ones</p>
+    <h1>Questions</h1>
+    <p class="lede">If an answer here reads like it is dodging something, that is a bug. Tell us and we will rewrite it.</p>
+  </section>
+
+  <section class="wrap band">
+    <h2>The basics</h2>
+
+    <details class="qa">
+      <summary>What is PATINA, in one sentence?</summary>
+      <div class="qa-body">
+        <p>A way of marking one Bitcoin output as the carrier of an artifact whose depth is simply how many blocks that output has stayed unspent.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What exactly is depth?</summary>
+      <div class="qa-body">
+        <p>The current block height minus the height of the block that created the carrier output. Nothing else. It is computed when you ask, never stored, and any Bitcoin node can produce it.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Why does moving it reset the depth?</summary>
+      <div class="qa-body">
+        <p>Because spending an output destroys it, and a destroyed output has no age. There is no rule saying "reset on move" that somebody has to enforce. There is simply nothing left to measure. That is the part we like most about it.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What is a ring?</summary>
+      <div class="qa-body">
+        <p>The permanent record of a finished stretch. When a carrier is spent, the artifact gains a ring holding the start height, the end height, the depth it reached, and the value it carried. Rings accumulate and nothing removes them. Depth resets, rings do not.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Is this a token?</summary>
+      <div class="qa-body">
+        <p>No. There is no balance, no transfer opcode, no ledger of holdings. An artifact is a statement about one Bitcoin output, and the way you move it is by spending that output like any other coin.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Do the tiers do anything?</summary>
+      <div class="qa-body">
+        <p>They name ranges of depth, and that is all. Reaching Bronze pays nothing, grants nothing and changes nothing. A tier is a word for a number.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="wrap band">
+    <h2>The Firstlight mint</h2>
+
+    <details class="qa">
+      <summary>What is a Firstlight Seal?</summary>
+      <div class="qa-body">
+        <p>An artifact whose commit landed inside the founding window of 4032 blocks. The founding mark is permanent and cannot be added later to anything else.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What does it cost?</summary>
+      <div class="qa-body">
+        <p>Miner fees on two transactions, and nothing to us. At 25 sat per vbyte the two come to roughly 8 175 sats in total. You also have to seal at least 100 000 sats of your own bitcoin into the carrier, and that is not a payment. It stays yours. <a href="mint.html#cost">The full fee table</a>.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Is there a supply cap?</summary>
+      <div class="qa-body">
+        <p>No. The cohort is whatever the window produced. A cap would create a race, and a race is exactly what the aged commit is designed to prevent.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Can one person claim many seals?</summary>
+      <div class="qa-body">
+        <p>Yes, as many as they can fund at 100 000 sats each plus fees. The protocol cannot tell people apart, so it cannot limit anyone. Live concentration figures are published <a href="transparency.html#concentration">during the window</a>, not after it.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Why do I have to wait 144 blocks?</summary>
+      <div class="qa-body">
+        <p>So a claim cannot be sniped. The commit reveals nothing while it waits, and only its owner can spend it, so copying somebody's reveal is useless: an attacker would need a commit of their own that already existed a day earlier. It also means there is no advantage to refreshing a page at the right second.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What if my reveal does not confirm in time?</summary>
+      <div class="qa-body">
+        <p>The founding claim is lost once the grace period ends. The bitcoin in your commit output is still yours, because only your key can spend it, but it cannot become a Firstlight Seal any more.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Can I still create an artifact after the window closes?</summary>
+      <div class="qa-body">
+        <p>Yes. Artifacts can be created at any time, with a carrier floor of 10 000 sats instead of 100 000. They are ordinary artifacts. They are not Firstlight Seals and no amount of waiting will turn them into one.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="wrap band">
+    <h2>Owning one</h2>
+
+    <details class="qa">
+      <summary>Does owning one guarantee anything?</summary>
+      <div class="qa-body">
+        <p>It guarantees that the record is readable by anyone, that the rules applied to you the same way they applied to everyone else, and that nobody can change your artifact without your key.</p>
+        <p>It does not guarantee value, a buyer, liquidity, attention, or that anyone will ever care. There is no market maker and no floor. Nothing on this site is a prediction that this will be worth something.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Does depth prove I held it the whole time?</summary>
+      <div class="qa-body">
+        <p>No. It proves the outpoint did not move. Keys can be sold off chain, invisibly, at any point. A signed attestation over the artifact id and a recent block hash proves the key is alive right now, and even that could be signed by somebody who bought the key yesterday. <a href="risks.html#meaning">More on this</a>.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>If I buy one, do I keep its depth?</summary>
+      <div class="qa-body">
+        <p>No. Buying means spending the carrier, which ends the stretch and starts a new one at zero. You inherit the rings, meaning the record of what happened, not the depth. Price accordingly.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Is my bitcoin locked up?</summary>
+      <div class="qa-body">
+        <p>No. There is no timelock on the carrier and no custody arrangement. You can spend the endowment in the very next block. Doing so simply ends the stretch and engraves a ring.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Can I move an artifact without resetting it?</summary>
+      <div class="qa-body">
+        <p>No. Moving is spending, and spending resets. KEEP lets you say which output the artifact continues on, which is about control, not about preserving depth.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What is KEEP for, then?</summary>
+      <div class="qa-body">
+        <p>To route the artifact deliberately when you spend a carrier, instead of letting the default rule choose. Without a KEEP entry the artifact continues on the lowest index output that is not an OP_RETURN and holds at least 10 000 sats. With one, you name the output yourself. Up to eight entries per marker.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What happens if I lose my keys?</summary>
+      <div class="qa-body">
+        <p>The carrier can never be spent, so the depth grows forever and the artifact can never be transferred. From the outside that looks exactly like extraordinary discipline. The chain cannot tell the difference, and neither can anyone reading it.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What is a relic?</summary>
+      <div class="qa-body">
+        <p>An artifact whose carrier was spent with no eligible successor output, meaning nothing that was both a real output and worth at least 10 000 sats. It is terminal. The rings it already engraved stay in the record forever, and no new stretch can begin.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>How do I avoid resetting it by accident?</summary>
+      <div class="qa-body">
+        <p>Keep carriers in a wallet you never sweep or consolidate, and check outpoints against the safety endpoint before you spend. <a href="verify.html#indexer">The command is on the verify page</a>. Ordinary coin selection has no idea what a carrier is.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="wrap band">
+    <h2>Trust and independence</h2>
+
+    <details class="qa">
+      <summary>Do I need Bitcoin Universe for any of this?</summary>
+      <div class="qa-body">
+        <p>No. The app is a convenience for building the two transactions. The marker format is public, the derivations are single SHA-256 hashes, and anyone can build, broadcast and index without us. <a href="verify.html">Verify it yourself</a>.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Can the team turn PATINA off?</summary>
+      <div class="qa-body">
+        <p>We can turn off our own app and our own indexer. We cannot pause the protocol, freeze an artifact, reverse a spend or change anyone's depth. Markers are ordinary Bitcoin transactions. <a href="transparency.html#switches">Exactly what each switch reaches</a>.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>What if an indexer lies to me?</summary>
+      <div class="qa-body">
+        <p>Check it against a node. Depth is <code>gettxout</code> confirmations minus one, which needs no index at all. Two honest indexers at the same height must agree exactly, so disagreement is a bug you can prove.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Does Bitcoin Universe hold my keys or coins?</summary>
+      <div class="qa-body">
+        <p>Never. The app builds unsigned transaction plans with a plain review summary. You sign. Nothing is broadcast without your signature and there is no account to create.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Which networks does it run on?</summary>
+      <div class="qa-body">
+        <p>Regtest and signet deployment records ship in the repository. Mainnet values stay unset until activation is authorised, and the construction code refuses to build mainnet transactions until then.</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>Where is the code?</summary>
+      <div class="qa-body">
+        <p>The <a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">protocol repository</a> holds the specification, the reference library and the test vectors. The <a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">indexer</a> is separate. This website is a static site with no build step, so its source is exactly what your browser downloaded.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="wrap band">
+    <div class="actions">
+      <a class="btn" href="risks.html">Read the risks</a>
+      <a class="btn" href="mint.html">How the mint works</a>
+      <a class="btn btn-quiet" href="protocol.html">Protocol detail</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

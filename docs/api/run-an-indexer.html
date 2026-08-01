@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run your own indexer | PATINA docs</title>
+<meta name="description" content="Why you would run your own PATINA indexer, what it needs from a Bitcoin node, and how to get from a fresh machine to a served API.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="api/run-an-indexer.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Run your own indexer</h1>
+      <p class="lede">Every number in this system is derivable from the blockchain. Running your own indexer is
+        how you stop taking anyone's word for it.</p>
+
+      <h2>Why</h2>
+      <ul>
+        <li><strong>You stop trusting a server.</strong> Your own index answers from your own node.</li>
+        <li><strong>You can check us.</strong> Two indexers on the same chain must agree. If they do not, one has a
+          bug worth finding.</li>
+        <li><strong>You are not affected by our outages.</strong> The protocol keeps working whether or not any
+          particular indexer does.</li>
+        <li><strong>Your queries stay private.</strong> Nobody learns which artifacts you look at.</li>
+      </ul>
+
+      <h2>What it needs</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Requirements for an indexer host.</caption>
+          <thead><tr><th>Requirement</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td>A Bitcoin node</td><td>Fully validating, on the network you are indexing. Transaction index enabled if your indexer reads transactions by id.</td></tr>
+            <tr><td>Block access</td><td>The indexer reads blocks in order and needs input values, which means either a node RPC that supplies them or its own UTXO tracking.</td></tr>
+            <tr><td>Reorg detection</td><td>Block hashes stored per height, not just heights. See <a href="../protocol/reorgs.html">Reorg behavior</a>.</td></tr>
+            <tr><td>Durable storage</td><td>Sized for artifacts, rings, carriers, and invalid events. It is small next to the chain itself.</td></tr>
+            <tr><td>A deployment record</td><td>The network and window heights it is indexing, including <code>spec_sha256</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The indexer does not need a wallet, does not need keys, and should never be given any.</p>
+
+      <h2>The path from nothing to a served API</h2>
+      <ol class="steps">
+        <li>
+          <h3>Get a node synced</h3>
+          <p>Start on regtest, which takes minutes, then signet. Do not start on mainnet while you are still
+            learning the moving parts.</p>
+        </li>
+        <li>
+          <h3>Load the deployment record</h3>
+          <p>Regtest and signet deployments ship in the protocol repo. Mainnet values stay unset until activation
+            is authorised, and software must refuse to construct mainnet transactions without both the
+            authorisation flag and a record naming two approvers.</p>
+        </li>
+        <li>
+          <h3>Index from the deployment start height</h3>
+          <p>There is nothing to find before the window opens, so the start height is the deployment's, not block
+            zero. Walk blocks in order and apply the rules.</p>
+        </li>
+        <li>
+          <h3>Prove it against the golden vectors</h3>
+          <p>Before serving anything, run the vectors and compare state roots. An indexer that has not passed them
+            is an indexer with unknown behaviour. See
+            <a href="../compat/golden-vectors.html">Golden vectors and state roots</a>.</p>
+        </li>
+        <li>
+          <h3>Serve the endpoints</h3>
+          <p>Implement the contract in the <a href="endpoints.html">endpoint reference</a>. Keep
+            <code>/ready</code> honest: it must fail during initial sync and during reorg replay.</p>
+        </li>
+        <li>
+          <h3>Point something at it</h3>
+          <p>The prober on the <a href="endpoints.html">endpoint reference</a> page will read
+            <code>/status</code> and <code>/window</code> from your instance and print the raw responses.</p>
+        </li>
+      </ol>
+
+      <h2>Cross checking against another indexer</h2>
+      <pre data-label="Compare two indexers at the same height"><code>curl -s https://a.example.org/patina/status | grep -o '"indexed_height":[0-9]*'
+curl -s https://b.example.org/patina/status | grep -o '"indexed_height":[0-9]*'</code></pre>
+      <p>Compare like for like. Two indexers at different heights are expected to differ. Two indexers at the same
+        height, on the same network, running the same <code>spec_sha256</code>, must produce the same state root.
+        If they do not, follow <a href="../compat/disagreements.html">Report a disagreement</a>.</p>
+
+      <h2>Sizing and cost</h2>
+      <p>PATINA state is small: a record per artifact, a row per ring, and an entry per invalid event. The
+        expensive part is the Bitcoin node, not the index on top of it. Plan the node first and the indexer will
+        fit alongside it.</p>
+      <p>Actual figures depend on how many artifacts exist, which is chain data and cannot be quoted here. Measure
+        your own instance rather than trusting a number in a document.</p>
+
+      <h2>Operating it</h2>
+      <p>Everything about running one in production is in the operator guide:
+        <a href="../operator/deploy.html">deploy and configure</a>,
+        <a href="../operator/run.html">sync and reindex</a>,
+        <a href="../operator/verify.html">verify and monitor</a>,
+        <a href="../operator/backup.html">back up and restore</a>, and
+        <a href="../operator/incidents.html">incident actions</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

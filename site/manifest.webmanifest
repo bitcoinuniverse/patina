@@ -1,0 +1,23 @@
+{
+  "name": "PATINA",
+  "short_name": "PATINA",
+  "description": "A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#0e1211",
+  "theme_color": "#0e1211",
+  "icons": [
+    {
+      "src": "assets/brand/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "assets/brand/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

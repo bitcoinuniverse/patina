@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Identity and derivations | PATINA docs</title>
+<meta name="description" content="PATINA identity constants and the five derivations, with byte exact worked examples computed by a script you can rerun.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/identity.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Identity and derivations</h1>
+      <p class="lede">Five derivations, all single SHA-256, all with an ASCII domain tag and no separator byte.
+        Every hex string below was computed by <code>docs/tools/vectors.mjs</code>.</p>
+
+      <h2>Identity constants</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Frozen identity values.</caption>
+          <thead><tr><th>Name</th><th>Value</th><th>Bytes</th></tr></thead>
+          <tbody>
+            <tr><td>Protocol name</td><td>PATINA</td><td></td></tr>
+            <tr><td>Protocol slug</td><td><code>patina</code></td><td></td></tr>
+            <tr><td>Marker magic</td><td>ASCII <code>PTNA</code></td><td><code>50 54 4e 41</code></td></tr>
+            <tr><td>Marker version byte</td><td><code>0x01</code></td><td><code>01</code></td></tr>
+            <tr><td>Genesis asset</td><td>Firstlight Seals</td><td></td></tr>
+            <tr><td>Networks</td><td><code>regtest</code>, <code>signet</code>, <code>mainnet</code></td><td>mainnet gated by activation control</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The version byte is protocol data, not a product name. It lives in the marker so a parser can reject bytes
+        it does not understand. It is never used in a URL, a folder, or a label.</p>
+
+      <h2>Hashing conventions</h2>
+      <ul>
+        <li>Every derivation is a <strong>single</strong> SHA-256. Not double, not tagged in the BIP-340 sense.</li>
+        <li>The domain tag is plain ASCII, concatenated directly with the rest of the preimage. There is no length
+          prefix and no separator byte.</li>
+        <li>Display ids are lowercase hex.</li>
+        <li><code>reveal_txid_wire</code> is the txid in internal byte order, which is the reverse of the txid a
+          block explorer shows.</li>
+      </ul>
+      <div class="tablewrap">
+        <table>
+          <caption>The five domain tags as bytes.</caption>
+          <thead><tr><th>Tag</th><th>Length</th><th>Hex</th></tr></thead>
+          <tbody>
+            <tr><td><code>PTNA/commit</code></td><td>11</td><td><code>50544e412f636f6d6d6974</code></td></tr>
+            <tr><td><code>PTNA/artifact</code></td><td>13</td><td><code>50544e412f6172746966616374</code></td></tr>
+            <tr><td><code>PTNA/event</code></td><td>10</td><td><code>50544e412f6576656e74</code></td></tr>
+            <tr><td><code>PTNA/state</code></td><td>10</td><td><code>50544e412f7374617465</code></td></tr>
+            <tr><td><code>PTNA/attest</code></td><td>11</td><td><code>50544e412f617474657374</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Example inputs</h2>
+      <p>The worked examples below all use these two values. The key is a valid secp256k1 x coordinate found by
+        hashing a fixed phrase, so no private key for it exists.</p>
+      <pre data-label="Example inputs, documentation only"><code>claimant_xonly (32)  f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866a
+salt (16)            2fe862993a92197e084e4070cc8aa1c3</code></pre>
+      <div class="warn">
+        <span class="lbl">Do not reuse these</span>
+        <p>A real salt must come from a cryptographically secure random generator, and must never be reused across
+          commits. A salt that appears in public documentation is a salt anyone can grind against.</p>
+      </div>
+
+      <h2>Commit commitment</h2>
+      <pre data-label="Definition"><code>commitment = SHA256("PTNA/commit" || claimant_xonly(32) || salt(16))</code></pre>
+      <pre data-label="Worked example, 59 byte preimage"><code>preimage
+  50544e412f636f6d6d6974                                            "PTNA/commit"
+  f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866a  claimant_xonly
+  2fe862993a92197e084e4070cc8aa1c3                                  salt
+
+commitment
+  ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd6</code></pre>
+      <pre data-label="Reproduce it"><code>node -e '
+const { createHash } = require("crypto");
+const key = Buffer.from("f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866a", "hex");
+const salt = Buffer.from("2fe862993a92197e084e4070cc8aa1c3", "hex");
+const pre = Buffer.concat([Buffer.from("PTNA/commit", "ascii"), key, salt]);
+console.log(createHash("sha256").update(pre).digest("hex"));
+'</code></pre>
+
+      <h2>Commit output shape</h2>
+      <p>A qualifying commit is a Taproot output whose spend reveals this tapscript leaf:</p>
+      <pre data-label="Commit leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>The 70 byte leaf, byte by byte.</caption>
+          <thead><tr><th>Offset</th><th>Bytes</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td><code>20</code></td><td>Push 32 bytes</td></tr>
+            <tr><td>1</td><td><code>f13dc99d ... 1878866a</code></td><td>claimant x-only public key</td></tr>
+            <tr><td>33</td><td><code>ac</code></td><td>OP_CHECKSIG</td></tr>
+            <tr><td>34</td><td><code>00</code></td><td>OP_0</td></tr>
+            <tr><td>35</td><td><code>63</code></td><td>OP_IF</td></tr>
+            <tr><td>36</td><td><code>20</code></td><td>Push 32 bytes</td></tr>
+            <tr><td>37</td><td><code>ac2e3090 ... aa2afdd6</code></td><td>commitment</td></tr>
+            <tr><td>69</td><td><code>68</code></td><td>OP_ENDIF</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre data-label="Leaf script, 70 bytes"><code>20f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866aac006320ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd668</code></pre>
+      <p>The <code>OP_0 OP_IF ... OP_ENDIF</code> envelope never executes, so the commitment is carried as data
+        while the spend condition stays a plain signature check. This is the same envelope technique that
+        inscriptions already use at scale.</p>
+      <p>For completeness, the BIP-341 tapleaf hash of that script with leaf version <code>0xc0</code>, which is
+        standard Taproot and not a PATINA rule:</p>
+      <pre data-label="BIP-341 tapleaf hash"><code>tagged_hash("TapLeaf", 0xc0 || compact_size(70) || leaf_script)
+= 4f65e447fdcd3a0837aae4ff482e173f9e1c0900711bc667e7d6c2b0caa3d6c3</code></pre>
+
+      <h2>Artifact id</h2>
+      <pre data-label="Definition"><code>artifact_id = SHA256("PTNA/artifact" || reveal_txid_wire(32) || carrier_vout_le(4))</code></pre>
+      <p>Two details trip people up. The txid goes in <strong>wire order</strong>, reversed from what an explorer
+        shows. The vout is <strong>four bytes little endian</strong>, not one byte, even though the marker payload
+        carries it as one byte.</p>
+      <pre data-label="Worked example, 49 byte preimage"><code>txid, display order  1d29e5ba13cecf357a9218518914617f872eeaa83a33bf6be6fd78dfdd1ce9c6
+txid, wire order     c6e91cdddf78fde66bbf333aa8ea2e877f6114895118927a35cfce13bae5291d
+carrier_vout         1
+carrier_vout_le      01000000
+
+preimage
+  50544e412f6172746966616374                                        "PTNA/artifact"
+  c6e91cdddf78fde66bbf333aa8ea2e877f6114895118927a35cfce13bae5291d  txid wire order
+  01000000                                                          vout, 4 byte LE
+
+artifact_id
+  d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0</code></pre>
+      <p>The id is fixed at birth. Moving the artifact to a new carrier does not change it.</p>
+
+      <h2>Attestation message</h2>
+      <pre data-label="Definition"><code>message = "PTNA/attest" || artifact_id_hex || block_hash_hex</code></pre>
+      <p>This one is a string, not bytes: the two hashes appear as lowercase hex text, and the message is signed
+        off chain with BIP-322. A complete message is 11 + 64 + 64 = 139 characters.</p>
+      <pre data-label="Worked example"><code>PTNA/attestd3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff06b86b9521630996bec957312d95d273f4e19e1d87e00ca8928f3c736c6d73308</code></pre>
+      <p>Usage is on <a href="../using/attestations.html">Attestations</a>.</p>
+
+      <h2>Event leaf and state root</h2>
+      <pre data-label="Definitions"><code>event_leaf = SHA256("PTNA/event" || canonical event encoding)
+state_root = SHA256("PTNA/state" || canonical snapshot encoding)</code></pre>
+      <div class="note">
+        <span class="lbl">What is frozen here, and what is not</span>
+        <p>The baseline freezes the hash function, the domain tags, and the fact that the encoding is canonical. It
+          does not spell out the field order and widths of the two canonical encodings.</p>
+        <p>That means the golden vectors are the authority for these two derivations. An implementation matches by
+          reproducing the vector state roots byte for byte, not by reading prose. If your encoding produces a
+          different root on the same block, your encoding is wrong regardless of how reasonable it looks.</p>
+        <p>See <a href="../compat/golden-vectors.html">Golden vectors and state roots</a>.</p>
+      </div>
+
+      <h2>Reproduce every value on this page</h2>
+      <pre data-label="From the repo root"><code>node docs/tools/vectors.mjs</code></pre>
+      <p>The script prints each preimage and each digest. If a number in these pages disagrees with the script, the
+        script is right and the page is a bug.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

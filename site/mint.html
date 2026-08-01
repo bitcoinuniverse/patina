@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Firstlight mint, PATINA</title>
+<meta name="description" content="How the Firstlight Seals are claimed: a commit output aged at least 144 blocks, then a reveal. No price, network fees only, and at least 100 000 sats of your own bitcoin sealed inside as the endowment.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/mint.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="The Firstlight mint, PATINA">
+<meta property="og:description" content="An aged commit and reveal, so a claim cannot be sniped. No price. Network fees plus at least 100 000 sats of your own bitcoin, which stays yours.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/mint.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section drawn at depth zero.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Firstlight mint, PATINA">
+<meta name="twitter:description" content="An aged commit and reveal, so a claim cannot be sniped. No price, network fees only.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="mint.html" aria-current="page">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a href="faq.html">Questions</a></li>
+        <li><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">The genesis asset</p>
+        <h1>The Firstlight mint</h1>
+        <p class="lede">One cohort, one window of 4032 blocks, then never again. No price, no cap, no allocation to anyone who built this.</p>
+
+        <div class="override-banner" data-override-banner hidden>
+          <strong>Custom indexer in use.</strong> Live figures on this page come from <code data-override-url></code>, which you supplied in the address bar.
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-primary" data-mint-cta data-config-href="appMintUrl" href="https://inscribe.bitcoinuniverse.io/?tab=patina">Open PATINA in the Bitcoin Universe app</a>
+          <a class="btn" href="#cost">Jump to the fee table</a>
+        </div>
+        <p data-window-note>This page cannot tell you whether the founding window is open, because it could not read a PATINA indexer. The Bitcoin Universe app checks the window before it builds anything, and refuses to build outside it.</p>
+        <p class="small faint">Nothing on this website mints anything. The transactions are built and signed in the app, with your keys, on your machine.</p>
+      </div>
+
+      <div class="card" data-live="window">
+        <div class="card-title">
+          <h2>Window state</h2>
+          <span class="pill pill-live">Live</span>
+        </div>
+        <div class="panel-state" data-live-state>
+          <span class="state-dot" aria-hidden="true"></span>
+          <div data-live-message><p>Checking for a connected indexer.</p></div>
+        </div>
+        <dl class="stat-grid" data-live-body hidden>
+          <div class="stat"><dt>State</dt><dd data-field="state"></dd></div>
+          <div class="stat"><dt>Tip height</dt><dd data-field="tip_height" data-format="height"></dd></div>
+          <div class="stat"><dt>Opens at</dt><dd data-field="h_open" data-format="height"></dd></div>
+          <div class="stat"><dt>Closes at</dt><dd data-field="h_close" data-format="height"></dd></div>
+          <div class="stat"><dt>Grace ends</dt><dd data-field="grace_end" data-format="height"></dd></div>
+          <div class="stat"><dt>Blocks until open</dt><dd data-field="blocks_until_open" data-format="int"></dd></div>
+          <div class="stat"><dt>Blocks remaining</dt><dd data-field="blocks_remaining" data-format="int"></dd></div>
+          <div class="stat"><dt>Founding so far</dt><dd data-field="founding_total" data-format="int"></dd></div>
+        </dl>
+        <p class="source-note" data-live-source></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="how">
+    <p class="eyebrow">Two transactions</p>
+    <h2>Commit, wait, reveal</h2>
+    <div class="prose">
+      <p>A claim is two Bitcoin transactions with a gap between them. The gap is the point.</p>
+    </div>
+
+    <figure class="figure">
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 720 300" role="img" aria-labelledby="flow-title flow-desc">
+          <title id="flow-title">The commit and reveal flow</title>
+          <desc id="flow-desc">A commit transaction creates one taproot output that hides a commitment. At least 144 blocks later, a reveal transaction spends that output, publishes the marker, and names the carrier output. Depth starts counting from the reveal height.</desc>
+
+          <rect class="d-box" x="12" y="52" width="238" height="112" rx="3"/>
+          <text class="d-mono" x="28" y="76">STEP ONE</text>
+          <text class="d-title" x="28" y="100">Commit transaction</text>
+          <text class="d-soft" x="28" y="122">One taproot output that only you</text>
+          <text class="d-soft" x="28" y="139">can spend, carrying a hidden</text>
+          <text class="d-soft" x="28" y="156">commitment to your claim.</text>
+
+          <path class="d-line" d="M250 108 L456 108"/>
+          <path class="d-accent" d="M448 102 L458 108 L448 114"/>
+          <rect class="d-box" x="286" y="86" width="134" height="44" rx="3"/>
+          <text class="d-mono" x="300" y="106">WAIT</text>
+          <text class="d-soft" x="300" y="122">144 blocks minimum</text>
+
+          <rect class="d-box" x="466" y="52" width="242" height="112" rx="3"/>
+          <text class="d-mono" x="482" y="76">STEP TWO</text>
+          <text class="d-title" x="482" y="100">Reveal transaction</text>
+          <text class="d-soft" x="482" y="122">Spends the commit, publishes the</text>
+          <text class="d-soft" x="482" y="139">marker, and names which output</text>
+          <text class="d-soft" x="482" y="156">becomes the carrier.</text>
+
+          <path class="d-line" d="M12 208 L708 208"/>
+          <path class="d-line" d="M131 164 L131 208"/>
+          <path class="d-bronze" d="M587 164 L587 208"/>
+          <circle cx="131" cy="208" r="4" fill="var(--line-strong)"/>
+          <circle cx="587" cy="208" r="4.5" fill="var(--bronze)"/>
+          <text class="d-mono" x="12" y="230">BLOCK HEIGHT</text>
+          <text class="d-soft" x="96" y="248">commit height</text>
+          <text class="d-soft" x="540" y="248">reveal height, depth starts at zero</text>
+          <text class="d-mono" x="12" y="282">DEPTH = CURRENT HEIGHT MINUS CARRIER HEIGHT</text>
+        </svg>
+      </div>
+      <figcaption>Depth starts at the reveal, not at the commit. The 144 block wait buys the claim its safety, not its age.</figcaption>
+    </figure>
+
+    <div class="grid grid-2">
+      <div class="prose">
+        <h3>Step one, the commit</h3>
+        <p>You publish one taproot output. Inside its script tree sits a commitment: a single SHA-256 over a domain tag, your public key and a random 16 byte salt. Nobody can read your claim out of it, and nobody but you can spend that output.</p>
+        <p>Then you wait. The reveal is only valid once the commit output is at least 144 blocks deep, roughly a day.</p>
+      </div>
+      <div class="prose">
+        <h3>Step two, the reveal</h3>
+        <p>You spend the commit output along the script path, which exposes the leaf and the salt. In the same transaction you publish the marker, an OP_RETURN carrying <code>PTNA</code>, a version byte, the SEED opcode, the salt, a flags byte, and the index of the output that becomes the carrier.</p>
+        <p>An indexer checks the commitment against your key and the salt, checks the age, checks the carrier value, and either creates the artifact or records why it did not.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p class="note-title">Why this cannot be sniped</p>
+      <p>A snipe needs two things: seeing what someone is about to claim, and being able to act on it first. Here the commit reveals nothing while it waits, and when the reveal appears the commitment it satisfies is already 144 blocks old and spendable only by its owner. Copying the reveal gets an attacker nothing, because their own commit would have to have existed a day earlier and be spendable by them.</p>
+      <p>There is no queue, no gas auction, and no advantage to refreshing a page at the right second.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="cost">
+    <p class="eyebrow">What it costs</p>
+    <h2>Network fees, and nothing to us</h2>
+    <div class="prose">
+      <p>There is no mint price. The only bitcoin that leaves your control is the miner fee on two transactions.</p>
+      <p>Fees depend on transaction size in virtual bytes and on the fee rate you choose. The sizes below are computed from the transaction shapes this protocol requires, under the assumptions listed underneath. Your wallet may produce slightly different sizes if it uses more inputs or a different output type.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Where the virtual byte figures come from.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Transaction</th>
+            <th scope="col">Part</th>
+            <th scope="col" class="num">Virtual bytes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" rowspan="5">Commit</th><td>Fixed overhead, including the segwit marker</td><td class="num">10.5</td></tr>
+          <tr><td>One taproot key path input</td><td class="num">57.5</td></tr>
+          <tr><td>The commit taproot output</td><td class="num">43</td></tr>
+          <tr><td>One taproot change output</td><td class="num">43</td></tr>
+          <tr><td><strong>Total</strong></td><td class="num"><strong>154</strong></td></tr>
+
+          <tr><th scope="row" rowspan="5">Reveal</th><td>Fixed overhead, including the segwit marker</td><td class="num">10.5</td></tr>
+          <tr><td>One taproot script path input revealing the 70 byte leaf</td><td class="num">83.75</td></tr>
+          <tr><td>The carrier taproot output</td><td class="num">43</td></tr>
+          <tr><td>The marker output, a 26 byte OP_RETURN script</td><td class="num">35</td></tr>
+          <tr><td><strong>Total, rounded up</strong></td><td class="num"><strong>173</strong></td></tr>
+
+          <tr><th scope="row">Both</th><td><strong>Commit plus reveal</strong></td><td class="num"><strong>327</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <caption>Miner fees in satoshis, at four fee rates.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Fee rate</th>
+            <th scope="col" class="num">Commit, 154 vB</th>
+            <th scope="col" class="num">Reveal, 173 vB</th>
+            <th scope="col" class="num">Total, 327 vB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">2 sat per vbyte</th><td class="num">308</td><td class="num">346</td><td class="num">654</td></tr>
+          <tr><th scope="row">10 sat per vbyte</th><td class="num">1 540</td><td class="num">1 730</td><td class="num">3 270</td></tr>
+          <tr><th scope="row">25 sat per vbyte</th><td class="num">3 850</td><td class="num">4 325</td><td class="num">8 175</td></tr>
+          <tr><th scope="row">50 sat per vbyte</th><td class="num">7 700</td><td class="num">8 650</td><td class="num">16 350</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p class="note-title">Assumptions behind those sizes</p>
+      <ul>
+        <li>Taproot throughout, single key path input on the commit, single script path input on the reveal.</li>
+        <li>64 byte Schnorr signatures with the default sighash, so no extra sighash byte.</li>
+        <li>A single leaf script tree, so the control block is 33 bytes.</li>
+        <li>The reveal has no change output. Add 43 virtual bytes for each extra taproot output, which is 86, 430, 1 075 and 2 150 sats at the four rates above.</li>
+        <li>Fee rates are examples, not forecasts. Check the live mempool before you sign anything.</li>
+      </ul>
+    </div>
+
+    <div class="note note-warn">
+      <p class="note-title">The 100 000 sats is not a fee</p>
+      <p>A founding carrier must hold at least 100 000 sats. That bitcoin is yours before the mint and yours after it. It is not paid to anyone. Budget for it as bitcoin you are choosing not to spend, plus the fee above.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="receive">
+    <p class="eyebrow">The result</p>
+    <h2>What the minter receives</h2>
+    <dl class="kv">
+      <div>
+        <dt>An artifact record</dt>
+        <dd>Created by the reveal, with a deterministic id: a single SHA-256 over the tag <code>PTNA/artifact</code>, the reveal txid in internal byte order, and the carrier vout as four little endian bytes. Every indexer derives the same id from the same chain.</dd>
+      </div>
+      <div>
+        <dt>A carrier output you control</dt>
+        <dd>An ordinary Bitcoin output paying an address of yours, holding at least 100 000 sats. Your keys, your coins, no shared custody and no multisig with us.</dd>
+      </div>
+      <div>
+        <dt>Founding status, permanently</dt>
+        <dd>The record is marked founding because the commit landed inside the window. Nothing later can add that mark to an artifact that did not earn it, and nothing can remove it from one that did.</dd>
+      </div>
+      <div>
+        <dt>Depth starting at zero</dt>
+        <dd>Counted from the reveal height. Every block after that adds one. The tier ladder starts at Raw and the first threshold, Sheen, is 1 008 blocks away.</dd>
+      </div>
+      <div>
+        <dt>An empty ring list</dt>
+        <dd>You have not finished a stretch yet. Rings only appear when a carrier is spent.</dd>
+      </div>
+      <div>
+        <dt>No certificate, no receipt, no account</dt>
+        <dd>There is nothing to log into. The artifact is a fact about the Bitcoin chain, readable by anyone running the index.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="wrap band" id="endowment">
+    <p class="eyebrow">The endowment</p>
+    <h2>Your bitcoin, sealed in, still yours</h2>
+    <div class="grid grid-2">
+      <div class="prose">
+        <p>The endowment is simply the value sitting in the carrier output. A founding artifact needs at least 100 000 sats there. Outside the founding window the floor is 10 000 sats.</p>
+        <p>It is not locked, not staked, not deposited, and not held by anyone else. There is no timelock in the carrier output. You can spend it in the next block if you want to.</p>
+      </div>
+      <div class="prose">
+        <p>What spending it does is end the stretch. The chain gains a ring recording where the stretch started, where it ended, how deep it went, and what value it carried. The artifact then continues on the successor output at depth zero, or becomes a relic if there is no eligible successor.</p>
+        <p>So the cost of depth is not money. It is the option you gave up to move those coins.</p>
+      </div>
+    </div>
+    <div class="note note-hard">
+      <p class="note-title">Before you claim</p>
+      <p>Buying an artifact later resets it. A transfer spends the carrier, so whatever depth it had closes as a ring and the new stretch starts at zero. If depth is what you want, minting it yourself and leaving it alone is the only way to get it. <a href="risks.html">Read the risks</a> before you decide.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

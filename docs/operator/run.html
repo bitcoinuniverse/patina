@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sync and reindex | PATINA docs</title>
+<meta name="description" content="Running a PATINA indexer day to day: initial sync, catching up, handling reorgs, and when a full reindex is the right answer.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="operator/run.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Sync and reindex</h1>
+      <p class="lede">Three modes: initial sync, steady state, and rebuild. The third is always available, which is
+        what makes the first two safe.</p>
+
+      <h2>Initial sync</h2>
+      <ol>
+        <li>Start at the deployment start height. Earlier blocks contain nothing.</li>
+        <li>Process blocks in order, applying the rules and recording invalid events.</li>
+        <li>Keep <code>/ready</code> failing throughout. An indexer that answers during initial sync gives correct
+          answers for a height nobody asked about.</li>
+        <li>Record block hashes per height as you go. Without them you cannot detect a reorg later.</li>
+      </ol>
+      <pre data-label="Watch progress"><code>watch -n 10 "curl -s http://localhost:PORT/patina/status \
+  | grep -o '\"indexed_height\":[0-9]*'"</code></pre>
+
+      <h2>Steady state</h2>
+      <ul>
+        <li>Follow the node's tip. Apply each new block as it arrives.</li>
+        <li>Compare the incoming block's previous hash with your stored hash for that height. A mismatch is a
+          reorg.</li>
+        <li>Keep the gap between <code>indexed_height</code> and <code>tip_height</code> small, and alert when it
+          is not.</li>
+        <li>Nothing needs to happen per block per artifact. Depth is computed at query time, so a block with no
+          PATINA activity costs almost nothing.</li>
+      </ul>
+
+      <h2>Reorg handling</h2>
+      <ol>
+        <li>Detect a mismatch between your stored hash and the node's block at that height.</li>
+        <li>Walk back to the last height where hashes agree. That is the fork point.</li>
+        <li>Roll state back to the fork point.</li>
+        <li>Fail <code>/ready</code> while rolling back and replaying.</li>
+        <li>Replay forward, applying the same rules.</li>
+        <li>Return to steady state.</li>
+      </ol>
+      <p>Rules and requirements on <a href="../protocol/reorgs.html">Reorg behavior</a>. The critical property is
+        that rolling back to height H and replaying to H reproduces the same state root. Test it deliberately, not
+        only when it happens.</p>
+
+      <h2>When to reindex from scratch</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Reindex triggers.</caption>
+          <thead><tr><th>Situation</th><th>Reindex</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Upgrading to a build with a parser change</td><td>Yes</td><td>Old state was produced by different rules</td></tr>
+            <tr><td><code>spec_sha256</code> changed</td><td>Yes</td><td>The specification is different, so the state may be too</td></tr>
+            <tr><td>A state root mismatch against another implementation</td><td>Yes, after the bug is understood</td><td>Rebuilding on a fixed parser is the only way to trust the result</td></tr>
+            <tr><td>Storage corruption, or an unclean shutdown you cannot reason about</td><td>Yes</td><td>Rebuild is cheap compared with serving wrong state</td></tr>
+            <tr><td>A reorg deeper than your rollback history</td><td>Yes</td><td>You cannot reach the fork point</td></tr>
+            <tr><td>A performance problem</td><td>No</td><td>Fix the query path. Reindexing does not make wrong data fast or fast data right.</td></tr>
+            <tr><td>Bug fix in serving code only</td><td>No</td><td>The state is unaffected</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Reindex procedure</h2>
+      <ol class="steps">
+        <li>
+          <h3>Announce it if you serve others</h3>
+          <p>Say what you are rebuilding and why. A silent rebuild looks like an outage.</p>
+        </li>
+        <li>
+          <h3>Build into a new store</h3>
+          <p>Do not destroy the old index first. Rebuild alongside it, so you can compare the two and so a failed
+            rebuild is not an outage.</p>
+        </li>
+        <li>
+          <h3>Run the golden vectors on the new build</h3>
+          <p>Before it touches a real chain.</p>
+        </li>
+        <li>
+          <h3>Index to a height the old store also reached</h3>
+          <p>Then compare state roots at that exact height. Identical roots mean the rebuild changed nothing, which
+            is the expected result unless you were fixing a bug.</p>
+        </li>
+        <li>
+          <h3>Swap and keep the old store</h3>
+          <p>Keep it until the new one has been correct for long enough that you would not want to go back.</p>
+        </li>
+      </ol>
+      <div class="note">
+        <span class="lbl">Nothing is lost by rebuilding</span>
+        <p>The entire index is derived from the blockchain. There is no user data in it, no state that exists only
+          in your database, and nothing that cannot be recomputed. That is why reindex is always a safe answer, and
+          why an operator should never be tempted to hand edit the store.</p>
+      </div>
+
+      <h2>Upgrades</h2>
+      <ol>
+        <li>Read the release notes for parser changes. Any parser change means a reindex.</li>
+        <li>Run the vectors on the new build.</li>
+        <li>If the parser is unchanged, a rolling restart is enough. Confirm <code>indexed_height</code> resumes
+          from where it stopped.</li>
+        <li>If the parser changed, follow the reindex procedure and compare roots before serving.</li>
+        <li>Publish the new <code>spec_sha256</code> and <code>parser_version</code> through
+          <code>status</code>.</li>
+      </ol>
+
+      <h2>What never happens during any of this</h2>
+      <ul>
+        <li>No artifact is created, moved, or destroyed by anything an operator does. Only the chain does that.</li>
+        <li>No depth is affected by downtime. Depth is measured from block heights, not from uptime.</li>
+        <li>No holder needs to act because an indexer restarted.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

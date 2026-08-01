@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What it does not promise | PATINA docs</title>
+<meta name="description" content="The honest boundaries of PATINA: depth proves an outpoint has not moved, not that one person held it. Founding membership can be farmed. Buying resets depth.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="start/limits.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>What it does not promise</h1>
+      <p class="lede">These limits are structural. They are not bugs waiting for a fix, and they are printed in the
+        product, not only here.</p>
+
+      <h2>Depth does not prove one person held it</h2>
+      <p>What depth proves is exact and narrow: <strong>this outpoint has not been spent since this height</strong>.
+        That is a fact about an output, not about a human.</p>
+      <p>Keys can be sold. If someone hands over a private key in a bar, the outpoint never moves, depth keeps
+        climbing, and the chain shows nothing at all. A deep artifact may have had one owner, or six.</p>
+      <p>An <a href="../using/attestations.html">attestation</a> narrows this a little. Signing the attestation
+        message with the carrier key at a recent block hash shows that whoever signed can still sign right now. It
+        raises the claim from "this output has not moved" to "this output has not moved and someone with the key is
+        here today". It still does not prove continuity of a person, because the signer could be the person who
+        bought the key an hour ago.</p>
+      <div class="honest">
+        <span class="lbl">The claim we make</span>
+        <p>Unmoved since height H, and with a fresh attestation, still signable today. Nothing more.</p>
+      </div>
+
+      <h2>Founding membership can be farmed</h2>
+      <p>Any person or business with enough bitcoin can create many founding Seals during the window. Each one
+        needs its own commit, its own reveal, its own 100000 sats, and its own fees, but none of that stops
+        somebody with capital.</p>
+      <p>We do not filter, because every filter we could build would need someone to trust us. Instead:</p>
+      <ul>
+        <li>Concentration statistics are published <em>during</em> the window, not after it closes.</li>
+        <li>The numbers come from public chain data, so anyone can recompute them and check.</li>
+        <li>A large concentration is reported as a fact, not spun as demand.</li>
+      </ul>
+      <p>Note the limit on the limit: address clustering is a heuristic. Someone splitting across many fresh
+        addresses looks like many holders. Treat published concentration as a floor on concentration, not a
+        measurement of it.</p>
+
+      <h2>Buying an artifact resets it</h2>
+      <p>There is no transfer that keeps depth. Moving the carrier is what resets depth, and a sale moves the
+        carrier. The buyer gets:</p>
+      <ul>
+        <li>the same artifact id,</li>
+        <li>every ring the artifact ever closed, including the seller's,</li>
+        <li>a current depth of zero, counting from the block their new carrier confirms.</li>
+      </ul>
+      <p>If you want the depth, you have to hold, and holding is the only way. That is the point of the design and
+        also its hardest edge for anyone hoping to trade in.</p>
+      <p>Selling the key instead of the coin is possible and would preserve depth, but the buyer then has to trust
+        that the seller kept no copy. That is a private arrangement with private risk. The protocol takes no
+        position on it and cannot see it.</p>
+
+      <h2>No price, no market, no promises about value</h2>
+      <p>PATINA has no mint price and no protocol treasury. It does not create a market, run one, or make claims
+        about what an artifact will be worth. There are no projections in this documentation and there will not be
+        any.</p>
+
+      <h2>What the indexer can and cannot tell you</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Claims an indexer can support, and claims it cannot.</caption>
+          <thead><tr><th>Can</th><th>Cannot</th></tr></thead>
+          <tbody>
+            <tr><td>This outpoint was created at height H and is still unspent</td><td>Who created it</td></tr>
+            <tr><td>This artifact closed a ring of N blocks</td><td>Whether the same person held both ends of it</td></tr>
+            <tr><td>This carrier pays this address</td><td>Whether that address belongs to one person</td></tr>
+            <tr><td>This many artifacts are alive right now</td><td>How many distinct humans hold them</td></tr>
+            <tr><td>This attestation verifies at this block hash</td><td>Whether the signer is the original minter</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Operational limits</h2>
+      <ul>
+        <li><strong>Reorgs.</strong> Recent state can change. An artifact created three blocks ago may be undone by
+          a reorg. Six confirmations is the point where the indexer treats history as final. See
+          <a href="../protocol/reorgs.html">Reorg behavior</a>.</li>
+        <li><strong>Indexers can disagree.</strong> Two implementations can produce different state from the same
+          chain if one has a bug. That is why state roots and golden vectors exist, and why disagreements get
+          published rather than patched quietly. See <a href="../compat/disagreements.html">Report a
+          disagreement</a>.</li>
+        <li><strong>Nothing can be paused for you.</strong> There is no admin key that can freeze an artifact,
+          reverse a spend, or restore a reset. Operators can pause their own reads and writes; they cannot pause
+          Bitcoin. See <a href="../operator/incidents.html">Incident actions</a>.</li>
+        <li><strong>Mistakes are final.</strong> If you consolidate your carrier into a batch payment, the depth is
+          gone. There is no support channel that can restore it.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

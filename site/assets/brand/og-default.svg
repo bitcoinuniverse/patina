@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="og-default-title">
+  <title id="og-default-title">PATINA. A Bitcoin artifact that deepens while it sits still.</title>
+  <defs>
+    <pattern id="strata" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1" fill="#ffffff" fill-opacity="0.028"/>
+    </pattern>
+    <radialGradient id="age" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c39a58" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#a89147" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#3f9f8c" stop-opacity="0.3"/>
+    </radialGradient>
+    <mask id="og-kerf">
+      <rect x="620" y="20" width="640" height="620" fill="#ffffff"/>
+      <path d="M940 315 L926 60 L954 60 Z" fill="#000000"/>
+    </mask>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0e1211"/>
+  <rect width="1200" height="630" fill="url(#strata)"/>
+
+  <g mask="url(#og-kerf)">
+    <circle cx="940" cy="315" r="172" fill="url(#age)"/>
+    <g fill="none" stroke-width="2.4">
+      <circle cx="940" cy="315" r="235" stroke="#3f8f78" stroke-opacity="0.35" stroke-width="1.4"/>
+      <circle cx="940" cy="315" r="205" stroke="#3f9f8c" stroke-opacity="0.45" stroke-dasharray="3 6"/>
+      <circle cx="940" cy="315" r="172" stroke="#58aa85" stroke-width="3.2"/>
+      <circle cx="940" cy="315" r="139" stroke="#74a069"/>
+      <circle cx="940" cy="315" r="106" stroke="#8f9455"/>
+      <circle cx="940" cy="315" r="73" stroke="#a89147"/>
+      <circle cx="940" cy="315" r="40" stroke="#c08a3c"/>
+    </g>
+    <circle cx="940" cy="315" r="14" fill="#c39a58"/>
+  </g>
+
+  <g transform="translate(80,150) scale(1.28)" fill="none" stroke="#ece7dd" stroke-width="9" stroke-linecap="butt">
+    <g transform="translate(10,0)">
+      <path d="M0 80 L0 16 L22 16 A16 16 0 0 1 22 48 L0 48"/>
+      <g transform="translate(58,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+      <g transform="translate(122,0)">
+        <path d="M0 16 L44 16"/>
+        <path d="M22 16 L22 80"/>
+      </g>
+      <path d="M192 16 L192 80"/>
+      <path d="M218 80 L218 16 L258 80 L258 16"/>
+      <g transform="translate(278,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+    </g>
+  </g>
+
+  <text x="80" y="120" fill="#4fb094" font-family="ui-monospace, Consolas, monospace" font-size="20" letter-spacing="6">A BITCOIN ARTIFACT</text>
+
+  <text x="80" y="350" fill="#ece7dd" font-family="Georgia, 'Times New Roman', serif" font-size="44">It deepens for every block</text>
+  <text x="80" y="404" fill="#ece7dd" font-family="Georgia, 'Times New Roman', serif" font-size="44">it does not move.</text>
+  <text x="80" y="452" fill="#a8a89c" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="23">Spend the output and the depth resets to zero. The stretch is engraved as a ring.</text>
+
+  <path d="M80 520 L520 520" stroke="#3c4a45" stroke-width="1"/>
+  <text x="80" y="558" fill="#86887e" font-family="ui-monospace, Consolas, monospace" font-size="19" letter-spacing="2">Firstlight Seals, the founding cohort</text>
+</svg>

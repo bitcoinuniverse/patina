@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marker grammar | PATINA docs</title>
+<meta name="description" content="The PATINA marker is an OP_RETURN with one minimal push: magic, version, opcode, payload. Byte tables for SEED and KEEP, and the rule for choosing a marker.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/marker-grammar.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Marker grammar</h1>
+      <p class="lede">A marker is one OP_RETURN output with exactly one minimal data push. Anything else is not a
+        marker.</p>
+
+      <h2>The shape</h2>
+      <pre data-label="Script template"><code>OP_RETURN PUSH(n) [ "PTNA" | version(1) | op(1) | payload ]</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>Fixed header, present in every marker.</caption>
+          <thead><tr><th>Field</th><th>Size</th><th>Value</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>magic</td><td>4 bytes</td><td><code>50 54 4e 41</code></td><td>ASCII <code>PTNA</code></td></tr>
+            <tr><td>version</td><td>1 byte</td><td><code>01</code></td><td>Anything else is <code>MARKER_UNKNOWN_VERSION</code></td></tr>
+            <tr><td>op</td><td>1 byte</td><td><code>01</code> SEED, <code>02</code> KEEP</td><td>Anything else is <code>MARKER_UNKNOWN_OP</code></td></tr>
+            <tr><td>payload</td><td>varies</td><td>set by the opcode</td><td>See the two tables below</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Rules that make a marker valid</h3>
+      <ol>
+        <li>The push must be a <strong>single minimal data push</strong>. Two pushes, a non minimal push, or any
+          extra opcode after the push makes the marker invalid.</li>
+        <li>The whole scriptPubKey must stay at or below <strong>83 bytes</strong>. Over that is
+          <code>MARKER_TOO_LARGE</code>.</li>
+        <li>The protocol marker of a transaction is the OP_RETURN output with the <strong>lowest vout index</strong>
+          whose payload starts with <code>PTNA</code>.</li>
+        <li>If more than one output has a payload starting with <code>PTNA</code>, the marker is void:
+          <code>VOID_DUPLICATE_MARKER</code>, and the default rule applies as if there had been no marker.</li>
+      </ol>
+      <div class="note">
+        <span class="lbl">Why minimal pushes matter</span>
+        <p>Bitcoin can express the same data with several encodings. If a parser accepted more than one, two
+          implementations could disagree about whether the same transaction contained a marker. Requiring the
+          minimal encoding leaves exactly one valid way to write it.</p>
+      </div>
+
+      <h2>SEED, opcode 0x01</h2>
+      <p>Creates an artifact. Payload is 18 bytes and the total push is 24 bytes.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>SEED payload layout.</caption>
+          <thead><tr><th>Offset in payload</th><th>Field</th><th>Size</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>salt</td><td>16 bytes</td><td>The salt used in the commitment</td></tr>
+            <tr><td>16</td><td>flags</td><td>1 byte</td><td>Reserved. The vectors use <code>0x00</code>.</td></tr>
+            <tr><td>17</td><td>carrier_vout</td><td>1 byte</td><td>Index of the output that becomes the carrier</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre data-label="SEED marker, carrier_vout = 1"><code>payload       18 bytes  2fe862993a92197e084e4070cc8aa1c30001
+push data     24 bytes  50544e4101012fe862993a92197e084e4070cc8aa1c30001
+scriptPubKey  26 bytes  6a1850544e4101012fe862993a92197e084e4070cc8aa1c30001</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>The same 26 bytes, split.</caption>
+          <thead><tr><th>Bytes</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>6a</code></td><td>OP_RETURN</td></tr>
+            <tr><td><code>18</code></td><td>Minimal push of 24 bytes</td></tr>
+            <tr><td><code>50544e41</code></td><td>magic <code>PTNA</code></td></tr>
+            <tr><td><code>01</code></td><td>version</td></tr>
+            <tr><td><code>01</code></td><td>op SEED</td></tr>
+            <tr><td><code>2fe862993a92197e084e4070cc8aa1c3</code></td><td>salt</td></tr>
+            <tr><td><code>00</code></td><td>flags</td></tr>
+            <tr><td><code>01</code></td><td>carrier_vout</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>26 bytes leaves 57 bytes of headroom under the 83 byte ceiling. Validity checks for SEED are on
+        <a href="seed-rules.html">SEED rules</a>.</p>
+      <div class="note">
+        <span class="lbl">About the flags byte</span>
+        <p>The baseline reserves one byte here and assigns no meanings to it. Do not invent semantics for it, and
+          do not reject non zero values on your own initiative. If a meaning is ever assigned, it arrives through
+          the process on <a href="upgrade-boundary.html">The upgrade boundary</a>.</p>
+      </div>
+
+      <h2>KEEP, opcode 0x02</h2>
+      <p>Routes artifacts when a carrier is spent. Payload is a count followed by that many two byte entries.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>KEEP payload layout.</caption>
+          <thead><tr><th>Offset in payload</th><th>Field</th><th>Size</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>count</td><td>1 byte</td><td>1 to 8 entries. Zero or more than 8 is <code>KEEP_BAD_GRAMMAR</code>.</td></tr>
+            <tr><td>1</td><td>input_index</td><td>1 byte</td><td>Which input of this transaction spends a carrier</td></tr>
+            <tr><td>2</td><td>vout</td><td>1 byte</td><td>Which output that artifact should follow</td></tr>
+            <tr><td>3 ...</td><td>more entries</td><td>2 bytes each</td><td>Repeat to <code>count</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre data-label="One entry: input 0 keeps vout 2"><code>payload       3 bytes   010002
+push data     9 bytes   50544e410102010002
+scriptPubKey  11 bytes  6a0950544e410102010002</code></pre>
+      <pre data-label="Two entries: input 0 keeps vout 1, input 2 keeps vout 3"><code>payload       5 bytes   0200010203
+push data     11 bytes  50544e4101020200010203
+scriptPubKey  13 bytes  6a0b50544e4101020200010203</code></pre>
+      <pre data-label="Eight entries, the ceiling"><code>payload       17 bytes  0800010102020303040405050606070708
+push data     23 bytes  50544e4101020800010102020303040405050606070708
+scriptPubKey  25 bytes  6a1750544e4101020800010102020303040405050606070708</code></pre>
+      <p>Even at the maximum of eight entries the script is 25 bytes, 58 under the ceiling. The size limit is not
+        the reason for the eight entry cap. Rules for each entry are on
+        <a href="keep-rules.html">KEEP and the default rule</a>.</p>
+
+      <h2>Marker size, at a glance</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Script sizes for every legal marker.</caption>
+          <thead><tr><th>Marker</th><th>Payload</th><th>Push</th><th>scriptPubKey</th><th>Headroom to 83</th></tr></thead>
+          <tbody>
+            <tr><td>SEED</td><td>18</td><td>24</td><td>26</td><td>57</td></tr>
+            <tr><td>KEEP, 1 entry</td><td>3</td><td>9</td><td>11</td><td>72</td></tr>
+            <tr><td>KEEP, 2 entries</td><td>5</td><td>11</td><td>13</td><td>70</td></tr>
+            <tr><td>KEEP, 8 entries</td><td>17</td><td>23</td><td>25</td><td>58</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Parsing order for an implementation</h2>
+      <ol>
+        <li>Walk the outputs in index order. Collect every OP_RETURN whose data push starts with the four magic
+          bytes.</li>
+        <li>If there is more than one, record <code>VOID_DUPLICATE_MARKER</code> and stop treating the transaction
+          as marked. The default rule still applies to any carrier the transaction spends.</li>
+        <li>If there is exactly one, check the push is single and minimal, and the script is at or under 83 bytes.</li>
+        <li>Check the version byte, then the opcode byte.</li>
+        <li>Decode the payload for that opcode. A payload of the wrong length is bad grammar for that opcode.</li>
+        <li>Apply the opcode rules. A marker that decodes but fails a rule records an invalid event and creates
+          nothing.</li>
+      </ol>
+      <p>An unmarked transaction is not an error. Most transactions that spend a carrier carry no marker at all,
+        and the default rule handles them.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

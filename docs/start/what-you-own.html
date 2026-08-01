@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What you actually own | PATINA docs</title>
+<meta name="description" content="A PATINA artifact is an id derived from your reveal, a carrier outpoint you control, an endowment in your own bitcoin, and a permanent list of rings.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="start/what-you-own.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>What you actually own</h1>
+      <p class="lede">Four things: an id, an outpoint, your own bitcoin, and a history. Nothing else is implied.</p>
+
+      <h2>1. An artifact id</h2>
+      <p>The id is a hash of your reveal transaction and the carrier output index. It never changes, even when the
+        artifact moves to a new carrier.</p>
+      <pre data-label="Derivation"><code>artifact_id = SHA256("PTNA/artifact" || reveal_txid_wire(32) || carrier_vout_le(4))</code></pre>
+      <p>It is not a serial number and it is not sequential. Nobody assigned it. Anyone with your reveal
+        transaction can recompute it and get the same 32 bytes. Worked example with real hex on
+        <a href="../protocol/identity.html">Identity and derivations</a>.</p>
+
+      <h2>2. A carrier outpoint</h2>
+      <p>The artifact points at one unspent output, written <code>txid:vout</code>. That output belongs to your
+        wallet in the ordinary Bitcoin sense: your key signs for it, nobody else can move it, and no protocol rule
+        can freeze it.</p>
+      <p>The carrier is what carries the depth. Everything the artifact claims about time is a statement about that
+        one outpoint staying unspent.</p>
+      <div class="note">
+        <span class="lbl">The carrier can change</span>
+        <p>When you spend a carrier, the artifact follows the money to a successor output and the new output
+          becomes the carrier. The id stays the same. The depth starts again from zero. See
+          <a href="../protocol/keep-rules.html">KEEP and the default rule</a>.</p>
+      </div>
+
+      <h2>3. An endowment, in your own coins</h2>
+      <p>The value sitting in the carrier is the endowment. For a founding Seal it is at least 100000 sats.</p>
+      <ul>
+        <li>You own it before minting, during, and after.</li>
+        <li>You can spend it whenever you like, without asking anything.</li>
+        <li>Spending it closes the current stretch, engraves a ring, and starts a new stretch at zero, or ends the
+          artifact if no output qualifies as a successor.</li>
+      </ul>
+      <p>There is no yield on it. There is no lending of it. There is no wrapper contract. It is bitcoin in an
+        output you control, and the protocol only ever reads it.</p>
+
+      <h2>4. A permanent history of rings</h2>
+      <p>Each time a stretch ends, a ring is appended to the artifact record:</p>
+      <div class="tablewrap">
+        <table>
+          <caption>Ring fields, from the baseline state model.</caption>
+          <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>index</code></td><td>Position in the artifact's ring list, starting at zero</td></tr>
+            <tr><td><code>start_height</code></td><td>Height of the block that created the carrier</td></tr>
+            <tr><td><code>end_height</code></td><td>Height of the block that spent it</td></tr>
+            <tr><td><code>depth</code></td><td><code>end_height - start_height</code></td></tr>
+            <tr><td><code>carried_value</code></td><td>Sats held in the carrier during that stretch</td></tr>
+            <tr><td><code>successor_txid</code>, <code>successor_vout</code></td><td>Where the artifact went, or null</td></tr>
+            <tr><td><code>relic</code></td><td>True when this ring is the last one and the artifact ended</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Rings are the part that survives selling, spending, and mistakes. A 30000 block ring you closed by
+        accident is still a 30000 block ring forever. Detail on <a href="../protocol/rings.html">Rings</a>.</p>
+
+      <h2>What you do not own</h2>
+      <ul>
+        <li><strong>No claim on anyone.</strong> There is no issuer, no redemption, no revenue share, and no
+          promise to buy anything back.</li>
+        <li><strong>No governance.</strong> Holding artifacts does not vote on anything.</li>
+        <li><strong>No account.</strong> There is no login, no profile, and no server that holds your artifact. If
+          every indexer in the world went offline, your carrier output and your rings would still be derivable from
+          the Bitcoin blockchain.</li>
+        <li><strong>No guaranteed picture.</strong> A render is a view of the state, published by whoever published
+          it. The state is the artifact. See the <a href="../creator/render-rules.html">render rules</a>.</li>
+      </ul>
+
+      <h2>Ownership and custody are the same question</h2>
+      <p>Because the artifact lives on an outpoint, whoever can spend that outpoint controls the artifact. Give
+        away the key and you have given away the artifact. Put the carrier on an exchange and the exchange controls
+        it, and will almost certainly spend it into a hot wallet, which resets depth.</p>
+      <p>The practical rule: keep the carrier in a wallet you control, on a device you control, and do not let
+        coin control tools sweep it. <a href="../using/depth-resets.html">What resets depth</a> lists every way it
+        happens by accident.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

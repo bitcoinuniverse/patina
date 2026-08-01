@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timeline | PATINA docs</title>
+<meta name="description" content="The PATINA launch timeline measured in block heights: announcement, window open, the 144 block wait, window close, grace period, and the first thirty days.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="launch/timeline.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Timeline</h1>
+      <p class="lede">Measured in blocks, because blocks are what the protocol reads. Days are estimates at ten
+        minutes per block and nothing depends on them.</p>
+
+      <div class="note">
+        <span class="lbl">Heights, not dates</span>
+        <p>Every milestone below is relative to <code>h_open</code>, the height the founding window opens. Publish
+          heights and let people convert. A published date will drift and then look like a broken promise.</p>
+      </div>
+
+      <h2>Before the window</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Preparation, with nominal lead times.</caption>
+          <thead><tr><th>When</th><th>What happens</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>About 2016 blocks before open, roughly 14 days</td>
+              <td>Announce. Publish <code>h_open</code>, <code>h_close</code>, <code>grace_end</code>,
+                <code>spec_sha256</code>, this documentation, and the golden vectors. State the limits in the
+                announcement itself.</td>
+            </tr>
+            <tr>
+              <td>About 1008 blocks before, roughly 7 days</td>
+              <td>Publish the signet rehearsal results and the state root agreement between two implementations.
+                Anyone who wants to build their own indexer now has a week and a target.</td>
+            </tr>
+            <tr>
+              <td>About 288 blocks before, roughly 2 days</td>
+              <td>Publish a plain reminder that a commit must age 144 blocks before its reveal, so the practical
+                deadline for committing is a day earlier than people assume.</td>
+            </tr>
+            <tr>
+              <td>Final block before open</td>
+              <td>Confirm both indexers are synced, alerts are live, and the on call rota starts.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The window</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>From open to close, 4032 blocks, nominally 28 days.</caption>
+          <thead><tr><th>Height</th><th>Milestone</th><th>What to do</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>h_open</code></td>
+              <td>Founding commits are accepted</td>
+              <td>Nothing is created yet. The first valid reveal cannot land before <code>h_open + 144</code>.</td>
+            </tr>
+            <tr>
+              <td><code>h_open + 144</code></td>
+              <td>The earliest possible founding artifact</td>
+              <td>Watch for the first reveals and for a spike in <code>SEED_COMMIT_TOO_YOUNG</code>, which means
+                people are miscounting.</td>
+            </tr>
+            <tr>
+              <td><code>h_open + 1008</code></td>
+              <td>Roughly one week in</td>
+              <td>Publish the first concentration statistics from live data. Not a celebration post, a
+                measurement.</td>
+            </tr>
+            <tr>
+              <td><code>h_open + 2016</code></td>
+              <td>Halfway, one difficulty period</td>
+              <td>Publish the first census epoch summary. Re-run cross indexer verification.</td>
+            </tr>
+            <tr>
+              <td><code>h_close - 288</code></td>
+              <td>Two days of commits left</td>
+              <td>Remind people that a commit landing now still needs 144 blocks before the reveal.</td>
+            </tr>
+            <tr>
+              <td><code>h_close - 144</code></td>
+              <td>The last commits that can be revealed comfortably</td>
+              <td>State plainly that commits after this point are increasingly tight, and that
+                <code>h_close</code> is exclusive.</td>
+            </tr>
+            <tr>
+              <td><code>h_close</code></td>
+              <td>Founding commits stop being accepted</td>
+              <td>A commit confirming at exactly <code>h_close</code> is outside the window. Say so before, not
+                after.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The grace period</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>4032 blocks after close, nominally 28 more days.</caption>
+          <thead><tr><th>Height</th><th>Milestone</th></tr></thead>
+          <tbody>
+            <tr><td><code>h_close</code> to <code>grace_end</code></td><td>Reveals of commits made inside the window still produce founding artifacts</td></tr>
+            <tr><td><code>grace_end</code></td><td>The last height at which a reveal can be founding. This is <code>h_close + 4032</code>, inclusive.</td></tr>
+            <tr><td>After <code>grace_end</code></td><td>The founding cohort is closed permanently. Seeding continues with the 10000 sat minimum and <code>founding: false</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">Nothing reopens it</span>
+        <p>There is no extension, no second window, and no exception. Anyone who missed it minted a non founding
+          artifact, which is a real artifact with the same rules for depth and rings.</p>
+      </div>
+
+      <h2>The first thirty days after open</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Operational rhythm during the window.</caption>
+          <thead><tr><th>Period</th><th>Focus</th><th>Published</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>First 144 blocks, about a day</td>
+              <td>Watch invalid events closely. Nothing can be created yet, so anything appearing is a tooling
+                problem.</td>
+              <td>Nothing scheduled. Post only if something is wrong.</td>
+            </tr>
+            <tr>
+              <td>Blocks 144 to 1008, days 1 to 7</td>
+              <td>First artifacts. Verify a sample by hand against the chain. Confirm the artifact page matches
+                what an explorer shows.</td>
+              <td>First concentration snapshot, from live data</td>
+            </tr>
+            <tr>
+              <td>Blocks 1008 to 2016, days 7 to 14</td>
+              <td>The first Sheen tier crossings, 1008 blocks after each early carrier confirmed</td>
+              <td>An explanation of what a tier crossing does and does not mean</td>
+            </tr>
+            <tr>
+              <td>Blocks 2016 to 4032, days 14 to 28</td>
+              <td>Steady state. Cross indexer verification on a schedule.</td>
+              <td>Census epoch summaries as each 2016-block epoch closes</td>
+            </tr>
+            <tr>
+              <td>Throughout</td>
+              <td>Answer the wait question, the reset question, and the farming question, honestly, every
+                time</td>
+              <td>Corrections, promptly, if anything published turns out to be wrong</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What is deliberately absent</h2>
+      <ul>
+        <li>No launch countdown timer in hours and minutes. The countdown is a block count or it does not
+          exist.</li>
+        <li>No milestone celebrations tied to mint counts. A count is a measurement, not an achievement.</li>
+        <li>No scarcity messaging as the window closes. The window closing is a fact and it needs no adjectives.</li>
+        <li>No influencer allocations, no early access, no allowlist. There is nothing to allocate.</li>
+      </ul>
+
+      <h2>After the window</h2>
+      <p>Operations continue unchanged. Depth keeps accumulating, rings keep being engraved, and the census keeps
+        reporting per epoch. The interesting part of PATINA starts after the launch is over, which is the point of
+        building it this way.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/bitcoinuniverse/patina/main/schemas/invalid-event.schema.json",
+  "title": "PATINA invalid event",
+  "description": "A rejected protocol attempt. Invalid events never change artifact state and never contribute to a root. See patina-protocol.md section 14.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["height", "tx_index", "txid", "vout", "reason", "detail"],
+  "properties": {
+    "height": {
+      "description": "Height of the block that contained the attempt.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "tx_index": {
+      "description": "Index of the transaction inside the block.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "txid": {
+      "description": "Txid of the attempt, display order.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "vout": {
+      "description": "Output index the failure concerns, or null when it concerns no single output.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer",
+          "minimum": 0
+        }
+      ]
+    },
+    "reason": {
+      "description": "A code from the frozen registry.",
+      "type": "string",
+      "enum": [
+        "SEED_BAD_GRAMMAR",
+        "SEED_NO_COMMIT_INPUT",
+        "SEED_COMMITMENT_MISMATCH",
+        "SEED_COMMIT_TOO_YOUNG",
+        "SEED_CARRIER_OUT_OF_RANGE",
+        "SEED_CARRIER_IS_OPRETURN",
+        "SEED_CARRIER_BELOW_MIN",
+        "KEEP_BAD_GRAMMAR",
+        "KEEP_NO_CARRIER_INPUT",
+        "KEEP_ENTRY_NOT_CARRIER",
+        "KEEP_ENTRY_OUT_OF_RANGE",
+        "KEEP_ENTRY_IS_OPRETURN",
+        "KEEP_ENTRY_BELOW_MIN",
+        "KEEP_DUPLICATE_INPUT",
+        "VOID_DUPLICATE_MARKER",
+        "MARKER_UNKNOWN_OP",
+        "MARKER_UNKNOWN_VERSION",
+        "MARKER_TOO_LARGE"
+      ]
+    },
+    "detail": {
+      "description": "Free text for a human reader. Never parse this.",
+      "type": "string"
+    }
+  }
+}

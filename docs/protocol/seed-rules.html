@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEED rules | PATINA docs</title>
+<meta name="description" content="The six checks a PATINA SEED transaction must pass, in order, with the reason code emitted when each one fails.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/seed-rules.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>SEED rules</h1>
+      <p class="lede">Six checks, applied in block order, in this order. A transaction that fails any of them
+        records an invalid event and creates nothing.</p>
+
+      <h2>The six checks</h2>
+      <ol class="steps">
+        <li>
+          <h3>The marker decodes as SEED with a well formed payload</h3>
+          <p>Single minimal push, magic, version <code>0x01</code>, op <code>0x01</code>, and exactly 18 payload
+            bytes laid out as <code>salt(16) | flags(1) | carrier_vout(1)</code>.</p>
+          <p>Failure: <code>SEED_BAD_GRAMMAR</code>.</p>
+        </li>
+        <li>
+          <h3>carrier_vout is in range and is not an OP_RETURN</h3>
+          <p>The index must name an output that exists in this transaction, and that output must not be a data
+            output.</p>
+          <p>Failure: <code>SEED_CARRIER_OUT_OF_RANGE</code> or <code>SEED_CARRIER_IS_OPRETURN</code>.</p>
+        </li>
+        <li>
+          <h3>Exactly one input reveals a qualifying commit leaf</h3>
+          <p>The input must be a Taproot script path spend whose revealed leaf is exactly:</p>
+          <pre data-label="Required leaf"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code></pre>
+          <p>The commitment in the leaf must equal
+            <code>SHA256("PTNA/commit" || claimant_xonly || salt)</code>, using the claimant key from the leaf and
+            the salt from the SEED payload.</p>
+          <p>Failure: <code>SEED_NO_COMMIT_INPUT</code> when no input reveals such a leaf, or
+            <code>SEED_COMMITMENT_MISMATCH</code> when a leaf is present but the recomputed commitment differs.</p>
+        </li>
+        <li>
+          <h3>The commit output is old enough</h3>
+          <pre data-label="Age check"><code>reveal_height - commit_output_height &gt;= 144</code></pre>
+          <p><code>commit_output_height</code> is the height of the block that <em>created</em> the commit output,
+            not the height it was spent. The comparison is inclusive: exactly 144 passes.</p>
+          <p>Failure: <code>SEED_COMMIT_TOO_YOUNG</code>.</p>
+        </li>
+        <li>
+          <h3>The carrier value clears the minimum</h3>
+          <p>At least 100000 sats if the artifact would be founding, otherwise at least 10000 sats.</p>
+          <p>Failure: <code>SEED_CARRIER_BELOW_MIN</code>.</p>
+        </li>
+        <li>
+          <h3>Founding status is decided</h3>
+          <pre data-label="Founding test"><code>founding = (H_open &lt;= commit_output_height &lt; H_close)
+        and (reveal_height &lt;= H_close + 4032)</code></pre>
+          <p>This is not a pass or fail check. It sets a flag on the artifact. An artifact that misses the window
+            is still created, as long as it clears the open minimum of 10000 sats.</p>
+        </li>
+      </ol>
+
+      <h2>Order matters</h2>
+      <p>Two implementations that apply the same checks in a different order can emit different reason codes for
+        the same transaction. The state they produce is identical, because a failure at any step creates nothing,
+        but the recorded reason will differ and that shows up as a state root mismatch when invalid events are part
+        of the snapshot.</p>
+      <p>Apply them in the order above. When you disagree with another implementation about a reason code, that is
+        a real disagreement worth reporting. See
+        <a href="../compat/disagreements.html">Report a disagreement</a>.</p>
+
+      <h2>Founding, in detail</h2>
+      <p>The window is defined by two heights in the deployment record: <code>h_open</code> and
+        <code>h_close</code>, with <code>h_close = h_open + 4032</code>. The grace period runs a further 4032
+        blocks after that.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>What decides founding status, and what does not.</caption>
+          <thead><tr><th>Fact</th><th>Effect on founding</th></tr></thead>
+          <tbody>
+            <tr><td>Commit output confirmed at or after <code>h_open</code> and before <code>h_close</code></td><td>Required</td></tr>
+            <tr><td>Reveal confirmed at or before <code>h_close + 4032</code></td><td>Required</td></tr>
+            <tr><td>How early inside the window the commit landed</td><td>None. There is no rank.</td></tr>
+            <tr><td>How large the carrier is above 100000 sats</td><td>None</td></tr>
+            <tr><td>The fee paid</td><td>None</td></tr>
+            <tr><td>Reveal confirmed after the grace period</td><td>Not founding. Still an artifact if it clears 10000 sats.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">Boundary arithmetic</span>
+        <p><code>h_open</code> is inclusive and <code>h_close</code> is exclusive. A commit output confirmed
+          exactly at <code>h_close</code> is outside the window. If you are committing near the edge, assume you are
+          one block off and commit earlier.</p>
+      </div>
+
+      <h2>Worked example</h2>
+      <p>Take a deployment with <code>h_open = 880000</code>, so <code>h_close = 884032</code> and the grace period
+        ends at <code>888064</code>.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>Five reveals against the same window.</caption>
+          <thead><tr><th>Commit height</th><th>Reveal height</th><th>Age</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>879999</td><td>880200</td><td>201</td><td>Artifact created, <code>founding: false</code>. The commit was one block early.</td></tr>
+            <tr><td>880000</td><td>880144</td><td>144</td><td>Artifact created, <code>founding: true</code>. The age check passes at exactly 144.</td></tr>
+            <tr><td>880000</td><td>880143</td><td>143</td><td>Nothing created. <code>SEED_COMMIT_TOO_YOUNG</code>.</td></tr>
+            <tr><td>884031</td><td>888064</td><td>4033</td><td>Artifact created, <code>founding: true</code>. Last commit height and last reveal height that both qualify.</td></tr>
+            <tr><td>884031</td><td>888065</td><td>4034</td><td>Artifact created, <code>founding: false</code>. One block past the grace period.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What a failure costs</h2>
+      <ul>
+        <li>The commit output is spent, because the reveal was a valid Bitcoin transaction whatever the protocol
+          thought of it.</li>
+        <li>The coins are in the outputs your reveal created, and they are still yours.</li>
+        <li>The fees are gone.</li>
+        <li>The claim is gone. Retrying means a new salt, a new commit, and a new 144 block wait.</li>
+      </ul>
+      <p>Every failure is visible through <code>GET /patina/invalid-events</code> with its reason code, so you
+        never have to guess which check you missed.</p>
+
+      <h2>Bundling</h2>
+      <p>One transaction contains one marker, and a SEED marker names one carrier. So one transaction creates at
+        most one artifact. Creating several artifacts means several reveals, each spending its own aged commit.</p>
+      <p>Several artifacts can end up sharing a carrier later, through successor routing. That is a bundle, and it
+        is described on <a href="state-machine.html">State machine</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify it yourself, PATINA</title>
+<meta name="description" content="Read a PATINA artifact's depth off your own Bitcoin node, decode a marker by hand, recompute an artifact id, query an indexer, and cross check two indexers against each other. Real commands, no trust in us.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/verify.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Verify it yourself, PATINA">
+<meta property="og:description" content="Read depth off your own node, decode a marker by hand, recompute an artifact id, and cross check indexers. Copyable commands.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/verify.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section drawn as a technical diagram.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Verify it yourself, PATINA">
+<meta name="twitter:description" content="Read depth off your own node, decode a marker by hand, and cross check indexers. Copyable commands.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html" aria-current="page">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a href="faq.html">Questions</a></li>
+        <li><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <p class="eyebrow">No trust required</p>
+    <h1>Verify it yourself</h1>
+    <p class="lede">Depth is a subtraction between two block heights. Your own node already knows both. Everything below runs against bitcoind, and the indexer sections are optional.</p>
+    <p class="small faint">Commands are written for a POSIX shell with <code>jq</code> available. Angle brackets mark the parts you replace.</p>
+  </section>
+
+  <section class="wrap band" id="node">
+    <p class="eyebrow">Step one</p>
+    <h2>Read depth from any Bitcoin node</h2>
+    <div class="prose">
+      <p>An unspent output reports its confirmation count, and the block that created it counts as the first confirmation. So depth is confirmations minus one, with no index and no third party involved.</p>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>depth of a carrier</span><button type="button" class="btn btn-small" data-copy="cmd-depth" hidden>Copy</button></div>
+      <pre id="cmd-depth"><span class="cmt"># the whole check, in one line</span>
+bitcoin-cli gettxout &lt;txid&gt; &lt;vout&gt; true | jq '.confirmations - 1'
+
+<span class="cmt"># null output means the carrier has been spent
+# a spent outpoint has no depth, because the output no longer exists</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>depth, value and tier</span><button type="button" class="btn btn-small" data-copy="cmd-tier" hidden>Copy</button></div>
+      <pre id="cmd-tier"><span class="cmt">#!/bin/sh
+# usage: patina-depth &lt;txid&gt; &lt;vout&gt;</span>
+OUT=$(bitcoin-cli gettxout "$1" "$2" true)
+if [ -z "$OUT" ] || [ "$OUT" = "null" ]; then
+  echo "spent or unknown, depth is not defined for this outpoint"
+  exit 1
+fi
+
+DEPTH=$(( $(printf '%s' "$OUT" | jq -r '.confirmations') - 1 ))
+VALUE=$(printf '%s' "$OUT" | jq -r '.value')
+
+if   [ "$DEPTH" -ge 210000 ]; then TIER=Elder
+elif [ "$DEPTH" -ge 105120 ]; then TIER=Oxide
+elif [ "$DEPTH" -ge  52560 ]; then TIER=Bronze
+elif [ "$DEPTH" -ge  26280 ]; then TIER=Umber
+elif [ "$DEPTH" -ge  12960 ]; then TIER=Verdigris
+elif [ "$DEPTH" -ge   4032 ]; then TIER=Cast
+elif [ "$DEPTH" -ge   1008 ]; then TIER=Sheen
+else                               TIER=Raw
+fi
+
+echo "depth $DEPTH blocks"
+echo "tier  $TIER"
+echo "value $VALUE BTC"</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>the long way, if you prefer heights</span><button type="button" class="btn btn-small" data-copy="cmd-heights" hidden>Copy</button></div>
+      <pre id="cmd-heights"><span class="cmt"># needs -txindex, or the transaction has to be in your wallet</span>
+TIP=$(bitcoin-cli getblockcount)
+BLOCKHASH=$(bitcoin-cli getrawtransaction &lt;txid&gt; true | jq -r '.blockhash')
+BIRTH=$(bitcoin-cli getblockheader "$BLOCKHASH" | jq -r '.height')
+echo $(( TIP - BIRTH ))</pre>
+    </div>
+
+    <div class="note">
+      <p class="note-title">What this proves</p>
+      <p>That the outpoint has not moved since the height you just computed. It does not prove who holds the key, and it does not prove the same person held it the whole time. For liveness of the key, ask the holder for a signed attestation, below.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="marker">
+    <p class="eyebrow">Step two</p>
+    <h2>Read the marker with your own eyes</h2>
+    <div class="prose">
+      <p>Pull the OP_RETURN outputs out of a reveal transaction and check the bytes against the layout on the <a href="protocol.html#marker">protocol page</a>.</p>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>find the marker script</span><button type="button" class="btn btn-small" data-copy="cmd-marker" hidden>Copy</button></div>
+      <pre id="cmd-marker">bitcoin-cli getrawtransaction &lt;reveal_txid&gt; true \
+  | jq -r '.vout[] | select(.scriptPubKey.type == "nulldata")
+           | "vout \(.n)  \(.scriptPubKey.hex)"'
+
+<span class="cmt"># the marker is the lowest vout whose push starts with 50544e41
+# if two outputs both start with 50544e41 the marker is void</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>split a SEED marker into fields</span><button type="button" class="btn btn-small" data-copy="cmd-fields" hidden>Copy</button></div>
+      <pre id="cmd-fields">HEX=6a1850544e4101013f8a1c5d9e04b7226ce14093aa57db080000
+
+printf '%s' "$HEX" | cut -c1-2    <span class="cmt"># 6a        OP_RETURN</span>
+printf '%s' "$HEX" | cut -c3-4    <span class="cmt"># 18        push 24 bytes</span>
+printf '%s' "$HEX" | cut -c5-12   <span class="cmt"># 50544e41  PTNA</span>
+printf '%s' "$HEX" | cut -c13-14  <span class="cmt"># 01        version</span>
+printf '%s' "$HEX" | cut -c15-16  <span class="cmt"># 01        SEED</span>
+printf '%s' "$HEX" | cut -c17-48  <span class="cmt">#           16 byte salt</span>
+printf '%s' "$HEX" | cut -c49-50  <span class="cmt"># 00        flags</span>
+printf '%s' "$HEX" | cut -c51-52  <span class="cmt"># 00        carrier vout</span>
+
+<span class="cmt"># the hex above is the worked example from the protocol page,
+# not a marker from any real transaction</span></pre>
+    </div>
+  </section>
+
+  <section class="wrap band" id="ids">
+    <p class="eyebrow">Step three</p>
+    <h2>Recompute the identifiers</h2>
+    <div class="prose">
+      <p>Both derivations are a single SHA-256 over an ASCII tag and some bytes. If an indexer tells you an artifact id, you can check it without asking anyone.</p>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>artifact id</span><button type="button" class="btn btn-small" data-copy="cmd-artifact-id" hidden>Copy</button></div>
+      <pre id="cmd-artifact-id">TXID=&lt;reveal txid as your explorer shows it, 64 hex characters&gt;
+VOUT=&lt;carrier vout, decimal&gt;
+
+<span class="cmt"># txid in internal byte order, which is the display order reversed</span>
+WIRE=$(printf '%s' "$TXID" | fold -w2 | tac | tr -d '\n')
+
+<span class="cmt"># carrier vout as four little endian bytes</span>
+VOUTLE=$(printf '%08x' "$VOUT" | fold -w2 | tac | tr -d '\n')
+
+{ printf 'PTNA/artifact'; printf '%s%s' "$WIRE" "$VOUTLE" | xxd -r -p; } | sha256sum
+
+<span class="cmt"># on macOS, replace tac with "tail -r" and sha256sum with "shasum -a 256"</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>commit commitment</span><button type="button" class="btn btn-small" data-copy="cmd-commitment" hidden>Copy</button></div>
+      <pre id="cmd-commitment">XONLY=&lt;claimant x only public key, 64 hex characters&gt;
+SALT=&lt;the 16 byte salt from the SEED payload, 32 hex characters&gt;
+
+{ printf 'PTNA/commit'; printf '%s%s' "$XONLY" "$SALT" | xxd -r -p; } | sha256sum
+
+<span class="cmt"># the result must equal the 32 bytes pushed inside the OP_IF envelope
+# of the tapscript leaf that the reveal transaction spent</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>attestation message</span><button type="button" class="btn btn-small" data-copy="cmd-attest" hidden>Copy</button></div>
+      <pre id="cmd-attest"><span class="cmt"># build the exact string the holder has to sign with BIP-322</span>
+printf 'PTNA/attest%s%s' &lt;artifact_id_hex&gt; &lt;block_hash_hex&gt;
+
+<span class="cmt"># pick a recent block hash yourself, so an old signature cannot be replayed
+# a valid signature over this string, from the key behind the carrier,
+# tells you the key is alive right now
+# it still does not tell you who has been holding it</span></pre>
+    </div>
+  </section>
+
+  <section class="wrap band" id="indexer">
+    <p class="eyebrow">Step four, optional</p>
+    <h2>Ask an indexer, then check its answer</h2>
+    <div class="prose">
+      <p>An indexer is a convenience, not an authority. Use it to find things quickly, then confirm the parts that matter against your own node.</p>
+      <p>The commands below use one shell variable. Set it to the base URL of the indexer you trust, which for the indexer this site is configured against is:</p>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>set the base URL</span><button type="button" class="btn btn-small" data-copy="cmd-export" hidden>Copy</button></div>
+      <pre id="cmd-export">export PATINA_API="<span data-config="indexerBase" data-config-fallback="apiBasePlaceholder">https://your-indexer.example.org</span>"</pre>
+    </div>
+    <p class="small faint">If that line shows an example host, this site has no indexer configured. The base path is fixed by the indexer API contract in the specification, so any conforming indexer answers the same routes.</p>
+
+    <div class="code">
+      <div class="code-head"><span>identity and sync state</span><button type="button" class="btn btn-small" data-copy="cmd-status" hidden>Copy</button></div>
+      <pre id="cmd-status">curl -s "$PATINA_API/status" | jq '{network, protocol_id, spec_sha256,
+                                   tip_height, indexed_height, synced,
+                                   parser_version, indexer_version}'
+
+<span class="cmt"># check spec_sha256 against the hash of the specification you read
+# check tip_height against your own node: bitcoin-cli getblockcount</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>one artifact, one carrier, one address</span><button type="button" class="btn btn-small" data-copy="cmd-lookup" hidden>Copy</button></div>
+      <pre id="cmd-lookup">curl -s "$PATINA_API/artifacts/&lt;artifact_id&gt;" \
+  | jq '{status, founding, depth, tier, tier_name,
+         next_tier, blocks_to_next_tier, carrier, rings}'
+
+curl -s "$PATINA_API/carriers/&lt;txid&gt;/&lt;vout&gt;" | jq
+
+curl -s "$PATINA_API/addresses/&lt;address&gt;/holdings" | jq
+
+<span class="cmt"># now confirm the depth it reported, with your own node:
+# bitcoin-cli gettxout &lt;txid&gt; &lt;vout&gt; true | jq '.confirmations - 1'</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>before you spend anything</span><button type="button" class="btn btn-small" data-copy="cmd-safety" hidden>Copy</button></div>
+      <pre id="cmd-safety">curl -s -X POST "$PATINA_API/safety/outpoints" \
+  -H 'content-type: application/json' \
+  -d '{"outpoints":["&lt;txid&gt;:&lt;vout&gt;"]}' | jq
+
+<span class="cmt"># tells you whether an outpoint is a carrier or a commit before a wallet
+# picks it as an ordinary coin and resets something by accident
+# the endpoint stores nothing</span></pre>
+    </div>
+  </section>
+
+  <section class="wrap band" id="run">
+    <p class="eyebrow">Step five, optional</p>
+    <h2>Run the indexer yourself</h2>
+    <div class="prose">
+      <p>The strongest position is your own index next to your own node. The indexer is a separate repository from the protocol library.</p>
+    </div>
+    <div class="code">
+      <div class="code-head"><span>clone it</span><button type="button" class="btn btn-small" data-copy="cmd-clone" hidden>Copy</button></div>
+      <pre id="cmd-clone">git clone https://github.com/bitcoinuniverse/index-patina
+cd index-patina
+
+<span class="cmt"># the README in that repository is the authoritative setup guide
+# it needs a Bitcoin node RPC endpoint and a deployment record for the
+# network you are indexing, and nothing else</span></pre>
+    </div>
+    <p class="small faint">We are not going to print configuration flags here that could drift out of date. The repository is the source of truth for how to run it.</p>
+  </section>
+
+  <section class="wrap band" id="compare">
+    <p class="eyebrow">Step six</p>
+    <h2>Compare two indexers against each other</h2>
+    <div class="prose">
+      <p>PATINA state is a pure function of the confirmed chain read in block order. Two honest indexers at the same indexed height must agree exactly. Disagreement means one of them is wrong, and that is worth knowing.</p>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>compare counters at the same height</span><button type="button" class="btn btn-small" data-copy="cmd-compare" hidden>Copy</button></div>
+      <pre id="cmd-compare">A=&lt;base URL of the first indexer&gt;
+B=&lt;base URL of the second indexer&gt;
+
+diff \
+  &lt;(curl -s "$A/status" | jq -S '{spec_sha256, indexed_height, counters}') \
+  &lt;(curl -s "$B/status" | jq -S '{spec_sha256, indexed_height, counters}')
+
+<span class="cmt"># if indexed_height differs, wait for the slower one and run it again
+# if spec_sha256 differs, they are not running the same specification
+# if the counters differ at the same height, one of them has a bug</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-head"><span>compare one artifact in detail</span><button type="button" class="btn btn-small" data-copy="cmd-compare-one" hidden>Copy</button></div>
+      <pre id="cmd-compare-one">ID=&lt;artifact_id&gt;
+
+diff \
+  &lt;(curl -s "$A/artifacts/$ID" | jq -S '{status, founding, carrier, rings}') \
+  &lt;(curl -s "$B/artifacts/$ID" | jq -S '{status, founding, carrier, rings}')
+
+<span class="cmt"># depth is deliberately left out of this comparison, because it is a
+# function of the tip and the two indexers may be at different tips</span></pre>
+    </div>
+
+    <div class="note note-warn">
+      <p class="note-title">About state roots</p>
+      <p>The specification defines a state root as a single SHA-256 over the tag <code>PTNA/state</code> and a canonical snapshot encoding, so two indexers holding the same state at the same height produce the same 32 bytes. The frozen API contract does not name a field that exposes it, so where an implementation publishes its root is up to that implementation. Check the indexer's own documentation. Until you find it, the counter comparison above is the check that works against any conforming indexer.</p>
+    </div>
+  </section>
+
+  <section class="wrap band">
+    <h2>If the answers disagree</h2>
+    <div class="prose">
+      <p>Trust your node over any indexer, and trust an indexer you run over one somebody else runs. If an indexer's depth does not match <code>gettxout</code>, the indexer is wrong. Please open an issue on the <a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">indexer repository</a> with the outpoint and both answers.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

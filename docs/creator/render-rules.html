@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rules that keep renders honest | PATINA docs</title>
+<meta name="description" content="What a PATINA render must always show, what it must never invent, and how to test a render for honesty rather than beauty.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="creator/render-rules.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Rules that keep renders honest</h1>
+      <p class="lede">A render is the part of this system most people will actually see. It is also the easiest
+        place to lie.</p>
+
+      <h2>Always show</h2>
+      <ol>
+        <li><strong>The height</strong> the numbers were read at. Depth changes every block.</li>
+        <li><strong>The live tier</strong>, even when it is Raw. Especially when it is Raw.</li>
+        <li><strong>The live depth in blocks</strong>, exactly, without rounding.</li>
+        <li><strong>Relic status</strong>, when the artifact has ended.</li>
+        <li><strong>Rings as history</strong>, visually separate from the live state.</li>
+      </ol>
+
+      <h2>Never do</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Each of these has been done by somebody, somewhere, and each one is a lie.</caption>
+          <thead><tr><th>Never</th><th>Because</th></tr></thead>
+          <tbody>
+            <tr><td>Show the deepest ring where the live tier belongs</td><td>It presents past depth as present depth</td></tr>
+            <tr><td>Sum rings into a lifetime total</td><td>Stretches do not concatenate. The protocol computes no such number.</td></tr>
+            <tr><td>Show a countdown that is not a real block count</td><td>Fake urgency. The only real countdowns are blocks to the next tier and blocks left in the window.</td></tr>
+            <tr><td>Show a supply cap, a mint count out of a total, or a sold out state</td><td>There is no cap and there is no total</td></tr>
+            <tr><td>Show a price, a floor, an estimate, or a return</td><td>The protocol has no price and makes no claims about value</td></tr>
+            <tr><td>Show a rank among holders</td><td>Depth is not a competition and the protocol assigns no ranks</td></tr>
+            <tr><td>Invent rarity, scores, or traits not derived from published state</td><td>It is decoration presented as data</td></tr>
+            <tr><td>Animate depth increasing between blocks</td><td>Depth is an integer that changes when a block arrives, not a smooth line</td></tr>
+            <tr><td>Hide a reset, or draw it as damage</td><td>A reset is a holder spending their own coins</td></tr>
+            <tr><td>Imply a holder identity or continuity of ownership</td><td>The chain cannot show that. See <a href="../start/limits.html">What it does not promise</a>.</td></tr>
+            <tr><td>Render zero when the data could not be read</td><td>Zero is a measurement. Unknown is not.</td></tr>
+            <tr><td>Fetch anything at render time</td><td>It breaks determinism and cannot be verified offline</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Empty states</h2>
+      <p>When state cannot be read, the render must say so and stop. Options that are acceptable: a plain frame
+        with the words that the data could not be read, or nothing at all. Options that are not acceptable: a
+        default artifact, a placeholder tier, a spinner that never resolves, or last known values without their
+        height.</p>
+      <div class="note">
+        <span class="lbl">The test</span>
+        <p>Ask what a viewer would believe if they saw only your render, with no other context. If any part of that
+          belief is not supported by the protocol state you were given, the render is lying, however small the
+          detail is.</p>
+      </div>
+
+      <h2>Share cards deserve extra care</h2>
+      <p>A share card escapes its context immediately. It gets screenshotted, reposted, and read months later.</p>
+      <ul>
+        <li>Print the height and the artifact id, so anyone can check it against an indexer.</li>
+        <li>Never print anything that will become false as blocks pass, unless the height is next to it.</li>
+        <li>Do not print an achievement framing. "Unmoved for 26280 blocks as of height 906280" is a fact.
+          Anything congratulatory is an interpretation.</li>
+        <li>Assume the card will be seen by someone who has never heard of PATINA. Facts survive that. Vibes do
+          not.</li>
+      </ul>
+
+      <h2>Accessibility is part of honesty</h2>
+      <p>A render that only conveys tier through colour hides its meaning from some readers.</p>
+      <ol>
+        <li>Never carry meaning by colour alone. Pair it with shape, texture, or a label.</li>
+        <li>Text passes AA contrast against its actual background.</li>
+        <li>Every meaningful element has a text alternative carrying the same facts.</li>
+        <li>Animation is optional and respects reduced motion.</li>
+        <li>The static form is complete on its own.</li>
+      </ol>
+
+      <h2>Self check</h2>
+      <ol>
+        <li>Render an artifact that was Elder and is now Raw. Does the picture make the reset obvious?</li>
+        <li>Render a relic. Would somebody know the artifact has ended?</li>
+        <li>Remove the state and render. Does it show an honest empty state, or a default that looks real?</li>
+        <li>Show the card to someone unfamiliar with the protocol. Ask what they think it says. Any belief they
+          form that the state does not support is a bug in the render.</li>
+        <li>Read every word on the card out loud. Delete any that a competitor could paste onto their own product
+          without changing.</li>
+      </ol>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

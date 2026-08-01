@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KEEP and the default rule | PATINA docs</title>
+<meta name="description" content="How PATINA chooses the successor output when a carrier is spent: a valid KEEP entry first, then the default rule, then relic.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/keep-rules.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>KEEP and the default rule</h1>
+      <p class="lede">When a carrier is spent, the artifact has to go somewhere. Three rules decide, in this
+        order.</p>
+
+      <h2>The decision, in order</h2>
+      <ol>
+        <li>If a <strong>valid KEEP entry</strong> names the input that spent this carrier, the artifact follows the
+          vout that entry names.</li>
+        <li>Otherwise the <strong>default rule</strong>: the lowest index output that is not an OP_RETURN and holds
+          at least 10000 sats.</li>
+        <li>If neither yields an eligible output, the artifact becomes a <strong>RELIC</strong>. That is
+          terminal.</li>
+      </ol>
+      <p>In every case the stretch ends and a ring is engraved. The rules decide where the artifact continues, not
+        whether depth resets. Depth always resets.</p>
+
+      <h2>KEEP entries</h2>
+      <p>A KEEP marker carries 1 to 8 entries, each two bytes: <code>input_index</code> then <code>vout</code>. The
+        grammar and byte layout are on <a href="marker-grammar.html">Marker grammar</a>.</p>
+      <pre data-label="One entry: input 0 keeps vout 2"><code>scriptPubKey  11 bytes  6a0950544e410102010002</code></pre>
+
+      <h3>When an entry is void</h3>
+      <div class="tablewrap">
+        <table>
+          <caption>Each condition voids the entry and falls through to the default rule.</caption>
+          <thead><tr><th>Condition</th><th>Reason code</th></tr></thead>
+          <tbody>
+            <tr><td>The named input does not spend a carrier</td><td><code>KEEP_ENTRY_NOT_CARRIER</code></td></tr>
+            <tr><td>The named vout does not exist in this transaction</td><td><code>KEEP_ENTRY_OUT_OF_RANGE</code></td></tr>
+            <tr><td>The named vout is an OP_RETURN</td><td><code>KEEP_ENTRY_IS_OPRETURN</code></td></tr>
+            <tr><td>The named vout holds less than 10000 sats</td><td><code>KEEP_ENTRY_BELOW_MIN</code></td></tr>
+            <tr><td>Two entries name the same input</td><td><code>KEEP_DUPLICATE_INPUT</code></td></tr>
+            <tr><td>The marker has no carrier spending input at all</td><td><code>KEEP_NO_CARRIER_INPUT</code></td></tr>
+            <tr><td>count is zero, above 8, or the payload length does not match count</td><td><code>KEEP_BAD_GRAMMAR</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <span class="lbl">Void is not fatal</span>
+        <p>A void entry does not destroy the artifact and does not invalidate the transaction. It is ignored, and
+          the default rule takes over for that carrier. The invalid event is recorded so you can see what
+          happened, which matters when the default rule sends the artifact somewhere you did not intend.</p>
+      </div>
+
+      <h3>Entries are per input</h3>
+      <p>One entry routes one input. If a transaction spends three carriers, you need three entries to route all
+        three. Entries that name inputs which are not carriers are void, so you cannot use KEEP to route something
+        that was not there.</p>
+      <p>One input can name only one vout, which is why a bundle of artifacts sharing a carrier cannot be split by
+        a single transaction. See <a href="state-machine.html">State machine</a>.</p>
+
+      <h2>The default rule</h2>
+      <pre data-label="Default rule"><code>successor = first output, in ascending vout order, where
+              output is not an OP_RETURN
+              and output value &gt;= 10000 sats</code></pre>
+      <p>Three properties worth being explicit about:</p>
+      <ul>
+        <li>It looks at <strong>outputs of the spending transaction</strong> only. It never reaches into other
+          transactions.</li>
+        <li>It does not care who owns the output. An artifact will happily follow money to a stranger.</li>
+        <li>It is deterministic. Given the transaction, every implementation picks the same output.</li>
+      </ul>
+
+      <h3>Why the default sends artifacts where you did not want</h3>
+      <p>The lowest index output is usually the payment, not the change. If you spend a carrier to pay somebody and
+        take change at vout 1, the artifact goes to the payee at vout 0. This is the most common accidental loss
+        after a plain sweep.</p>
+      <p>Fix: put a KEEP marker in the transaction, or structure the transaction so the output you want is the
+        lowest eligible one.</p>
+
+      <h2>Worked examples</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Same carrier spend, five different transactions.</caption>
+          <thead><tr><th>Outputs</th><th>Marker</th><th>Successor</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>vout 0: 50000 sats<br>vout 1: 120000 sats</td>
+              <td>none</td>
+              <td>vout 0</td>
+              <td>Lowest index at or above 10000</td>
+            </tr>
+            <tr>
+              <td>vout 0: 50000 sats<br>vout 1: 120000 sats</td>
+              <td>KEEP input 0 keeps vout 1</td>
+              <td>vout 1</td>
+              <td>Valid entry wins over the default</td>
+            </tr>
+            <tr>
+              <td>vout 0: OP_RETURN<br>vout 1: 9000 sats<br>vout 2: 300000 sats</td>
+              <td>none</td>
+              <td>vout 2</td>
+              <td>vout 0 is data, vout 1 is under the minimum</td>
+            </tr>
+            <tr>
+              <td>vout 0: 40000 sats<br>vout 1: 9000 sats</td>
+              <td>KEEP input 0 keeps vout 1</td>
+              <td>vout 0</td>
+              <td>Entry void, <code>KEEP_ENTRY_BELOW_MIN</code>, default rule applies</td>
+            </tr>
+            <tr>
+              <td>vout 0: OP_RETURN<br>vout 1: 4000 sats</td>
+              <td>none</td>
+              <td>none</td>
+              <td>No eligible output. The artifact becomes a relic.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Fees are not an escape hatch</h2>
+      <p>Sats that go to the miner are not an output, so they can never be a successor. A transaction that sends
+        everything to fees leaves the artifact with nowhere to go, and the artifact becomes a relic.</p>
+
+      <h2>Checklist before spending a carrier</h2>
+      <ol>
+        <li>Do you know which artifacts this outpoint carries? Ask
+          <code>POST /patina/safety/outpoints</code>.</li>
+        <li>Which output do you want the artifact to land on?</li>
+        <li>Is that output at or above 10000 sats?</li>
+        <li>Is it the lowest eligible index? If not, add a KEEP entry.</li>
+        <li>Is there exactly one OP_RETURN starting with <code>PTNA</code> in the transaction?</li>
+        <li>After it confirms, check the artifact's <code>carrier</code> matches what you intended.</li>
+      </ol>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

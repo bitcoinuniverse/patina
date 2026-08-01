@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Firstlight Seals | PATINA docs</title>
+<meta name="description" content="The Firstlight Seals are the founding PATINA cohort: free to mint, one 4032 block window, each sealed over at least 100000 sats of the minter's own bitcoin.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="start/firstlight-seals.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Firstlight Seals</h1>
+      <p class="lede">The Firstlight Seals are the founding cohort of PATINA. They mint free, in one window, over
+        your own bitcoin.</p>
+
+      <h2>The four facts</h2>
+      <ol>
+        <li><strong>Free.</strong> There is no mint price. You pay Bitcoin transaction fees to miners and nothing to
+          the protocol, the team, or a treasury.</li>
+        <li><strong>One window.</strong> Founding commits are accepted for 4032 blocks, about 28 days. There is a
+          further 4032 block grace period to reveal a commit that was made inside the window.</li>
+        <li><strong>Endowed.</strong> The carrier output of a founding Seal must hold at least 100000 sats, which is
+          0.001 BTC. That bitcoin is yours the whole time. It is not sent anywhere.</li>
+        <li><strong>Unallocated.</strong> Zero team allocation, zero reserve, no cap on how many Seals exist, and no
+          advantage for being early inside the window.</li>
+      </ol>
+
+      <h2>What "free" costs</h2>
+      <p>Free means no protocol price. It does not mean zero outlay. Minting a Seal costs you:</p>
+      <ul>
+        <li>The mining fee for the commit transaction.</li>
+        <li>The mining fee for the reveal transaction, which is larger because it carries a witness and an
+          OP_RETURN.</li>
+        <li>At least 100000 sats locked into the carrier output, which stays yours but stops being convenient
+          spending money if you want depth to accumulate.</li>
+      </ul>
+      <p>That last line is the real cost, and it is deliberate. The only thing a Seal asks of you is that you leave
+        some bitcoin alone.</p>
+
+      <h2>The endowment stays yours</h2>
+      <p>People are used to mints where money leaves. This one does not.</p>
+      <div class="note">
+        <span class="lbl">Where the sats live</span>
+        <p>The 100000 sats sit in an output your wallet controls, on an address your wallet generated. No multisig,
+          no escrow, no protocol address. You can spend it in the next block if you want. Spending it ends the
+          current stretch and resets depth to zero, which is the entire cost of changing your mind.</p>
+      </div>
+      <p>The indexer reads the value of that output and reports it as <code>endowment_sats</code>. Nothing in the
+        protocol can move it, freeze it, or claim it.</p>
+
+      <h2>No race</h2>
+      <p>Mint sequence is not a rank. There is no low number to fight for, no allowlist, and no first hour bonus.
+        Two things follow from that:</p>
+      <ul>
+        <li>Committing on day 27 makes exactly the same kind of Seal as committing on day 1.</li>
+        <li>Fee bidding wars have nothing to win. A commit that confirms slowly is not disadvantaged, as long as
+          the commit output confirms inside the window and the reveal lands before the grace period ends.</li>
+      </ul>
+      <p>The only clock that matters afterwards is depth, and depth starts when your carrier output confirms.</p>
+
+      <h2>Why the commit has to age</h2>
+      <p>A claim is made in two transactions. First a commit output, then a reveal that spends it. The reveal is
+        only valid if the commit output is at least <strong>144 blocks old</strong>, about one day.</p>
+      <p>The aged commit closes the obvious attack. In a naive scheme, a bot watches the mempool, sees your reveal,
+        copies your payload, and pays a higher fee to land first. Here the reveal must spend <em>your</em> commit
+        output, and only your key can spend it. Copying the reveal produces a transaction that cannot be mined,
+        because it tries to spend an output the copier does not control.</p>
+      <p>The commit output is a Taproot output whose script path contains your key and a hash of your claim. The
+        exact shape, with verified bytes, is on <a href="../protocol/identity.html">Identity and derivations</a>.</p>
+
+      <h2>The window in numbers</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Founding window constants from the frozen baseline. Nominal days assume ten minutes per block.</caption>
+          <thead><tr><th>Constant</th><th>Value</th><th>Nominal time</th><th>What it controls</th></tr></thead>
+          <tbody>
+            <tr><td><code>WINDOW_LENGTH</code></td><td>4032 blocks</td><td>28 days</td><td>How long founding commits are accepted</td></tr>
+            <tr><td><code>GRACE_LENGTH</code></td><td>4032 blocks</td><td>28 days</td><td>Extra time to reveal a commit made in the window</td></tr>
+            <tr><td><code>COMMIT_MIN_AGE</code></td><td>144 blocks</td><td>24 hours</td><td>Minimum age of the commit output at reveal</td></tr>
+            <tr><td><code>MIN_CARRIER_FOUNDING</code></td><td>100000 sats</td><td>0.001 BTC</td><td>Smallest endowment for a founding Seal</td></tr>
+            <tr><td><code>MIN_CARRIER_OPEN</code></td><td>10000 sats</td><td>0.0001 BTC</td><td>Smallest endowment after the window closes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Founding status is decided by the height of the <em>commit output</em>, not the reveal. The precise test is
+        the sixth SEED check: founding is true when the commit output height is inside the window and the reveal
+        lands at or before the end of the grace period. See <a href="../protocol/seed-rules.html">SEED rules</a>.</p>
+
+      <h2>After the window closes</h2>
+      <p>PATINA does not end when the founding window ends. Anyone can keep seeding artifacts, with a lower
+        endowment floor of 10000 sats. Those artifacts are real, they accumulate depth and rings the same way, and
+        they are marked <code>founding: false</code>. The Firstlight Seals stay a closed set because nothing can
+        reopen the window, not because later artifacts are second class.</p>
+
+      <h2>Honest boundary</h2>
+      <div class="honest">
+        <span class="lbl">Founding membership can be farmed</span>
+        <p>Anyone with enough bitcoin can mint many Seals by committing many outputs. There is no identity check,
+          and there is no way to build one without breaking the part where nobody has to trust us.</p>
+        <p>Our answer is disclosure, not a filter. During the window the indexer publishes concentration
+          statistics from the same data everyone else can index. If one address ends up with a large share of the
+          cohort, that will be visible while it happens, not after.</p>
+      </div>
+      <p>Read the rest of the boundaries on <a href="limits.html">What it does not promise</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

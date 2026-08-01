@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="og-protocol-title">
+  <title id="og-protocol-title">PATINA protocol. A marker, a carrier output, and block arithmetic.</title>
+  <defs>
+    <pattern id="strata-proto" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1" fill="#ffffff" fill-opacity="0.028"/>
+    </pattern>
+    <mask id="og-kerf-proto">
+      <rect x="620" y="20" width="640" height="620" fill="#ffffff"/>
+      <path d="M940 315 L926 60 L954 60 Z" fill="#000000"/>
+    </mask>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0e1211"/>
+  <rect width="1200" height="630" fill="url(#strata-proto)"/>
+
+  <g mask="url(#og-kerf-proto)">
+    <g fill="none" stroke-width="2" stroke-opacity="0.75">
+      <circle cx="940" cy="315" r="235" stroke="#3f8f78" stroke-width="1.2"/>
+      <circle cx="940" cy="315" r="205" stroke="#3f9f8c"/>
+      <circle cx="940" cy="315" r="172" stroke="#58aa85"/>
+      <circle cx="940" cy="315" r="139" stroke="#74a069"/>
+      <circle cx="940" cy="315" r="106" stroke="#8f9455"/>
+      <circle cx="940" cy="315" r="73" stroke="#a89147"/>
+      <circle cx="940" cy="315" r="40" stroke="#c08a3c"/>
+    </g>
+    <g stroke="#3c4a45" stroke-width="1">
+      <path d="M705 315 L1175 315"/>
+      <path d="M940 80 L940 550"/>
+    </g>
+    <circle cx="940" cy="315" r="10" fill="#c39a58"/>
+  </g>
+
+  <g transform="translate(80,150) scale(1.28)" fill="none" stroke="#ece7dd" stroke-width="9" stroke-linecap="butt">
+    <g transform="translate(10,0)">
+      <path d="M0 80 L0 16 L22 16 A16 16 0 0 1 22 48 L0 48"/>
+      <g transform="translate(58,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+      <g transform="translate(122,0)">
+        <path d="M0 16 L44 16"/>
+        <path d="M22 16 L22 80"/>
+      </g>
+      <path d="M192 16 L192 80"/>
+      <path d="M218 80 L218 16 L258 80 L258 16"/>
+      <g transform="translate(278,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+    </g>
+  </g>
+
+  <text x="80" y="120" fill="#4fb094" font-family="ui-monospace, Consolas, monospace" font-size="20" letter-spacing="6">PROTOCOL</text>
+
+  <text x="80" y="350" fill="#ece7dd" font-family="Georgia, 'Times New Roman', serif" font-size="44">One marker. One carrier.</text>
+  <text x="80" y="404" fill="#ece7dd" font-family="Georgia, 'Times New Roman', serif" font-size="44">Subtract two heights.</text>
+  <text x="80" y="452" fill="#a8a89c" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="23">Reset on move is inherited from the UTXO model. Nothing has to enforce it.</text>
+
+  <path d="M80 520 L520 520" stroke="#3c4a45" stroke-width="1"/>
+  <text x="80" y="558" fill="#86887e" font-family="ui-monospace, Consolas, monospace" font-size="19" letter-spacing="2">50 54 4e 41 . marker magic PTNA</text>
+</svg>

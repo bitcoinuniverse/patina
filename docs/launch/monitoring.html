@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monitoring and incident response | PATINA docs</title>
+<meta name="description" content="Live signals to watch during the PATINA founding window, and the incident response table that says who does what.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="launch/monitoring.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Monitoring and incident response</h1>
+      <p class="lede">During the window, watch the things that mean somebody is losing money or trust. Ignore the
+        things that only look dramatic.</p>
+
+      <h2>Signals that matter</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Launch monitoring, in priority order.</caption>
+          <thead><tr><th>Signal</th><th>Source</th><th>Means</th><th>Response</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>State root disagreement between the two indexers</td>
+              <td>Scheduled comparison at a common height</td>
+              <td>Artifacts mean two different things</td>
+              <td>Highest priority. Publish immediately, bisect, follow <a href="../compat/disagreements.html">Report a disagreement</a>.</td>
+            </tr>
+            <tr>
+              <td>Spike in <code>SEED_COMMIT_TOO_YOUNG</code></td>
+              <td><code>GET /patina/invalid-events</code></td>
+              <td>People or a tool are miscounting the 144 block wait</td>
+              <td>Publish a plain restatement. Check whether our own planner is at fault.</td>
+            </tr>
+            <tr>
+              <td>Spike in <code>SEED_CARRIER_BELOW_MIN</code></td>
+              <td>Invalid events</td>
+              <td>Fees are coming out of the carrier somewhere</td>
+              <td>Check the planner immediately. This one is probably our bug.</td>
+            </tr>
+            <tr>
+              <td>Spike in <code>SEED_BAD_GRAMMAR</code></td>
+              <td>Invalid events</td>
+              <td>A builder is producing malformed markers</td>
+              <td>Identify the pattern from the raw scripts, then publish the correct bytes.</td>
+            </tr>
+            <tr>
+              <td>Any invalid event traced to our own tooling</td>
+              <td>Correlation with planner requests</td>
+              <td>We cost a user real fees</td>
+              <td>Disable the build helpers, fix, publish what happened and how many people it affected.</td>
+            </tr>
+            <tr>
+              <td>Sync gap growing</td>
+              <td><code>status</code></td>
+              <td>Answers are going stale</td>
+              <td>Fail readiness on the lagging instance. See <a href="../operator/incidents.html">Incident actions</a>.</td>
+            </tr>
+            <tr>
+              <td>Concentration climbing</td>
+              <td><code>GET /patina/stats</code></td>
+              <td>The founding cohort is being farmed</td>
+              <td>Publish it. This is a known limit, not an incident, and hiding it would be the actual failure.</td>
+            </tr>
+            <tr>
+              <td>Deep or frequent reorgs</td>
+              <td>Indexer reorg counter</td>
+              <td>Recent artifacts are unsettled</td>
+              <td>Label recent state as provisional. Do not hide it.</td>
+            </tr>
+            <tr>
+              <td>Error rate on the public API</td>
+              <td>Edge metrics</td>
+              <td>Readers cannot read</td>
+              <td>Scale or rate limit. Never serve numbers without their height.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Signals that look alarming and are not</h2>
+      <ul>
+        <li><strong>A slow mint rate.</strong> There is no target, no cap, and no race. A quiet day is not an
+          incident and must never be treated as one in public.</li>
+        <li><strong>An artifact resetting to Raw.</strong> Somebody spent their own coins.</li>
+        <li><strong>A relic appearing.</strong> Also somebody spending their own coins.</li>
+        <li><strong>A large single minter.</strong> Report it, do not react to it.</li>
+        <li><strong>503 during initial sync.</strong> That is readiness working correctly.</li>
+      </ul>
+
+      <h2>Incident response table</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Severity, first action, and who decides.</caption>
+          <thead><tr><th>Severity</th><th>Example</th><th>First action</th><th>Decision owner</th><th>Public update</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Critical</td>
+              <td>State disagreement, or our tooling causing user loss</td>
+              <td>Disable the affected lever, publish within the hour</td>
+              <td>Protocol owner, with a second approver</td>
+              <td>Immediately, then at every material change</td>
+            </tr>
+            <tr>
+              <td>High</td>
+              <td>Indexer badly behind, node unreachable, storage corruption</td>
+              <td>Fail readiness on the affected instance</td>
+              <td>On call operator</td>
+              <td>Within the hour if reads are affected</td>
+            </tr>
+            <tr>
+              <td>Medium</td>
+              <td>Invalid event spike caused by third party tooling</td>
+              <td>Read the transactions, identify the pattern</td>
+              <td>On call operator with documentation owner</td>
+              <td>A guidance post, not an incident notice</td>
+            </tr>
+            <tr>
+              <td>Low</td>
+              <td>Latency, single instance restart, cosmetic bug</td>
+              <td>Fix in the normal course</td>
+              <td>On call operator</td>
+              <td>In the regular update</td>
+            </tr>
+            <tr>
+              <td>Not an incident</td>
+              <td>Slow minting, concentration, resets, relics</td>
+              <td>Publish the measurement</td>
+              <td>Nobody. It is normal operation.</td>
+              <td>On the normal schedule</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>On call during the window</h2>
+      <ol>
+        <li>Someone awake for the first 144 blocks after <code>h_open</code>, which is about a day.</li>
+        <li>Named on call for the whole 4032 block window, with a documented handover.</li>
+        <li>Cross indexer verification at least daily, logged with heights and roots.</li>
+        <li>A second person able to approve a critical decision, because the critical actions require two.</li>
+        <li>The escalation path written down before the window opens, not improvised during it.</li>
+      </ol>
+
+      <h2>What gets published, always</h2>
+      <ul>
+        <li>Any state disagreement, while it is unresolved.</li>
+        <li>Any bug in our tooling that cost anyone fees, with the number of people affected.</li>
+        <li>Concentration statistics, on schedule, whatever they say.</li>
+        <li>Corrections to anything we published that turned out to be wrong.</li>
+      </ul>
+      <p>The rule is simple. If a fact would change how a reasonable person acts, publish it at the moment you know
+        it, not when it is convenient.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/bitcoinuniverse/patina/main/schemas/artifact.schema.json",
+  "title": "PATINA artifact record",
+  "description": "One artifact and its closed rings. See patina-protocol.md section 11.1. Satoshi values are decimal strings on the wire. Integers are also accepted so that an in process record validates without a serialization pass.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_id",
+    "birth_txid",
+    "birth_height",
+    "birth_vout",
+    "endowment_sats",
+    "founding",
+    "status",
+    "carrier",
+    "rings"
+  ],
+  "properties": {
+    "artifact_id": {
+      "description": "SHA-256 of the artifact derivation, lowercase hex.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "birth_txid": {
+      "description": "Txid of the SEED reveal, display order.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "birth_height": {
+      "description": "Height of the SEED reveal.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "birth_vout": {
+      "description": "Carrier output index at birth.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "endowment_sats": {
+      "description": "Carrier value at birth. Never changes.",
+      "$ref": "#/$defs/satoshis"
+    },
+    "founding": {
+      "description": "True when the founding window rules were met.",
+      "type": "boolean"
+    },
+    "status": {
+      "description": "ALIVE while the artifact still rests on a carrier, RELIC once it is terminal.",
+      "type": "string",
+      "enum": ["ALIVE", "RELIC"]
+    },
+    "carrier": {
+      "description": "The output the artifact rests on. Null for a relic.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["txid", "vout", "height", "value"],
+          "properties": {
+            "txid": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "vout": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "value": {
+              "$ref": "#/$defs/satoshis"
+            }
+          }
+        }
+      ]
+    },
+    "rings": {
+      "description": "Closed stretches, oldest first. Append only.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ring"
+      }
+    }
+  },
+  "$defs": {
+    "satoshis": {
+      "description": "A satoshi amount, either a non negative integer or the same value as a decimal string.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      ]
+    },
+    "ring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "start_height",
+        "end_height",
+        "depth",
+        "carried_value",
+        "successor_txid",
+        "successor_vout",
+        "relic"
+      ],
+      "properties": {
+        "index": {
+          "description": "Zero based, in the order the rings closed.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "start_height": {
+          "description": "Height the carrier that just closed was created.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_height": {
+          "description": "Height the carrier was spent.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "depth": {
+          "description": "end_height minus start_height.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "carried_value": {
+          "description": "Value of the carrier that was spent.",
+          "$ref": "#/$defs/satoshis"
+        },
+        "successor_txid": {
+          "description": "Txid of the successor carrier, or null when the ring is terminal.",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          ]
+        },
+        "successor_vout": {
+          "description": "Output index of the successor carrier, or null when the ring is terminal.",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "relic": {
+          "description": "True when this ring ended the artifact's life.",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Endpoint reference | PATINA docs</title>
+<meta name="description" content="Every PATINA indexer endpoint with request and response examples, plus a prober that reads live status from an indexer you supply.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="api/endpoints.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Endpoint reference</h1>
+      <p class="lede">Every endpoint in the indexer contract. Read
+        <a href="conventions.html">API conventions</a> first for types, cursors, and sync state.</p>
+
+      <div class="warn">
+        <span class="lbl">Every value in the examples is a placeholder</span>
+        <p>These pages publish no statistics. Counters in the examples are zero and heights are round numbers, so
+          that nothing here can be mistaken for a measurement. To see real numbers, point the prober below at an
+          indexer, or call one yourself.</p>
+      </div>
+
+      <h2>Try it against your own indexer</h2>
+      <div class="probe">
+        <form id="probe-form">
+          <div style="flex:1 1 18rem">
+            <label for="probe-base">Indexer base URL</label>
+            <input id="probe-base" name="base" type="url" inputmode="url" spellcheck="false"
+                   placeholder="https://indexer.example.org" autocomplete="off">
+          </div>
+          <button type="submit">Read status and window</button>
+        </form>
+        <p class="state" id="probe-state" role="status" aria-live="polite">Nothing has been requested. Enter an
+          indexer you trust and the raw responses will appear here.</p>
+        <pre id="probe-out" hidden></pre>
+      </div>
+      <p class="footnote">The request goes from your browser straight to the host you typed. This site has no
+        backend, stores nothing, and has no default indexer. Opening the page from disk may cause the browser to
+        block the request, which the panel will tell you plainly.</p>
+
+      <h2>Status and health</h2>
+      <h3>GET /status</h3>
+      <pre data-label="Request"><code>curl -s https://indexer.example.org/patina/status</code></pre>
+      <pre data-label="Response, shape with placeholder values"><code>{
+  "network": "signet",
+  "protocol_id": "PTNA",
+  "spec_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "tip_height": 0,
+  "indexed_height": 0,
+  "synced": false,
+  "parser_version": "",
+  "indexer_version": "",
+  "counters": {
+    "artifacts_alive": 0,
+    "artifacts_relic": 0,
+    "founding_total": 0,
+    "rings_total": 0,
+    "deepest_live_depth": 0,
+    "endowment_total_sats": "0"
+  }
+}</code></pre>
+      <p>The first call any client should make. Compare <code>indexed_height</code> with <code>tip_height</code>
+        before trusting anything else, and log <code>spec_sha256</code> with anything you store.</p>
+
+      <h3>GET /health, GET /ready, GET /metrics</h3>
+      <div class="tablewrap">
+        <table>
+          <caption>Operational endpoints.</caption>
+          <thead><tr><th>Endpoint</th><th>Answers</th><th>Use it for</th></tr></thead>
+          <tbody>
+            <tr><td><code>/health</code></td><td>Is the process alive</td><td>Liveness probes. It does not mean the data is current.</td></tr>
+            <tr><td><code>/ready</code></td><td>Is it safe to send traffic</td><td>Readiness probes. Should fail while replaying a reorg or during initial sync.</td></tr>
+            <tr><td><code>/metrics</code></td><td>Operational counters for scraping</td><td>Dashboards and alerts. See <a href="../operator/verify.html">Verify and monitor</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The founding window</h2>
+      <h3>GET /window</h3>
+      <pre data-label="Request"><code>curl -s https://indexer.example.org/patina/window</code></pre>
+      <pre data-label="Response, shape with placeholder values"><code>{
+  "state": "PENDING",
+  "h_open": 0,
+  "h_close": 0,
+  "grace_end": 0,
+  "tip_height": 0,
+  "blocks_until_open": 0,
+  "blocks_remaining": 0,
+  "founding_total": 0
+}</code></pre>
+      <dl class="fields">
+        <dt>state</dt>
+        <dd>Where the chain is relative to the window. Before <code>h_open</code>, between the two heights, or
+          past <code>h_close</code> with or without grace remaining.</dd>
+        <dt>blocks_until_open</dt>
+        <dd>Counts down before the window opens. Zero once it has opened.</dd>
+        <dt>blocks_remaining</dt>
+        <dd>Blocks left to commit while the window is open.</dd>
+        <dt>founding_total</dt>
+        <dd>How many founding artifacts exist so far. This is a real count from indexed chain data, which is why
+          it can only be read from an indexer and never from this page.</dd>
+      </dl>
+      <p>Both countdowns are block counts, not clocks. Convert to time only as a labelled estimate.</p>
+
+      <h2>Artifacts</h2>
+      <h3>GET /artifacts</h3>
+      <pre data-label="Request"><code>curl -s 'https://indexer.example.org/patina/artifacts?founding=true&amp;status=ALIVE&amp;limit=50'</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>Query parameters.</caption>
+          <thead><tr><th>Name</th><th>Values</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td><code>cursor</code></td><td>opaque string</td><td>Continue a previous page</td></tr>
+            <tr><td><code>limit</code></td><td>integer</td><td>Requested page size. The server may return fewer.</td></tr>
+            <tr><td><code>founding</code></td><td><code>true</code>, <code>false</code></td><td>Restrict to the founding cohort, or exclude it</td></tr>
+            <tr><td><code>status</code></td><td><code>ALIVE</code>, <code>RELIC</code></td><td>Restrict by state</td></tr>
+            <tr><td><code>address</code></td><td>address string</td><td>Only artifacts whose carrier pays that address</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre data-label="Response"><code>{
+  "items": [],
+  "next_cursor": null
+}</code></pre>
+      <p>Each item is an artifact record. Repeat every filter when you send a cursor.</p>
+
+      <h3>GET /artifacts/:id</h3>
+      <pre data-label="Request"><code>curl -s https://indexer.example.org/patina/artifacts/d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0</code></pre>
+      <pre data-label="Response, shape with placeholder values"><code>{
+  "artifact_id": "d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0",
+  "birth_txid": "1d29e5ba13cecf357a9218518914617f872eeaa83a33bf6be6fd78dfdd1ce9c6",
+  "birth_height": 880000,
+  "birth_vout": 1,
+  "endowment_sats": "100000",
+  "founding": true,
+  "status": "ALIVE",
+  "carrier": {
+    "txid": "1d29e5ba13cecf357a9218518914617f872eeaa83a33bf6be6fd78dfdd1ce9c6",
+    "vout": 1,
+    "height": 880000,
+    "value": "100000"
+  },
+  "depth": 13000,
+  "tier": 3,
+  "tier_name": "Verdigris",
+  "next_tier": 4,
+  "blocks_to_next_tier": 13280,
+  "rings": []
+}</code></pre>
+      <p>Field by field explanation on <a href="../using/artifact-page.html">Reading your artifact</a>. At Elder,
+        <code>next_tier</code> and <code>blocks_to_next_tier</code> are <code>null</code>. For a relic,
+        <code>carrier</code> is <code>null</code>.</p>
+
+      <h3>GET /artifacts/:id/card</h3>
+      <pre data-label="Request"><code>curl -s https://indexer.example.org/patina/artifacts/d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0/card</code></pre>
+      <p>Returns the share card payload: the identifying fields, the current tier and depth, the ring count, and
+        the height the numbers were taken at. A card without that height cannot be checked by whoever sees it, so
+        renderers must print it. See <a href="../creator/render-rules.html">Rules that keep renders honest</a>.</p>
+
+      <h2>Lookups</h2>
+      <h3>GET /addresses/:address/holdings</h3>
+      <pre data-label="Request"><code>curl -s https://indexer.example.org/patina/addresses/tb1p.../holdings</code></pre>
+      <p>Artifacts whose current carrier pays that address. This is a lookup by output script, not a claim about
+        ownership or identity. One person may use many addresses, and one address may be used by many people.</p>
+
+      <h3>GET /carriers/:txid/:vout</h3>
+      <pre data-label="Request"><code>curl -s https://indexer.example.org/patina/carriers/1d29e5ba13cecf357a9218518914617f872eeaa83a33bf6be6fd78dfdd1ce9c6/1</code></pre>
+      <p>The carrier record for one outpoint and every artifact riding it. This is how you discover a bundle: more
+        than one artifact on the same carrier.</p>
+
+      <h2>History and views</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Endpoints that summarise state. All of them are derived from indexed chain data.</caption>
+          <thead><tr><th>Endpoint</th><th>Returns</th><th>Ordering</th></tr></thead>
+          <tbody>
+            <tr><td><code>GET /census/current</code></td><td>The survival table for the current 2016-block epoch</td><td>Deterministic per epoch</td></tr>
+            <tr><td><code>GET /census/:epoch</code></td><td>The same table for a past epoch</td><td>Fixed once the epoch is complete</td></tr>
+            <tr><td><code>GET /museum</code></td><td>The longest completed rings</td><td>Deepest first</td></tr>
+            <tr><td><code>GET /leaderboard?scope=all</code></td><td>Deepest live stretches</td><td>Deepest first</td></tr>
+            <tr><td><code>GET /leaderboard?scope=founding</code></td><td>Same, restricted to the founding cohort</td><td>Deepest first</td></tr>
+            <tr><td><code>GET /shatter</code></td><td>Recently closed rings</td><td>Newest first</td></tr>
+            <tr><td><code>GET /invalid-events</code></td><td>Recent invalid events with reason codes</td><td>Newest first</td></tr>
+            <tr><td><code>GET /stats</code></td><td>Counters and distribution health</td><td>Single object</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The census is per epoch because 2016 blocks is the difficulty period, which is the natural unit for a
+        table that says how many stretches survived. The museum is history and cannot shrink. The leaderboard is
+        the present and changes every time somebody moves.</p>
+      <div class="note">
+        <span class="lbl">Concentration lives in stats</span>
+        <p><code>GET /stats</code> is where distribution health is published, including during the founding window.
+          It is deliberately a first class endpoint rather than an internal metric, because
+          <a href="../start/limits.html">farming the founding cohort</a> is a known limit and hiding the numbers
+          would be the dishonest response to it.</p>
+      </div>
+
+      <h2>Safety check</h2>
+      <h3>POST /safety/outpoints</h3>
+      <pre data-label="Request"><code>curl -s -X POST https://indexer.example.org/patina/safety/outpoints \
+  -H 'content-type: application/json' \
+  -d '{"outpoints":["1d29e5ba13cecf357a9218518914617f872eeaa83a33bf6be6fd78dfdd1ce9c6:1"]}'</code></pre>
+      <pre data-label="Response, per outpoint"><code>{
+  "protected": true,
+  "kind": "carrier",
+  "artifact_ids": ["d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0"]
+}</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>Classification values.</caption>
+          <thead><tr><th><code>kind</code></th><th>Means</th><th>What a wallet should do</th></tr></thead>
+          <tbody>
+            <tr><td><code>carrier</code></td><td>Spending this ends a stretch and resets depth</td><td>Warn loudly, name the artifacts, require confirmation</td></tr>
+            <tr><td><code>commit</code></td><td>An unspent commit output waiting to be revealed</td><td>Warn that spending it destroys a pending claim</td></tr>
+            <tr><td><code>none</code></td><td>Not known to the protocol</td><td>Nothing special</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The endpoint stores nothing that you send it. It is a POST because a coin selection can be long, not
+        because it writes anything.</p>
+
+      <h2>The app backend proxy</h2>
+      <p>The Bitcoin Universe backend re-exposes a read only subset under <code>/patina</code>, with fail closed
+        behaviour when the indexer is unavailable, plus two build helpers.</p>
+      <pre data-label="Proxied reads"><code>/patina/status            /patina/window
+/patina/artifacts         /patina/artifacts/:id
+/patina/census            /patina/museum
+/patina/leaderboard       /patina/shatter
+/patina/stats             /patina/addresses/:address/holdings
+POST /patina/safety/outpoints</code></pre>
+      <pre data-label="Build helpers"><code>POST /patina/plan/commit    unsigned commit plan and a review summary
+POST /patina/plan/seed      unsigned reveal plan and a review summary</code></pre>
+      <p>The planners never hold key material, never take custody, and never broadcast anything you have not
+        signed. Fail closed means an unavailable indexer produces an error, not a stale or invented answer.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+<script src="../assets/probe.js"></script>
+</body>
+</html>

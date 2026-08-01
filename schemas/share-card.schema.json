@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/bitcoinuniverse/patina/main/schemas/share-card.schema.json",
+  "title": "PATINA share card payload",
+  "description": "The small self contained view of one artifact, pinned to a height and a block hash. Built by buildShareCard in @bitcoinuniverse/patina. Satoshi values are decimal strings.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "network",
+    "spec_sha256",
+    "artifact_id",
+    "status",
+    "founding",
+    "birth_txid",
+    "birth_height",
+    "endowment_sats",
+    "depth",
+    "tier",
+    "tier_name",
+    "next_tier_name",
+    "blocks_to_next_tier",
+    "rings_total",
+    "longest_ring_depth",
+    "carrier",
+    "as_of_height",
+    "as_of_block_hash"
+  ],
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "const": "PTNA"
+    },
+    "network": {
+      "type": "string",
+      "enum": ["regtest", "signet", "mainnet"]
+    },
+    "spec_sha256": {
+      "description": "SHA-256 of patina-protocol.md, so a stale renderer is visible.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ALIVE", "RELIC"]
+    },
+    "founding": {
+      "type": "boolean"
+    },
+    "birth_txid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "birth_height": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "endowment_sats": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "depth": {
+      "description": "Blocks the current carrier has survived, or the final ring depth for a relic.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "tier": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 7
+    },
+    "tier_name": {
+      "type": "string",
+      "enum": ["Raw", "Sheen", "Cast", "Verdigris", "Umber", "Bronze", "Oxide", "Elder"]
+    },
+    "next_tier_name": {
+      "description": "Null at Elder.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "enum": ["Sheen", "Cast", "Verdigris", "Umber", "Bronze", "Oxide", "Elder"]
+        }
+      ]
+    },
+    "blocks_to_next_tier": {
+      "description": "Null at Elder.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer",
+          "minimum": 0
+        }
+      ]
+    },
+    "rings_total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "longest_ring_depth": {
+      "description": "Deepest closed stretch this artifact has held. Zero when it has none.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "carrier": {
+      "description": "Null for a relic.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["txid", "vout", "height", "value"],
+          "properties": {
+            "txid": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "vout": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "value": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            }
+          }
+        }
+      ]
+    },
+    "as_of_height": {
+      "description": "Height the card speaks for.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "as_of_block_hash": {
+      "description": "Hash of that block, display order.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ | PATINA docs</title>
+<meta name="description" content="Straight answers to the questions people actually ask about PATINA, including the ones with uncomfortable answers.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="reference/faq.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>FAQ</h1>
+      <p class="lede">Including the questions with answers people do not want.</p>
+
+      <h2>Money</h2>
+      <h3>What does it cost to mint?</h3>
+      <p>Two Bitcoin transaction fees, paid to miners, plus at least 100000 sats parked in the carrier output. The
+        protocol charges nothing. There is no mint price and no treasury.</p>
+
+      <h3>Where does my bitcoin go?</h3>
+      <p>Nowhere. It stays in an output your own wallet controls. Nobody else can move it, and no protocol rule can
+        freeze it.</p>
+
+      <h3>Can I spend the endowment?</h3>
+      <p>Yes, whenever you like, without asking anyone. Spending it ends the current stretch and resets depth to
+        zero. That is the only consequence.</p>
+
+      <h3>What is an artifact worth?</h3>
+      <p>We do not answer that. The protocol has no price, no market, and no opinion about value, and nothing in
+        this documentation will ever contain a projection.</p>
+
+      <h3>Is there a token?</h3>
+      <p>No. There is no fungible token, no supply, no emission schedule, and nothing to trade against. An artifact
+        is an id, an outpoint, your own coins, and a history.</p>
+
+      <h2>Minting</h2>
+      <h3>Why do I have to wait 144 blocks?</h3>
+      <p>So your claim cannot be sniped. The reveal must spend your commit output, and only your key can do that.
+        A bot that copies your reveal produces a transaction it cannot fund. The age requirement is what makes the
+        commit meaningful rather than decorative.</p>
+
+      <h3>Can I reveal early if I pay a higher fee?</h3>
+      <p>No. It is a protocol rule, not a queue. A reveal with fewer than 144 blocks of commit age confirms on
+        Bitcoin, produces <code>SEED_COMMIT_TOO_YOUNG</code>, and creates nothing.</p>
+
+      <h3>Is it first come first served?</h3>
+      <p>No. There is no rank, no serial number, and no advantage to committing early inside the window. Minting on
+        the last day produces the same kind of Seal as the first day.</p>
+
+      <h3>Can I mint more than one?</h3>
+      <p>Yes. Each needs its own commit, its own reveal, its own salt, and its own 100000 sats.</p>
+
+      <h3>Can someone farm the whole founding cohort?</h3>
+      <p>Anyone with enough bitcoin can mint many Seals. We do not filter, because every filter needs someone to
+        trust us. We publish concentration statistics during the window instead of after it. Read
+        <a href="../start/limits.html">What it does not promise</a>.</p>
+
+      <h3>Can the window be extended?</h3>
+      <p>No. The heights are in the deployment record and the chain passes them. There is no extension mechanism
+        and nobody has a key that could add one.</p>
+
+      <h3>What happens after the window closes?</h3>
+      <p>Seeding continues, with a 10000 sat minimum and <code>founding: false</code>. Those artifacts accumulate
+        depth and rings exactly the same way. The founding cohort is simply a closed set.</p>
+
+      <h2>Depth</h2>
+      <h3>Does depth prove I held it the whole time?</h3>
+      <p>No. It proves the outpoint has not moved. Keys can be sold off chain and the chain would look identical.
+        An attestation adds that someone with the key can still sign today. Neither proves continuity of a
+        person.</p>
+
+      <h3>If I buy an artifact, do I get its depth?</h3>
+      <p>No. Buying moves the carrier, and moving resets depth to zero. You get the id, the founding flag, and
+        every ring, including the seller's. The current stretch starts fresh for you.</p>
+
+      <h3>Can I move an artifact without resetting it?</h3>
+      <p>No on chain method exists. Handing over the private key would preserve depth, but then you have to trust
+        that the seller kept no copy. The protocol cannot see or verify that arrangement.</p>
+
+      <h3>Does an exchange deposit reset depth?</h3>
+      <p>Yes, twice. The deposit spends your carrier, and the exchange later spends it again into its own wallet.
+        Do not deposit an artifact carrier anywhere custodial.</p>
+
+      <h3>Does receiving more coins to the same address change anything?</h3>
+      <p>No. New outputs are separate outpoints. The carrier is untouched.</p>
+
+      <h3>What is the difference between depth and a ring?</h3>
+      <p>Depth is the live stretch, and it is growing right now. A ring is a finished stretch, written when the
+        carrier was spent. Rings never change and they never add up into a total.</p>
+
+      <h3>Is there anything above Elder?</h3>
+      <p>No. Elder is the last tier at 210000 blocks. Above that the depth number keeps rising and the tier stays
+        Elder.</p>
+
+      <h2>Risk</h2>
+      <h3>Can I lose my bitcoin by minting?</h3>
+      <p>Every documented failure leaves your coins in outputs you control. You can lose fees, you can lose a
+        claim, and you can lose a stretch. Losing coins requires losing a key or sending them somewhere, which is
+        ordinary Bitcoin risk and not specific to this protocol.</p>
+
+      <h3>My reveal failed. What now?</h3>
+      <p>Look up the reason code in <code>GET /patina/invalid-events</code>, then read
+        <a href="../protocol/reason-codes.html">Reason codes</a> and
+        <a href="../using/recovery.html">When something goes wrong</a>. Most failures mean starting again with a
+        new salt and a new commit.</p>
+
+      <h3>I spent my carrier by accident. Can you restore it?</h3>
+      <p>No. Nobody can. There is no admin key, no rollback, and no support override. The ring recording your
+        stretch is permanent, and the artifact continues from wherever it landed.</p>
+
+      <h3>Can you freeze or seize my artifact?</h3>
+      <p>No. It is an unspent output controlled by your key. The only levers an operator has are over their own
+        servers. See <a href="../operator/incidents.html">Incident actions</a>.</p>
+
+      <h3>What if you disappear?</h3>
+      <p>Your artifact does not. It is derived from the blockchain by rules that are published, with golden vectors
+        and byte examples anyone can reproduce. Someone else can run an indexer, and
+        <a href="../api/run-an-indexer.html">so can you</a>.</p>
+
+      <h3>What if two indexers disagree?</h3>
+      <p>One of them has a bug and it matters. Compare state roots at the same height, bisect to the first
+        differing block, and follow <a href="../compat/disagreements.html">Report a disagreement</a>. We publish
+        disagreements rather than resolving them quietly.</p>
+
+      <h2>Practical</h2>
+      <h3>Can I use a hardware wallet?</h3>
+      <p>For holding the carrier, yes. For the reveal, you need a signer that can perform a Taproot script path
+        spend revealing a specific leaf, which most consumer devices and wallets do not expose. See
+        <a href="../using/wallet-setup.html">Wallet setup</a>.</p>
+
+      <h3>Do I need to run anything to keep my artifact?</h3>
+      <p>No. Leave the carrier unspent. That is the whole obligation. Indexers, servers, and websites are for
+        reading state, not for holding it.</p>
+
+      <h3>Is my address public?</h3>
+      <p>The carrier outpoint is on the blockchain, so it is as public as any Bitcoin output. Anyone can look up
+        which address it pays. The indexer adds no privacy and takes none away.</p>
+
+      <h3>Do I have to sign attestations?</h3>
+      <p>No. They are optional, free, and repeatable. An artifact without one is not suspicious.</p>
+
+      <h3>Why are there no dates anywhere?</h3>
+      <p>Because the protocol has no clock. Heights are exact, checkable, and the same for everyone. Any calendar
+        time you see here is converted from blocks at ten minutes each and labelled as an estimate.</p>
+
+      <h3>Is PATINA an NFT?</h3>
+      <p>It shares the idea of a unique on chain object and shares nothing else. There is no mint price, no supply
+        cap, no marketplace, no royalty, and no image required for it to exist. The state is the artifact, and any
+        picture is a view of it.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PATINA, a Bitcoin artifact that deepens while it sits still</title>
+<meta name="description" content="PATINA marks one Bitcoin output as the carrier of an artifact. Depth is the number of blocks that output has stayed unspent. Spend it and depth resets to zero, and the finished stretch is engraved as a ring.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/index.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="PATINA, a Bitcoin artifact that deepens while it sits still">
+<meta property="og:description" content="Depth is the number of blocks the carrier output has stayed unspent. Spend it and depth resets to zero. Each completed stretch is engraved as a ring.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/index.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PATINA, a Bitcoin artifact that deepens while it sits still">
+<meta name="twitter:description" content="Depth is the number of blocks the carrier output has stayed unspent. Spend it and depth resets to zero.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" aria-current="page">Overview</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a href="faq.html">Questions</a></li>
+        <li><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">A Bitcoin artifact</p>
+        <h1>It deepens for every block it does not move.</h1>
+        <p class="lede">Depth is not a score anyone hands out. It is the distance between two block heights, and any Bitcoin node can compute it.</p>
+
+        <ul class="answer-list">
+          <li>
+            <span class="answer-q">What this is</span>
+            <p class="answer-a">PATINA marks one Bitcoin output as the <strong>carrier</strong> of an artifact. Depth is the number of blocks that output has stayed unspent. Spend it and depth returns to zero. The stretch that just ended is engraved as a <strong>ring</strong> and stays in the record forever.</p>
+          </li>
+          <li>
+            <span class="answer-q">What you can own</span>
+            <p class="answer-a">A <strong>Firstlight Seal</strong>, one of the founding cohort. They can only be claimed inside a single window of 4032 blocks, about four weeks at ten minutes per block. When that window closes, no new Firstlight Seal can ever exist.</p>
+          </li>
+          <li>
+            <span class="answer-q">What it costs</span>
+            <p class="answer-a">No price. You pay Bitcoin network fees, and you seal at least <strong>100 000 sats of your own bitcoin</strong> into the artifact as its endowment. That bitcoin stays yours. You can spend it whenever you like, and doing so resets the depth to zero.</p>
+          </li>
+        </ul>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="mint.html">How the founding mint works</a>
+          <a class="btn" href="protocol.html">Read the protocol</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="override-banner" data-override-banner hidden>
+          <strong>Custom indexer in use.</strong> This page is reading live figures from <code data-override-url></code>, which you supplied in the address bar. That server is not vouched for by anyone here.
+        </div>
+
+        <div class="card" data-live="status">
+          <div class="card-title">
+            <h2>Live from the chain</h2>
+            <span class="pill pill-live">Live</span>
+          </div>
+          <div class="panel-state" data-live-state>
+            <span class="state-dot" aria-hidden="true"></span>
+            <div data-live-message><p>Checking for a connected indexer.</p></div>
+          </div>
+          <dl class="stat-grid" data-live-body hidden>
+            <div class="stat">
+              <dt>Artifacts alive</dt>
+              <dd data-field="counters.artifacts_alive" data-format="int"></dd>
+            </div>
+            <div class="stat">
+              <dt>Founding total</dt>
+              <dd data-field="counters.founding_total" data-format="int"></dd>
+            </div>
+            <div class="stat">
+              <dt>Deepest live stretch</dt>
+              <dd data-field="counters.deepest_live_depth" data-format="int"></dd>
+            </div>
+            <div class="stat">
+              <dt>Rings engraved</dt>
+              <dd data-field="counters.rings_total" data-format="int"></dd>
+            </div>
+            <div class="stat">
+              <dt>Endowment held</dt>
+              <dd data-field="counters.endowment_total_sats" data-format="sats"></dd>
+            </div>
+            <div class="stat">
+              <dt>Indexed height</dt>
+              <dd data-field="indexed_height" data-format="height"></dd>
+            </div>
+          </dl>
+          <p class="source-note" data-live-source></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="honest">
+    <p class="eyebrow">Say it before anyone has to ask</p>
+    <h2>What depth proves, and what it does not</h2>
+    <div class="grid grid-2">
+      <div class="note">
+        <p class="note-title">It proves</p>
+        <p>The outpoint has not moved. Anyone can check that against a Bitcoin node with no trust in us at all. Pair it with a signed attestation over the artifact id and a recent block hash, and you also know the key is alive.</p>
+      </div>
+      <div class="note note-warn">
+        <p class="note-title">It does not prove</p>
+        <p>That the same person held it the whole time. Keys can be sold off chain, and the chain cannot see that. Depth is a fact about an output, not a biography of a person.</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>Two more things we would rather say ourselves than have you discover.</p>
+      <ul>
+        <li><strong>Founding membership can be farmed.</strong> Anyone willing to park real bitcoin can take as many Firstlight Seals as they can fund. There is no cap and no per person limit, because the protocol has no idea what a person is. Concentration figures are published live during the window rather than after it.</li>
+        <li><strong>Buying an artifact moves it.</strong> A transfer spends the carrier, so the depth resets to zero and the stretch you paid for closes as a ring. You inherit the record, not the depth.</li>
+      </ul>
+      <p><a href="risks.html">The full risk list</a> is a page of its own, not a footnote.</p>
+    </div>
+  </section>
+
+  <hr class="strata-rule">
+
+  <section class="wrap" id="simulator">
+    <p class="eyebrow">Do the arithmetic yourself</p>
+    <h2>If you had stopped moving an output on a given day</h2>
+    <p class="lede">Pick a date. The page counts the blocks at ten minutes each, then shows the depth, the tier and the distance to the next one. Nothing here is fetched, and nothing here describes a real artifact.</p>
+
+    <form class="sim" data-simulator novalidate>
+      <div>
+        <div class="sim-controls">
+          <div class="field">
+            <label for="sim-date">Held since</label>
+            <input type="date" id="sim-date" name="sim-date" min="2009-01-03">
+          </div>
+        </div>
+        <div class="preset-row">
+          <button type="button" class="btn btn-small" data-sim-days="7">One week</button>
+          <button type="button" class="btn btn-small" data-sim-days="30">One month</button>
+          <button type="button" class="btn btn-small" data-sim-days="365">One year</button>
+          <button type="button" class="btn btn-small" data-sim-days="1460">Four years</button>
+        </div>
+
+        <p class="panel-state" data-sim-error hidden role="status"></p>
+
+        <dl class="readout">
+          <div>
+            <dt>Depth</dt>
+            <dd><span data-sim="blocks">52 560</span> <small>blocks</small></dd>
+          </div>
+          <div>
+            <dt>Elapsed</dt>
+            <dd><span data-sim="elapsed">about 1 year</span></dd>
+          </div>
+          <div>
+            <dt>Tier</dt>
+            <dd><span data-sim="tier">Bronze</span></dd>
+          </div>
+          <div>
+            <dt>Next tier</dt>
+            <dd><span data-sim="next">Oxide</span></dd>
+          </div>
+          <div>
+            <dt>Blocks to next</dt>
+            <dd><span data-sim="to-next">52 560</span></dd>
+          </div>
+          <div>
+            <dt>Time to next</dt>
+            <dd><span data-sim="eta">about 1 year</span></dd>
+          </div>
+        </dl>
+
+        <noscript>
+          <p class="note note-warn">This simulator needs JavaScript. The figures above are the worked example for a stretch of exactly 365 days, which is 52 560 blocks at ten minutes per block. The tier table below is complete and needs nothing to read.</p>
+        </noscript>
+
+        <p class="small faint">Both ends are counted at midnight UTC, so a whole day is exactly 144 blocks and everyone who picks the same date gets the same answer. Ten minutes per block is the nominal target, not a promise. Real blocks arrive faster or slower, so treat every time estimate as an estimate. A real artifact's depth is exact, because it counts blocks and not minutes.</p>
+
+        <h3>The tier ladder</h3>
+        <ol class="tier-ladder">
+          <li data-tier-item="0" data-reached="true"><span class="tier-swatch" data-tier="0" aria-hidden="true"></span><span class="tier-name">Raw</span><span class="tier-blocks">0 blocks</span></li>
+          <li data-tier-item="1" data-reached="true"><span class="tier-swatch" data-tier="1" aria-hidden="true"></span><span class="tier-name">Sheen</span><span class="tier-blocks">1 008 blocks</span></li>
+          <li data-tier-item="2" data-reached="true"><span class="tier-swatch" data-tier="2" aria-hidden="true"></span><span class="tier-name">Cast</span><span class="tier-blocks">4 032 blocks</span></li>
+          <li data-tier-item="3" data-reached="true"><span class="tier-swatch" data-tier="3" aria-hidden="true"></span><span class="tier-name">Verdigris</span><span class="tier-blocks">12 960 blocks</span></li>
+          <li data-tier-item="4" data-reached="true"><span class="tier-swatch" data-tier="4" aria-hidden="true"></span><span class="tier-name">Umber</span><span class="tier-blocks">26 280 blocks</span></li>
+          <li data-tier-item="5" data-reached="true" data-current="true"><span class="tier-swatch" data-tier="5" aria-hidden="true"></span><span class="tier-name">Bronze</span><span class="tier-blocks">52 560 blocks</span></li>
+          <li data-tier-item="6" data-reached="false"><span class="tier-swatch" data-tier="6" aria-hidden="true"></span><span class="tier-name">Oxide</span><span class="tier-blocks">105 120 blocks</span></li>
+          <li data-tier-item="7" data-reached="false"><span class="tier-swatch" data-tier="7" aria-hidden="true"></span><span class="tier-name">Elder</span><span class="tier-blocks">210 000 blocks</span></li>
+        </ol>
+      </div>
+
+      <figure class="ring-figure">
+        <svg viewBox="0 0 320 320" width="320" height="320" data-ring-figure role="img" aria-label="Ring cross section at depth 52 560 blocks, tier Bronze.">
+          <defs>
+            <radialGradient id="ring-age" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="var(--bronze-core)" stop-opacity="0.85"/>
+              <stop offset="52%" stop-color="var(--t4)" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="var(--verdigris)" stop-opacity="0.38"/>
+            </radialGradient>
+            <mask id="ring-kerf">
+              <rect width="320" height="320" fill="#ffffff"/>
+              <path d="M160 160 L153.5 6 L166.5 6 Z" fill="#000000"/>
+            </mask>
+          </defs>
+          <g mask="url(#ring-kerf)">
+            <circle cx="160" cy="160" r="150" fill="none" stroke="var(--line)" stroke-width="1"/>
+            <circle id="ring-fill" class="ring-fill" cx="160" cy="160" r="106.57" fill="url(#ring-age)"/>
+            <g fill="none" stroke-width="1.3">
+              <circle data-tier-circle="0" cx="160" cy="160" r="18" stroke="var(--t0)" stroke-opacity="0.85"/>
+              <circle data-tier-circle="1" cx="160" cy="160" r="35.71" stroke="var(--t1)" stroke-opacity="0.85"/>
+              <circle data-tier-circle="2" cx="160" cy="160" r="53.43" stroke="var(--t2)" stroke-opacity="0.85"/>
+              <circle data-tier-circle="3" cx="160" cy="160" r="71.14" stroke="var(--t3)" stroke-opacity="0.85"/>
+              <circle data-tier-circle="4" cx="160" cy="160" r="88.86" stroke="var(--t4)" stroke-opacity="0.85"/>
+              <circle data-tier-circle="5" cx="160" cy="160" r="106.57" stroke="var(--t5)" stroke-opacity="0.85"/>
+              <circle data-tier-circle="6" cx="160" cy="160" r="124.29" stroke="var(--t6)" stroke-opacity="0.28" stroke-dasharray="2 4"/>
+              <circle data-tier-circle="7" cx="160" cy="160" r="142" stroke="var(--t7)" stroke-opacity="0.28" stroke-dasharray="2 4"/>
+            </g>
+            <circle id="ring-edge" class="ring-edge" cx="160" cy="160" r="106.57" fill="none" stroke="var(--t5)" stroke-width="2.6"/>
+            <circle cx="160" cy="160" r="3.6" fill="var(--bronze-core)"/>
+          </g>
+        </svg>
+        <figcaption>
+          Depth <span id="ring-depth-label">52 560</span> blocks, tier <span id="ring-tier-label">Bronze</span>. Each scribed circle is one tier threshold, and the wedge cut out at the top is what makes this a cross section rather than a target. Radius uses one equal band per tier so the early tiers stay legible, which means the picture is deliberately not linear in blocks.
+        </figcaption>
+      </figure>
+    </form>
+  </section>
+
+  <hr class="strata-rule">
+
+  <section class="wrap">
+    <div class="grid grid-2">
+      <div class="prose">
+        <h2>Reset on move is not a rule we enforce</h2>
+        <p>It is inherited. Spending an output destroys it, and a destroyed output has no age. There is no admin who can decide your depth survived a transfer, because there is nothing left to decide about.</p>
+        <p>That is the whole trick. The scarce thing is not a token supply. It is the decision not to touch something.</p>
+      </div>
+      <div class="prose">
+        <h2>A ring is what a stretch leaves behind</h2>
+        <p>When a carrier is spent, the stretch closes and the record gains a ring: the height it started, the height it ended, its depth, and the value it carried. Rings accumulate. They are the part nobody can reset.</p>
+        <p>If the spend has an eligible successor output, the artifact continues on that output at depth zero. If it does not, the artifact becomes a relic and stops moving forever.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="firstlight">
+    <p class="eyebrow">The genesis asset</p>
+    <h2>Firstlight Seals</h2>
+    <div class="grid grid-2">
+      <div class="prose">
+        <p>One cohort. One window of 4032 blocks. Zero team allocation, zero reserve, zero price, no supply cap.</p>
+        <p>Claiming uses an aged commit and reveal. Your commit output has to be at least 144 blocks old before you can reveal it, and only you can spend it. That is why a claim cannot be sniped: watching the mempool tells a sniper nothing they can act on.</p>
+        <p>The supply is whatever the window produced. We are not going to pretend that number was designed.</p>
+        <div class="actions">
+          <a class="btn btn-primary" data-mint-cta data-config-href="appMintUrl" href="https://inscribe.bitcoinuniverse.io/?tab=patina">Open PATINA in the Bitcoin Universe app</a>
+          <a class="btn" href="mint.html">Read the mint page first</a>
+        </div>
+        <p class="small" data-window-note>This page cannot tell you whether the founding window is open, because it could not read a PATINA indexer. The Bitcoin Universe app checks the window before it builds anything.</p>
+      </div>
+
+      <div class="card" data-live="window">
+        <div class="card-title">
+          <h3>Window state</h3>
+          <span class="pill pill-live">Live</span>
+        </div>
+        <div class="panel-state" data-live-state>
+          <span class="state-dot" aria-hidden="true"></span>
+          <div data-live-message><p>Checking for a connected indexer.</p></div>
+        </div>
+        <dl class="stat-grid" data-live-body hidden>
+          <div class="stat"><dt>State</dt><dd data-field="state"></dd></div>
+          <div class="stat"><dt>Tip height</dt><dd data-field="tip_height" data-format="height"></dd></div>
+          <div class="stat"><dt>Opens at</dt><dd data-field="h_open" data-format="height"></dd></div>
+          <div class="stat"><dt>Closes at</dt><dd data-field="h_close" data-format="height"></dd></div>
+          <div class="stat"><dt>Grace ends</dt><dd data-field="grace_end" data-format="height"></dd></div>
+          <div class="stat"><dt>Founding so far</dt><dd data-field="founding_total" data-format="int"></dd></div>
+        </dl>
+        <p class="source-note" data-live-source></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band">
+    <h2>Where to go next</h2>
+    <ul class="link-list">
+      <li><a href="mint.html"><span><span class="link-title">The founding mint</span><span class="link-desc">Window state, the two step claim, and the fee table at four fee rates.</span></span><span aria-hidden="true">&gt;</span></a></li>
+      <li><a href="protocol.html"><span><span class="link-title">Protocol</span><span class="link-desc">Marker bytes, transaction shapes, the default rule, rings, reorgs.</span></span><span aria-hidden="true">&gt;</span></a></li>
+      <li><a href="verify.html"><span><span class="link-title">Verify it yourself</span><span class="link-desc">Read depth off your own node. Check an artifact by outpoint. Run the indexer.</span></span><span aria-hidden="true">&gt;</span></a></li>
+      <li><a href="transparency.html"><span><span class="link-title">Transparency</span><span class="link-desc">Who holds what authority, what can change, and what the kill switches cannot do.</span></span><span aria-hidden="true">&gt;</span></a></li>
+      <li><a href="risks.html"><span><span class="link-title">Risks</span><span class="link-desc">Every way this can disappoint you, written down in one place.</span></span><span aria-hidden="true">&gt;</span></a></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

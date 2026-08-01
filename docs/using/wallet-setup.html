@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wallet setup | PATINA docs</title>
+<meta name="description" content="What your wallet must be able to do before you mint a PATINA artifact: Taproot script path spends, an OP_RETURN output, coin control, and message signing.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="using/wallet-setup.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Wallet setup</h1>
+      <p class="lede">Minting needs more than a send button. Check these five capabilities before the window opens,
+        not during it.</p>
+
+      <h2>The five capabilities</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>What the mint needs from your signing setup.</caption>
+          <thead><tr><th>Capability</th><th>Needed for</th><th>How to check</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Send to an arbitrary Taproot output</td>
+              <td>The commit output, which is a P2TR address you build, not one your wallet hands you</td>
+              <td>Can you paste a <code>bc1p</code> address and send to it</td>
+            </tr>
+            <tr>
+              <td>Taproot script path spend with a custom leaf</td>
+              <td>The reveal, which must show the commit leaf in the witness</td>
+              <td>Most consumer wallets cannot do this. A signing library or the planner endpoints can.</td>
+            </tr>
+            <tr>
+              <td>An OP_RETURN output in a transaction you build</td>
+              <td>The SEED marker</td>
+              <td>Can you add a data output of 26 bytes of script</td>
+            </tr>
+            <tr>
+              <td>Coin control, including locking an output</td>
+              <td>Keeping the carrier from being swept into an unrelated payment</td>
+              <td>Can you freeze a single UTXO and see it excluded from coin selection</td>
+            </tr>
+            <tr>
+              <td>Message signing with the carrier key</td>
+              <td>Attestations, which are optional but useful</td>
+              <td>Can you sign a BIP-322 message for a Taproot address</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <span class="lbl">Honest about wallet support</span>
+        <p>Row two is the hard one. Building a Taproot script path spend that reveals a specific leaf is not a
+          feature most wallets expose. You will either use a signing library and construct the reveal yourself, or
+          use a planner that hands you an unsigned transaction to sign. Nothing in this protocol requires you to
+          give anyone your keys, and no step ever should.</p>
+      </div>
+
+      <h2>Use the planner if you are not building raw transactions</h2>
+      <p>The Bitcoin Universe backend exposes two build helpers. They construct unsigned transactions and a plain
+        language review summary. They hold no key material, they take no custody, and they broadcast nothing that
+        you have not signed yourself.</p>
+      <pre data-label="Build helpers, app backend"><code>POST /patina/plan/commit    returns an unsigned commit plan and a review summary
+POST /patina/plan/seed      returns an unsigned reveal plan and a review summary</code></pre>
+      <p>Read the summary before you sign. It exists so that a plan you did not build is still a plan you can
+        check. The <a href="mint.html">mint walkthrough</a> shows what to compare it against.</p>
+
+      <h2>Pick the network first</h2>
+      <p>PATINA runs on three networks. Practise on the first two.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>Networks and what they are for.</caption>
+          <thead><tr><th>Network</th><th>Use it for</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>regtest</code></td><td>Your own machine, instant blocks</td><td>Mine 144 blocks yourself to clear the commit age check in seconds</td></tr>
+            <tr><td><code>signet</code></td><td>A shared rehearsal with real block timing</td><td>Coins have no value, timing is realistic</td></tr>
+            <tr><td><code>mainnet</code></td><td>The real thing</td><td>Gated by activation control. Tools must refuse to build mainnet transactions until a mainnet deployment record exists.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Run the whole mint on regtest at least once. The 144 block wait means a mistake on mainnet costs you a day
+        before you find out.</p>
+
+      <h2>Keep artifacts away from spending money</h2>
+      <p>The single biggest cause of a lost stretch is coin selection picking up your carrier for an unrelated
+        payment. Structure around it:</p>
+      <ol>
+        <li>Use a separate wallet, or at least a separate account, for artifacts.</li>
+        <li>Fund it with what you intend to seal and no more.</li>
+        <li>After the reveal confirms, label the carrier output and lock it.</li>
+        <li>Never enable automatic consolidation or "clean up dust" tools on that wallet.</li>
+        <li>If you use a wallet that sweeps on restore, know that restoring from seed can produce a sweep. Check
+          before you restore.</li>
+      </ol>
+      <p><a href="depth-resets.html">What resets depth</a> lists every accidental path in one table.</p>
+
+      <h2>Back up three things, not one</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Back these up before you broadcast the commit.</caption>
+          <thead><tr><th>Item</th><th>Size</th><th>If you lose it</th></tr></thead>
+          <tbody>
+            <tr><td>Wallet seed</td><td>12 or 24 words</td><td>You lose the endowment and the artifact</td></tr>
+            <tr><td>Claimant x-only public key</td><td>32 bytes</td><td>Recomputable from the key path, but keep it anyway</td></tr>
+            <tr><td>Salt</td><td>16 bytes</td><td>You cannot build a valid reveal, and the commit output is only recoverable as ordinary coins</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">The salt is not optional</span>
+        <p>The commitment is a hash of your claimant key and your salt. Without the salt you cannot produce the
+          SEED payload that matches your commit, so the reveal cannot be valid. Your bitcoin is still yours because
+          the leaf also requires your signature, but the claim is gone. Write the salt down when you generate it.</p>
+      </div>
+
+      <h2>Fee planning</h2>
+      <p>Two transactions, two fees. The reveal is the larger one because it carries a witness with the commit leaf
+        and control block, plus a 26 byte OP_RETURN output.</p>
+      <ul>
+        <li>Do not target the cheapest possible confirmation for the commit. A commit that takes a long time to
+          confirm may confirm after the window closes, which costs founding status.</li>
+        <li>Budget the reveal fee at the time you reveal, not at the time you commit. That is at least 144 blocks
+          later and the fee market will have moved.</li>
+        <li>Keep a separate funded output for fee bumping. Bumping with the carrier itself defeats the purpose.</li>
+      </ul>
+
+      <h2>Before you continue</h2>
+      <p>You are ready when you can, on regtest, produce a commit output, wait out the age, reveal it, and see the
+        artifact appear in your indexer. Then do it on mainnet. The
+        <a href="mint.html">mint walkthrough</a> is next.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

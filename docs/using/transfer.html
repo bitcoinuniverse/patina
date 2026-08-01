@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transferring an artifact | PATINA docs</title>
+<meta name="description" content="How to move a PATINA artifact to a new carrier or a new owner, and why every transfer resets depth to zero.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="using/transfer.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Transferring an artifact</h1>
+      <p class="lede">A transfer is a spend, and a spend resets depth. Read this before you agree a price.</p>
+
+      <div class="warn">
+        <span class="lbl">The reset is not avoidable</span>
+        <p>Handing an artifact to someone else means spending the carrier into an output they control. That spend
+          ends the current stretch and starts the buyer at depth zero from the block their output confirms. There
+          is no transfer mode, no wrapper, and no special transaction that preserves depth.</p>
+      </div>
+
+      <h2>What survives a transfer</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Before and after a transfer.</caption>
+          <thead><tr><th>Property</th><th>After the move</th></tr></thead>
+          <tbody>
+            <tr><td>Artifact id</td><td>Unchanged, forever</td></tr>
+            <tr><td>Founding status</td><td>Unchanged. A Firstlight Seal stays a Firstlight Seal.</td></tr>
+            <tr><td>Rings</td><td>All kept, plus a new one recording the stretch you just ended</td></tr>
+            <tr><td>Birth fields</td><td>Unchanged</td></tr>
+            <tr><td>Depth</td><td>Zero, counting from the new carrier's confirmation height</td></tr>
+            <tr><td>Tier</td><td>Raw</td></tr>
+            <tr><td>Endowment</td><td>Whatever the new carrier holds, which must clear the minimum for a successor</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>So the buyer receives a complete, honest history and a fresh stretch. The seller's deep ring stays visible
+        as the seller's ring, in the record, with its heights.</p>
+
+      <h2>How to move it deliberately</h2>
+      <ol class="steps">
+        <li>
+          <h3>Agree the destination output</h3>
+          <p>The recipient gives you an address. The output you pay must hold at least 10000 sats, the successor
+            minimum, or the artifact will not follow it.</p>
+        </li>
+        <li>
+          <h3>Decide where the artifact should land</h3>
+          <p>If the transaction has one non OP_RETURN output at or above the minimum, the default rule already
+            sends the artifact there. If it has several, be explicit with a KEEP marker.</p>
+        </li>
+        <li>
+          <h3>Add a KEEP marker when the transaction has more than one plausible output</h3>
+          <pre data-label="KEEP: input 0 keeps vout 2"><code>OP_RETURN PUSH(9) [ "PTNA" | 0x01 | 0x02 | count=1 | (input_index=0, vout=2) ]
+
+payload       3 bytes   010002
+push data     9 bytes   50544e410102010002
+scriptPubKey  11 bytes  6a0950544e410102010002</code></pre>
+          <p class="footnote">That example routes the artifact spent by input 0 to vout 2. Change the last byte to
+            choose a different output. The <a href="../protocol/keep-rules.html">KEEP rules</a> page has the full
+            grammar, including the eight entry ceiling.</p>
+        </li>
+        <li>
+          <h3>Broadcast, then confirm where it went</h3>
+          <p>After confirmation, fetch the artifact and check <code>carrier</code> matches the output you
+            intended. Also check the new ring: <code>end_height</code> is the spend height and
+            <code>successor_txid</code> is your transaction.</p>
+        </li>
+      </ol>
+
+      <h2>Ways a transfer goes wrong</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Failure modes when moving an artifact.</caption>
+          <thead><tr><th>What happened</th><th>Outcome</th></tr></thead>
+          <tbody>
+            <tr><td>Every output is below 10000 sats</td><td>No eligible successor. The artifact becomes a <code>RELIC</code>, permanently.</td></tr>
+            <tr><td>The only outputs are OP_RETURN</td><td>Same. Relic.</td></tr>
+            <tr><td>KEEP named an output that is an OP_RETURN, out of range, or below the minimum</td><td>That entry is void and the default rule applies instead. The artifact goes to the lowest index eligible output, which may not be the buyer's.</td></tr>
+            <tr><td>KEEP named an input that is not a carrier</td><td>Entry void, default rule applies. Reason code <code>KEEP_ENTRY_NOT_CARRIER</code>.</td></tr>
+            <tr><td>Two OP_RETURN outputs start with PTNA</td><td>Marker void, default rule applies to the whole transaction</td></tr>
+            <tr><td>The carrier was spent together with unrelated coins into a change output</td><td>The artifact follows the default rule into whichever eligible output has the lowest index, which is often not what you meant</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>None of these lose the buyer's bitcoin. They lose control of where the artifact lands, and in the relic
+        case they end the artifact.</p>
+
+      <h2>Selling, honestly</h2>
+      <ul>
+        <li><strong>Atomic delivery is a hard problem.</strong> This protocol has no escrow and no marketplace. Any
+          swap you arrange is your own arrangement with your own counterparty risk.</li>
+        <li><strong>Selling keys instead of coins.</strong> You could hand over the private key rather than spend
+          the carrier, which preserves depth. The buyer then has to trust that you kept no copy. That trust is
+          unverifiable, and the protocol cannot see the difference.</li>
+        <li><strong>Do not price the depth you are about to destroy.</strong> Anyone buying a deep artifact through
+          an on chain move is buying rings and an id, not depth. Say so plainly in the sale.</li>
+      </ul>
+
+      <h2>Bundles</h2>
+      <p>Several artifacts can share one carrier. When that carrier is spent, all of them move together and all of
+        them reset.</p>
+      <p>One input can be routed to one destination, so a single transaction cannot split a bundle across several
+        outputs. Splitting takes several transactions, each spending a carrier once, with the artifacts you want
+        separated ending up on different carriers along the way. Plan that before you sell part of a bundle.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

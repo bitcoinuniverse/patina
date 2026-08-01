@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/bitcoinuniverse/patina/main/schemas/deployment.schema.json",
+  "title": "PATINA deployment record",
+  "description": "Binds the protocol to one network, one founding window and one specification hash. See patina-protocol.md section 18.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "network",
+    "protocol_id",
+    "spec_sha256",
+    "h_open",
+    "h_close",
+    "grace_end",
+    "min_carrier_founding",
+    "min_carrier_open",
+    "commit_min_age"
+  ],
+  "properties": {
+    "network": {
+      "description": "Bitcoin network this deployment binds to.",
+      "type": "string",
+      "enum": ["regtest", "signet", "mainnet"]
+    },
+    "protocol_id": {
+      "description": "Always PTNA.",
+      "type": "string",
+      "const": "PTNA"
+    },
+    "spec_sha256": {
+      "description": "SHA-256 of patina-protocol.md, lowercase hex.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "h_open": {
+      "description": "First height at which a commit output counts toward the founding window. Null until activation.",
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "h_close": {
+      "description": "Exclusive upper bound of the founding commit window. Equals h_open plus 4032.",
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "grace_end": {
+      "description": "Last height at which a founding reveal is accepted. Equals h_close plus 4032.",
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "min_carrier_founding": {
+      "description": "Frozen at 100000 satoshis.",
+      "type": "integer",
+      "const": 100000
+    },
+    "min_carrier_open": {
+      "description": "Frozen at 10000 satoshis.",
+      "type": "integer",
+      "const": 10000
+    },
+    "commit_min_age": {
+      "description": "Frozen at 144 blocks.",
+      "type": "integer",
+      "const": 144
+    },
+    "approvers": {
+      "description": "Names of the people who authorized this deployment. A mainnet record needs at least two.",
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

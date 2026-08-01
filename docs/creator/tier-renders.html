@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deterministic tier renders | PATINA docs</title>
+<meta name="description" content="How a PATINA render works: a pure function from protocol state to a picture, so the same artifact looks the same everywhere.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="creator/tier-renders.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Deterministic tier renders</h1>
+      <p class="lede">A render is a pure function from protocol state to a picture. Same inputs, same picture, on
+        any machine, forever.</p>
+      <div class="note">
+        <span class="lbl">Convention, not protocol</span>
+        <p>Nothing in the baseline requires renders to exist, and the chain never sees one. This section is the
+          convention for the ecosystem, so that two viewers showing the same artifact do not show two different
+          things.</p>
+      </div>
+
+      <h2>The inputs</h2>
+      <p>A render takes exactly these, and nothing else:</p>
+      <pre data-label="Render inputs"><code>artifact_id      32 bytes, the only source of per artifact variation
+founding         boolean
+status           ALIVE or RELIC
+depth            integer, blocks, for an ALIVE artifact
+tier             0 to 7
+rings            the completed rings, in order
+height           the block height these values were read at</code></pre>
+      <p>Anything not on that list is forbidden as an input. In particular: no wall clock, no random seed, no
+        locale, no viewport, no network fetch, no user identity, no price, and nothing about who is looking.</p>
+
+      <h2>Why determinism</h2>
+      <ul>
+        <li>Two viewers showing the same artifact must not disagree. Disagreement means one of them is inventing
+          something.</li>
+        <li>A picture that changes when nothing on chain changed teaches people that the picture is decoration
+          rather than data.</li>
+        <li>A render that can be reproduced offline can be checked. One that calls a server cannot.</li>
+      </ul>
+
+      <h2>Variation comes from the artifact id</h2>
+      <p>If a pack wants per artifact variety, derive it from the id and nothing else.</p>
+      <pre data-label="Deriving stable choices"><code>// A pack may read bytes of the id to pick variants.
+// The same id always yields the same choice.
+const id = "d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0";
+const byte0 = parseInt(id.slice(0, 2), 16);   // 211
+const grain = byte0 % 8;                      // stable per artifact</code></pre>
+      <p>Use a documented derivation and publish it with the pack, so anyone can verify that a render is what the
+        rules produce rather than what the renderer felt like.</p>
+
+      <h2>What each input should drive</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>A sensible mapping. Packs may differ, but the mapping must be published.</caption>
+          <thead><tr><th>Input</th><th>Drives</th><th>Must not drive</th></tr></thead>
+          <tbody>
+            <tr><td><code>tier</code></td><td>The dominant treatment, from raw metal to deep verdigris</td><td>Anything implying rank between holders</td></tr>
+            <tr><td><code>depth</code></td><td>Fine progression within a tier</td><td>A number the render invents by rounding</td></tr>
+            <tr><td><code>rings</code></td><td>Marks for completed stretches, sized by each ring's depth</td><td>A summed total. Rings do not add up.</td></tr>
+            <tr><td><code>founding</code></td><td>A quiet, factual mark</td><td>A badge that implies superiority</td></tr>
+            <tr><td><code>status</code></td><td>A distinct terminal treatment for a relic</td><td>Hiding that the artifact ended</td></tr>
+            <tr><td><code>artifact_id</code></td><td>Stable per artifact variety</td><td>Anything that looks like a score</td></tr>
+            <tr><td><code>height</code></td><td>The printed height stamp</td><td>Nothing else</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The height stamp is mandatory</h2>
+      <p>Every render prints the height its numbers were read at. Depth changes every block, so a picture without a
+        height is a claim with no date. When someone sees a shared image six months later, the stamp is what makes
+        it checkable rather than misleading.</p>
+
+      <h2>Handling a moving artifact</h2>
+      <p>Depth resets when the carrier moves. A render must show that plainly:</p>
+      <ul>
+        <li>Show the live tier as it is now, which may be Raw.</li>
+        <li>Show the rings as history, clearly separate from the live state.</li>
+        <li>Never show the deepest ring where the live tier belongs.</li>
+        <li>Never animate a reset as though it were a loss or a punishment. It is a holder spending their own
+          coins.</li>
+      </ul>
+
+      <h2>Technical requirements</h2>
+      <ol>
+        <li>Pure function. No side effects, no network, no storage.</li>
+        <li>Reproducible offline. If it needs a font or an asset, the asset ships with the pack.</li>
+        <li>Deterministic output bytes for a given input, so two renderers can compare hashes.</li>
+        <li>Scales from a small avatar to a large share card without changing what it claims.</li>
+        <li>Readable in both light and dark surroundings.</li>
+        <li>Respects reduced motion. Any animation must be optional and never required to read the state.</li>
+        <li>Text alternatives for every element that carries meaning, so a screen reader gets the same facts.</li>
+      </ol>
+
+      <h2>Test your renderer</h2>
+      <ol>
+        <li>Render the same input twice and compare bytes. They must be identical.</li>
+        <li>Render on two machines and compare. Still identical.</li>
+        <li>Render every tier from Raw to Elder and check each is distinguishable from the next.</li>
+        <li>Render a relic and check it does not look like a live artifact.</li>
+        <li>Render an artifact with zero rings and one with several, and check the difference is legible.</li>
+        <li>Disconnect the network and render again. It must still work.</li>
+      </ol>
+      <p>Publishing rules are on <a href="render-packs.html">Publish a render pack</a>, and the honesty
+        requirements are on <a href="render-rules.html">Rules that keep renders honest</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

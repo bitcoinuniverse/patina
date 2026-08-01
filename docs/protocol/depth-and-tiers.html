@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Depth and tiers | PATINA docs</title>
+<meta name="description" content="Depth is the current height minus the carrier's creation height. The eight PATINA tiers from Raw to Elder, with thresholds and nominal elapsed time.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/depth-and-tiers.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Depth and tiers</h1>
+      <p class="lede">Depth is one subtraction. Tiers are eight thresholds on that number, and nothing else.</p>
+
+      <h2>Depth</h2>
+      <pre data-label="Definition"><code>depth = current_block_height - carrier.height</code></pre>
+      <ul>
+        <li>Computed when you ask. Never stored per block, never accumulated.</li>
+        <li>Counted in blocks, not days. Blocks are what the chain actually records.</li>
+        <li>A fresh carrier is depth zero, whatever the artifact's age.</li>
+        <li>A relic has no depth, because it has no carrier.</li>
+      </ul>
+      <pre data-label="Worked example"><code>carrier confirmed at height  880000
+chain tip                    893000
+depth                        13000
+tier                         3, Verdigris
+next tier                    4, Umber at 26280 blocks
+blocks to next tier          13280</code></pre>
+
+      <h2>Tier selection</h2>
+      <pre data-label="Rule"><code>tier = the highest threshold index whose threshold is not greater than depth</code></pre>
+      <p>Thresholds are inclusive. A depth of exactly 1008 is Sheen, not Raw. Tier 0, Raw, has no threshold because
+        everything starts there.</p>
+
+      <svg viewBox="0 0 320 320" width="100%" style="max-width:20rem;display:block;margin:0 auto 1.4rem" aria-hidden="true" focusable="false">
+        <g fill="none" stroke-width="7">
+          <circle cx="160" cy="160" r="150" stroke="#3f9b8f"></circle>
+          <circle cx="160" cy="160" r="130" stroke="#5c9c8b"></circle>
+          <circle cx="160" cy="160" r="110" stroke="#7f9271"></circle>
+          <circle cx="160" cy="160" r="90" stroke="#9c8c58"></circle>
+          <circle cx="160" cy="160" r="70" stroke="#b58a53"></circle>
+          <circle cx="160" cy="160" r="50" stroke="#c28d55"></circle>
+          <circle cx="160" cy="160" r="30" stroke="#c8a271"></circle>
+        </g>
+        <circle cx="160" cy="160" r="12" fill="#8d8378"></circle>
+      </svg>
+      <p class="footnote" style="text-align:center">Eight bands, from Raw at the centre to Elder at the rim. The
+        table below carries the numbers.</p>
+
+      <h2>The full table</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>The eight tiers. Nominal time assumes ten minutes per block, computed by
+            <code>docs/tools/vectors.mjs</code>. Real blocks do not arrive on a schedule.</caption>
+          <thead>
+            <tr><th>Index</th><th>Name</th><th>Blocks</th><th>Nominal days</th><th>Nominal years</th><th>Plain reading</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td>Raw</td><td>0</td><td>0</td><td>0</td><td>Just placed, or just moved</td></tr>
+            <tr><td>1</td><td>Sheen</td><td>1008</td><td>7.00</td><td>0.02</td><td>About a week</td></tr>
+            <tr><td>2</td><td>Cast</td><td>4032</td><td>28.00</td><td>0.08</td><td>About four weeks, the length of the founding window</td></tr>
+            <tr><td>3</td><td>Verdigris</td><td>12960</td><td>90.00</td><td>0.25</td><td>About three months</td></tr>
+            <tr><td>4</td><td>Umber</td><td>26280</td><td>182.50</td><td>0.50</td><td>About six months</td></tr>
+            <tr><td>5</td><td>Bronze</td><td>52560</td><td>365.00</td><td>1.00</td><td>About a year</td></tr>
+            <tr><td>6</td><td>Oxide</td><td>105120</td><td>730.00</td><td>2.00</td><td>About two years</td></tr>
+            <tr><td>7</td><td>Elder</td><td>210000</td><td>1458.33</td><td>3.99</td><td>About four years, close to one halving period</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <span class="lbl">Nominal is not a promise</span>
+        <p>Ten minutes per block is the target the difficulty adjustment aims at, not a guarantee. Over the last
+          years blocks have often arrived slightly faster than ten minutes, which means a tier reached in fewer
+          calendar days than the table says. Show blocks first and time second, and label time as an estimate
+          wherever you show it.</p>
+      </div>
+
+      <h2>Next tier</h2>
+      <pre data-label="Definition"><code>next_tier            the next threshold index above the current tier, or null at Elder
+blocks_to_next_tier  next threshold - depth, or null at Elder</code></pre>
+      <p>This is the only countdown in the product, and it is a real one. It goes down by one every block and it
+        resets to the full distance if the carrier moves.</p>
+
+      <h2>Tier names are labels, not scores</h2>
+      <ul>
+        <li>A tier does not confer anything. No access, no rights, no allocation.</li>
+        <li>Tier names are not a ranking of holders. Two artifacts at Bronze are not comparable in any way except
+          that both have not moved for at least 52560 blocks.</li>
+        <li>There is no tier above Elder. An artifact at 400000 blocks is Elder with a depth of 400000, and the
+          depth is the interesting number.</li>
+      </ul>
+
+      <h2>Rounding and display</h2>
+      <p>Rules for anything that renders depth, so that two views never disagree:</p>
+      <ol>
+        <li>Show the block count exactly. Never round it.</li>
+        <li>Derive calendar time from blocks at ten minutes each, and mark it as an estimate.</li>
+        <li>Show the height the number was taken at. A depth without a height is not checkable.</li>
+        <li>Never show a live depth for a relic. Show the rings instead.</li>
+        <li>Never interpolate between blocks. Depth is an integer and it changes when a block arrives.</li>
+      </ol>
+
+      <h2>Where tiers show up in the API</h2>
+      <pre data-label="On the artifact record"><code>"depth": 13000,
+"tier": 3,
+"tier_name": "Verdigris",
+"next_tier": 4,
+"blocks_to_next_tier": 13280</code></pre>
+      <p>The leaderboard ranks live stretches by depth, and the census reports survival per 2016-block epoch. Both
+        are on the <a href="../api/endpoints.html">endpoint reference</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deploy and configure | PATINA docs</title>
+<meta name="description" content="What a PATINA indexer needs, how to configure it, the feature flags that gate it, and the checks to run before it serves traffic.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="operator/deploy.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Deploy and configure</h1>
+      <p class="lede">An indexer, a Bitcoin node, and a deployment record. No keys anywhere in the stack.</p>
+
+      <h2>Components</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>What runs where.</caption>
+          <thead><tr><th>Component</th><th>Holds</th><th>Trusts</th></tr></thead>
+          <tbody>
+            <tr><td>Bitcoin node</td><td>The chain</td><td>Nothing. It validates.</td></tr>
+            <tr><td>Indexer</td><td>Derived PATINA state</td><td>Its own node only</td></tr>
+            <tr><td>App backend</td><td>Nothing durable about PATINA</td><td>The indexer it is pointed at</td></tr>
+            <tr><td>Frontend</td><td>Nothing</td><td>The app backend</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">No key material, anywhere</span>
+        <p>No component in this list holds a private key, takes custody, or broadcasts a user transaction that the
+          user has not signed. If a deployment ever appears to need a key, stop and find out why, because the
+          design does not require one.</p>
+      </div>
+
+      <h2>Requirements</h2>
+      <ul>
+        <li>A fully validating Bitcoin node on the target network, with RPC reachable from the indexer.</li>
+        <li>Input values available for the transactions being indexed, either from the node or from the indexer's
+          own UTXO tracking.</li>
+        <li>Durable storage for the index. Small next to the chain, but it must survive restarts.</li>
+        <li>The deployment record for the network being indexed.</li>
+        <li>A clock that is roughly correct, for logs. Nothing in the protocol depends on wall clock time.</li>
+      </ul>
+
+      <h2>The deployment record</h2>
+      <pre data-label="Fields"><code>{
+  "network": "signet",
+  "protocol_id": "PTNA",
+  "spec_sha256": "...",
+  "h_open": 0,
+  "h_close": 0,
+  "grace_end": 0,
+  "min_carrier_founding": "100000",
+  "min_carrier_open": "10000",
+  "commit_min_age": 144
+}</code></pre>
+      <ul>
+        <li>Regtest and signet records ship in the protocol repo. Use them as they are.</li>
+        <li>Mainnet values stay unset until activation is authorised.</li>
+        <li><code>spec_sha256</code> binds this deployment to an exact specification. Publish it through
+          <code>GET /patina/status</code> and log it with anything you keep.</li>
+      </ul>
+
+      <h2>Feature flags</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Flags that gate the app backend and frontend.</caption>
+          <thead><tr><th>Flag</th><th>Effect when unset or false</th></tr></thead>
+          <tbody>
+            <tr><td><code>PATINA_ENABLED</code></td><td>The backend module does not load. No routes exist.</td></tr>
+            <tr><td><code>PATINA_INDEXER_URL</code></td><td>Nothing to proxy. Reads fail closed rather than returning empty data.</td></tr>
+            <tr><td><code>PATINA_NETWORK</code></td><td>No network selected. Refuse to start rather than guess.</td></tr>
+            <tr><td><code>VITE_PATINA_ENABLED</code></td><td>The workspace is not shown in the frontend.</td></tr>
+            <tr><td><code>PATINA_MAINNET_AUTHORIZED</code></td><td>Mainnet transaction construction is refused, even if the network is set to mainnet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">Mainnet needs two things, not one</span>
+        <p>Mainnet requires <code>PATINA_MAINNET_AUTHORIZED=true</code> <em>and</em> a mainnet deployment record
+          naming two approvers. Code must refuse mainnet construction unless both are present. This is a hard stop,
+          not a warning, and it exists so that a misconfigured environment cannot open a founding window.</p>
+      </div>
+
+      <h2>First run</h2>
+      <ol class="steps">
+        <li>
+          <h3>Start on regtest</h3>
+          <p>Blocks are instant, so a full mint rehearsal takes minutes rather than a day.</p>
+        </li>
+        <li>
+          <h3>Run the golden vectors</h3>
+          <p>Before the indexer sees a real chain. A build that fails vectors must not be deployed. See
+            <a href="../compat/golden-vectors.html">Golden vectors and state roots</a>.</p>
+        </li>
+        <li>
+          <h3>Index from the deployment start height</h3>
+          <p>Not from block zero. There is nothing to find before the deployment.</p>
+        </li>
+        <li>
+          <h3>Confirm status is honest</h3>
+          <pre data-label="Expected during initial sync"><code>curl -s http://localhost:PORT/patina/status
+# indexed_height well below tip_height, synced false
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:PORT/patina/ready
+# 503 while syncing</code></pre>
+          <p>An indexer that reports ready during initial sync is misconfigured and will serve incomplete
+            answers.</p>
+        </li>
+        <li>
+          <h3>Move to signet</h3>
+          <p>Real block timing, no value at risk. Run a full mint here, including the 144 block wait.</p>
+        </li>
+        <li>
+          <h3>Only then consider mainnet</h3>
+          <p>With authorisation, an approved deployment record, and the launch checklist complete. See
+            <a href="../launch/checklist.html">Pre launch checklist</a>.</p>
+        </li>
+      </ol>
+
+      <h2>Network exposure</h2>
+      <ul>
+        <li>The indexer needs the node's RPC. Nothing else needs the node.</li>
+        <li>Do not expose the Bitcoin RPC to the internet.</li>
+        <li>Rate limit the public API at the edge. The protocol defines no authentication, so protection is the
+          operator's job.</li>
+        <li><code>/metrics</code> is for your monitoring system, not for the public.</li>
+        <li>If browsers will call the API directly, CORS headers are required. Without them a page opened from
+          disk, or from another origin, gets a request that fails before any data arrives.</li>
+      </ul>
+
+      <h2>Before serving traffic</h2>
+      <ol>
+        <li>Golden vectors pass on this exact build.</li>
+        <li><code>status</code> reports the right network and the expected <code>spec_sha256</code>.</li>
+        <li><code>ready</code> returns an error until sync completes, and success afterwards.</li>
+        <li>A known artifact from the test network resolves correctly by id.</li>
+        <li>A state root at a fixed height matches a second, independent indexer.</li>
+        <li>Backups and the restore drill are done, not planned. See
+          <a href="backup.html">Back up and restore</a>.</li>
+        <li>Alerts are firing to somewhere a human will see them. See
+          <a href="verify.html">Verify and monitor</a>.</li>
+      </ol>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

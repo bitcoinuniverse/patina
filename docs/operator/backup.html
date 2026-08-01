@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Back up and restore | PATINA docs</title>
+<meta name="description" content="What is precious in a PATINA deployment and what is merely derived, how to snapshot an index, and how to verify a restore before serving from it.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="operator/backup.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Back up and restore</h1>
+      <p class="lede">Almost nothing in a PATINA deployment is precious, because almost all of it is derived from
+        the blockchain. Knowing which part is which saves you from protecting the wrong thing.</p>
+
+      <h2>Precious or derived</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>What actually needs a backup.</caption>
+          <thead><tr><th>Item</th><th>Class</th><th>If you lose it</th></tr></thead>
+          <tbody>
+            <tr><td>Deployment record</td><td>Precious</td><td>You do not know which window heights you were indexing. Keep it in version control.</td></tr>
+            <tr><td>Specification and <code>spec_sha256</code></td><td>Precious</td><td>You cannot prove what rules you ran. Keep it in version control.</td></tr>
+            <tr><td>Configuration</td><td>Precious</td><td>Rebuildable by hand, slowly and with mistakes. Keep it in version control.</td></tr>
+            <tr><td>Verification log</td><td>Precious</td><td>You lose the last known good height, which is what makes an investigation finite.</td></tr>
+            <tr><td>The index itself</td><td>Derived</td><td>Nothing, except the time to rebuild it</td></tr>
+            <tr><td>Cached API responses</td><td>Derived</td><td>Nothing</td></tr>
+            <tr><td>Metrics history</td><td>Useful, not precious</td><td>You lose trend context for alerts</td></tr>
+            <tr><td>Bitcoin node data</td><td>Derived, expensive</td><td>Nothing, except a long resync</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <span class="lbl">Backing up the index is a speed decision</span>
+        <p>The index contains no unique information. A snapshot exists so that recovery takes minutes instead of a
+          rebuild, and for no other reason. If a snapshot is ever inconvenient or of doubtful integrity, throw it
+          away and reindex. Rebuilding is always correct.</p>
+      </div>
+
+      <h2>Snapshot procedure</h2>
+      <ol class="steps">
+        <li>
+          <h3>Record the height and the root</h3>
+          <p>Note <code>indexed_height</code> and the state root at that height. A snapshot without them cannot be
+            verified after restore.</p>
+        </li>
+        <li>
+          <h3>Take a consistent copy</h3>
+          <p>Stop writes, or use whatever consistent snapshot mechanism your storage engine provides. A copy taken
+            while blocks are being applied is not a snapshot, it is a mixture.</p>
+        </li>
+        <li>
+          <h3>Store the metadata with it</h3>
+          <p>Network, <code>spec_sha256</code>, <code>parser_version</code>, <code>indexer_version</code>,
+            <code>indexed_height</code>, the state root, and the timestamp.</p>
+        </li>
+        <li>
+          <h3>Checksum the archive</h3>
+          <p>So a corrupt restore is detected before it is served rather than after.</p>
+        </li>
+      </ol>
+
+      <h2>Restore procedure</h2>
+      <ol class="steps">
+        <li>
+          <h3>Check the metadata first</h3>
+          <p>Same network, same <code>spec_sha256</code>. A snapshot from a different specification must not be
+            restored, because it was produced by different rules.</p>
+        </li>
+        <li>
+          <h3>Restore into a store that is not serving</h3>
+          <p>Never restore over a live index.</p>
+        </li>
+        <li>
+          <h3>Verify the root at the recorded height</h3>
+          <p>It must equal the root recorded when the snapshot was taken. If it does not, the snapshot is corrupt.
+            Discard it and reindex.</p>
+        </li>
+        <li>
+          <h3>Catch up</h3>
+          <p>Let it index forward to the current tip with <code>/ready</code> failing throughout.</p>
+        </li>
+        <li>
+          <h3>Cross check before serving</h3>
+          <p>Compare the state root against a second implementation at a common height. Only then take
+            traffic.</p>
+        </li>
+      </ol>
+
+      <h2>Recovery paths, by situation</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Pick the cheapest path that ends in a verified state.</caption>
+          <thead><tr><th>Situation</th><th>Path</th></tr></thead>
+          <tbody>
+            <tr><td>Process crashed, storage intact</td><td>Restart. Confirm it resumes from its last height.</td></tr>
+            <tr><td>Unclean shutdown, storage integrity unknown</td><td>Restore a snapshot, or reindex. Do not guess.</td></tr>
+            <tr><td>Storage lost</td><td>Restore a snapshot and catch up, or reindex.</td></tr>
+            <tr><td>Snapshot fails root verification</td><td>Reindex. Report the snapshot as bad so nobody else restores it.</td></tr>
+            <tr><td>State root disagrees with another implementation</td><td>Do not restore anything. Investigate first. Restoring hides the evidence.</td></tr>
+            <tr><td>Whole host lost</td><td>New host, node from scratch or from its own snapshot, then index restore or rebuild.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Drill it</h2>
+      <p>A restore procedure that has never been run is a hypothesis. Run it on a schedule:</p>
+      <ol>
+        <li>Restore the most recent snapshot onto a clean host.</li>
+        <li>Verify the root at the recorded height.</li>
+        <li>Catch up to tip.</li>
+        <li>Compare against the live indexer at a common height.</li>
+        <li>Write down how long the whole thing took. That number is your real recovery time, and it is the one to
+          quote when someone asks.</li>
+      </ol>
+
+      <h2>What a backup cannot do</h2>
+      <ul>
+        <li>It cannot restore an artifact. Artifacts live on the blockchain, not in your database.</li>
+        <li>It cannot undo a spend, restore depth, or bring back a relic.</li>
+        <li>It cannot recover anything for a user, because the indexer holds nothing that belongs to them.</li>
+      </ul>
+      <p>That is the point of the architecture. The worst operational disaster in this stack costs time, not
+        anyone's property.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

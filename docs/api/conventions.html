@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API conventions | PATINA docs</title>
+<meta name="description" content="Types, serialisation, cursors, pagination, and sync state for the PATINA indexer API.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="api/conventions.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>API conventions</h1>
+      <p class="lede">Read these once and every endpoint becomes predictable.</p>
+
+      <h2>Base path</h2>
+      <pre data-label="Indexer"><code>https://your-indexer.example.org/patina/...</code></pre>
+      <p>The app backend proxies a read only subset under <code>/patina/...</code> with the organisation's fail
+        closed conventions, plus two build helpers that return unsigned transaction plans. It holds no keys and
+        takes no custody.</p>
+      <div class="note">
+        <span class="lbl">On that path segment</span>
+        <p>The program has a rule against version labels in names, folders, and copy, and the indexer base path
+          follows it like everything else. An earlier draft of the baseline put a numbered segment in this path,
+          which broke the rule; the baseline was corrected before launch, and every implementation serves
+          <code>/patina</code>.</p>
+      </div>
+
+      <h2>Types</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>How values are serialised.</caption>
+          <thead><tr><th>Kind</th><th>JSON type</th><th>Example</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Satoshi amounts</td><td>string</td><td><code>"100000"</code></td><td>Survives parsers that lose precision on large integers</td></tr>
+            <tr><td>Block heights</td><td>number</td><td><code>893000</code></td><td>Always small enough to be safe</td></tr>
+            <tr><td>Depths and counts</td><td>number</td><td><code>13000</code></td><td>Same</td></tr>
+            <tr><td>Ids and hashes</td><td>string, lowercase hex</td><td><code>"d3b8d301..."</code></td><td>One canonical spelling</td></tr>
+            <tr><td>Txids</td><td>string, display order</td><td><code>"1d29e5ba..."</code></td><td>Matches block explorers. Wire order appears only inside derivations.</td></tr>
+            <tr><td>Outpoints in requests</td><td>string</td><td><code>"txid:vout"</code></td><td>One field instead of two</td></tr>
+            <tr><td>Absent values</td><td><code>null</code></td><td><code>"carrier": null</code></td><td>Fields are present with null, not omitted</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>There are no timestamps anywhere in the protocol surface. Heights are the clock. If you need calendar
+        time, convert from heights yourself and label it as an estimate.</p>
+
+      <h2>Requests</h2>
+      <ul>
+        <li>Everything is <code>GET</code> except <code>POST /patina/safety/outpoints</code>, which is a POST
+          only because the request body can be long. It stores nothing.</li>
+        <li>Request bodies are <code>application/json</code>.</li>
+        <li>No authentication is defined by the protocol. An operator may put their own in front.</li>
+        <li>Unknown query parameters are ignored rather than rejected, so clients can add hints safely.</li>
+      </ul>
+
+      <h2>Pagination</h2>
+      <p>List endpoints take <code>cursor</code> and <code>limit</code>, and return <code>items</code> plus
+        <code>next_cursor</code>.</p>
+      <pre data-label="Paging through artifacts"><code>GET /patina/artifacts?limit=100
+GET /patina/artifacts?limit=100&amp;cursor=&lt;next_cursor from the previous page&gt;</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>Pagination rules.</caption>
+          <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td>Cursors are opaque</td><td>Treat the string as a token. Do not parse it, do not build one, do not assume it encodes an offset.</td></tr>
+            <tr><td>End of list</td><td><code>next_cursor</code> is <code>null</code>. An empty <code>items</code> array with a null cursor means there is nothing more.</td></tr>
+            <tr><td>Limit</td><td>Client asks, server decides. Always read how many items you actually received rather than assuming you got <code>limit</code>.</td></tr>
+            <tr><td>Ordering</td><td>Stable within a page sequence, and documented per endpoint. Do not rely on ordering that is not stated.</td></tr>
+            <tr><td>Filters must be repeated</td><td>Send the same <code>founding</code>, <code>status</code>, or <code>address</code> filters with the cursor.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">Pagination is not a snapshot</span>
+        <p>New blocks arrive while you page. An artifact can move between page one and page four, so a long walk
+          can miss items or repeat them. If you need a consistent view, record <code>indexed_height</code> before
+          you start, and check it is unchanged when you finish. If it moved and you need exactness, walk again.</p>
+      </div>
+
+      <h2>Sync state</h2>
+      <p>Every consumer should read this before trusting anything else:</p>
+      <pre data-label="GET /patina/status, sync fields"><code>{
+  "tip_height": 0,
+  "indexed_height": 0,
+  "synced": false
+}</code></pre>
+      <ul>
+        <li><code>tip_height</code> is what the Bitcoin node reports.</li>
+        <li><code>indexed_height</code> is what this indexer has processed.</li>
+        <li><code>synced</code> is the operator's view of whether the gap is acceptable.</li>
+      </ul>
+      <p>A large gap means the answers are correct for an older chain, not wrong. Show the height you read at, and
+        never present data from an unsynced indexer as current.</p>
+
+      <h2>Identity of the indexer</h2>
+      <p><code>status</code> also carries <code>network</code>, <code>protocol_id</code>,
+        <code>spec_sha256</code>, <code>parser_version</code>, and <code>indexer_version</code>. Log all five
+        alongside any data you keep. When two systems disagree, the first question is whether they are running the
+        same spec on the same network.</p>
+
+      <h2>Compatibility promise</h2>
+      <ul>
+        <li>New fields may appear on existing responses. Ignore fields you do not know.</li>
+        <li>New endpoints may appear.</li>
+        <li>Existing fields are not removed, renamed, or repurposed.</li>
+        <li>Sat values stay strings. Do not switch them to numbers in your own proxy.</li>
+      </ul>
+      <p>Anything beyond that is a protocol change and goes through
+        <a href="../protocol/upgrade-boundary.html">the upgrade boundary</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Go, conditional go, no go | PATINA docs</title>
+<meta name="description" content="The criteria for opening the PATINA founding window, decided in advance so that nobody has to make the call under pressure.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="launch/go-no-go.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Go, conditional go, no go</h1>
+      <p class="lede">Written before the decision has to be made, so that the answer is read rather than argued.</p>
+
+      <div class="note">
+        <span class="lbl">Why this exists</span>
+        <p>The window opens once. There is no way to reopen it, extend it, or take it back. A decision that
+          permanent should not be made by whoever is most tired at the end of a long week.</p>
+      </div>
+
+      <h2>Go</h2>
+      <p>All of these are true. If they are, open the window.</p>
+      <ol>
+        <li>Golden vectors pass on the exact build that will run.</li>
+        <li>Two independent implementations produce identical state roots across the full rehearsal range.</li>
+        <li>Both indexers are synced to the mainnet tip and readiness behaves correctly.</li>
+        <li>The mainnet deployment record exists, names two approvers, and both have approved.</li>
+        <li><code>spec_sha256</code> published, and matching what <code>status</code> reports on both
+          indexers.</li>
+        <li>A full mint has been completed on signet by someone who did not build the tooling, following only the
+          published walkthrough.</li>
+        <li>Every deliberate failure rehearsal produced the correct reason code and a clear explanation in the
+          product.</li>
+        <li>A restore drill has been completed, with the measured recovery time written down.</li>
+        <li>Every statistic in the product comes from a live call and has an honest empty state.</li>
+        <li>The three limits appear in the product itself.</li>
+        <li>Alerts route to a named on call person for the whole window.</li>
+        <li>Documentation is published, links resolve, and the byte examples have been recomputed.</li>
+      </ol>
+
+      <h2>Conditional go</h2>
+      <p>Open the window, with a specific mitigation named, owned, and published.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>Conditions that do not block, provided the mitigation is real.</caption>
+          <thead><tr><th>Condition</th><th>Mitigation</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Only one indexer is production ready, and the second is behind but agreeing so far</td>
+              <td>Publish that cross verification is running against a non production instance, and finish the
+                second before <code>h_open + 144</code></td>
+            </tr>
+            <tr>
+              <td>The planner is not finished</td>
+              <td>Ship without it. Minting is possible with raw transaction construction, and the walkthrough
+                covers it. Do not ship a planner that has not been rehearsed.</td>
+            </tr>
+            <tr>
+              <td>A render pack is incomplete</td>
+              <td>Ship without renders. They are a view, not the state.</td>
+            </tr>
+            <tr>
+              <td>A cosmetic or copy defect in a non critical surface</td>
+              <td>Fix it in the first week, and list it publicly as known</td>
+            </tr>
+            <tr>
+              <td>Metrics history is thin because the stack is new</td>
+              <td>Watch manually for the first 144 blocks and set thresholds from observed behaviour</td>
+            </tr>
+            <tr>
+              <td>Documentation has a gap in an advanced area, such as the canonical encoding</td>
+              <td>Say so on the page, point at the golden vectors as the authority, and record it as
+                incomplete</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A conditional go is only conditional if the mitigation has an owner and a deadline. Without both, it is a
+        no go wearing optimism.</p>
+
+      <h2>No go</h2>
+      <p>Any one of these stops the launch. Not a discussion, not a vote.</p>
+      <ol>
+        <li>Golden vectors fail, on any case.</li>
+        <li>Two implementations disagree on any state root, anywhere, unresolved.</li>
+        <li>The deployment record is missing, unapproved, or has fewer than two approvers.</li>
+        <li>Window heights have not been checked arithmetically against 4032 and 4032.</li>
+        <li>The indexer serves data while unsynced, or readiness reports ready when it is not.</li>
+        <li>Reorg rollback and replay do not reproduce the same state root in testing.</li>
+        <li>Any surface shows a number that did not come from a live call.</li>
+        <li>Any surface simulates a successful mint, or shows a countdown that is not a real block count.</li>
+        <li>The mint flow can produce a transaction that loses a user's coins, in any tested path.</li>
+        <li>A rehearsal mint failed for a reason nobody can explain.</li>
+        <li>No restore drill has been completed.</li>
+        <li>Nobody is on call.</li>
+        <li>The honest limits are not in the product.</li>
+      </ol>
+
+      <h2>Who decides</h2>
+      <ul>
+        <li>Go requires two approvers, the same two named on the deployment record.</li>
+        <li>Any single person on the team can call a no go, and it stands until the condition is resolved.</li>
+        <li>A conditional go requires the mitigation owner to accept it in writing.</li>
+        <li>The decision, the date, the block height, and the names are recorded.</li>
+      </ul>
+
+      <h2>Delaying is cheap</h2>
+      <p>Nothing is lost by opening the window later. There is no competitor race, no expiring opportunity, and no
+        promised date to break, because the announcement publishes heights and those heights can be republished.
+        The only irreversible mistake available is opening a window that should not have opened.</p>
+      <div class="warn">
+        <span class="lbl">If in doubt</span>
+        <p>Do not open. The cost of waiting a week is a week. The cost of opening on a broken parser is every
+          artifact minted before it was found.</p>
+      </div>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

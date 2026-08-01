@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glossary | PATINA docs</title>
+<meta name="description" content="Every PATINA term defined in one place: carrier, depth, ring, relic, SEED, KEEP, endowment, commit, salt, tier, and the rest.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="reference/glossary.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Glossary</h1>
+      <p class="lede">Every term these pages use, defined once.</p>
+
+      <h2>Protocol terms</h2>
+      <dl class="fields">
+        <dt>Artifact</dt>
+        <dd>One PATINA object. It has a permanent id, rides a carrier output, and accumulates rings.</dd>
+
+        <dt>Artifact id</dt>
+        <dd><code>SHA256("PTNA/artifact" || reveal_txid_wire || carrier_vout_le)</code>. Fixed at birth and never
+          changed by a move.</dd>
+
+        <dt>Attestation</dt>
+        <dd>A BIP-322 signature over
+          <code>"PTNA/attest" || artifact_id_hex || block_hash_hex</code>, made off chain by the carrier key. Shows
+          the key is still signable at a recent block.</dd>
+
+        <dt>Baseline</dt>
+        <dd>The frozen file of constants and contracts every workstream builds against. Where these pages and the
+          baseline disagree, the baseline wins.</dd>
+
+        <dt>Bundle</dt>
+        <dd>Several artifacts sharing one carrier. They move together and cannot be split by a single
+          transaction.</dd>
+
+        <dt>Carrier</dt>
+        <dd>The unspent output an artifact rides. Written <code>txid:vout</code>. Spending it ends the stretch.</dd>
+
+        <dt>Census</dt>
+        <dd>A deterministic survival table computed per 2016-block epoch, served at
+          <code>/census/current</code> and <code>/census/:epoch</code>.</dd>
+
+        <dt>Claimant key</dt>
+        <dd>The 32 byte x-only public key that appears in the commit leaf and signs the reveal.</dd>
+
+        <dt>Commit</dt>
+        <dd>The first of the two mint transactions. It creates a Taproot output whose script path carries the
+          commitment.</dd>
+
+        <dt>Commitment</dt>
+        <dd><code>SHA256("PTNA/commit" || claimant_xonly || salt)</code>. Stored inside the commit leaf.</dd>
+
+        <dt>Commit leaf</dt>
+        <dd>The tapscript
+          <code>&lt;claimant_xonly&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</code>, 70 bytes.</dd>
+
+        <dt>Default rule</dt>
+        <dd>When no valid KEEP entry applies, the successor is the lowest index output that is not an OP_RETURN and
+          holds at least 10000 sats.</dd>
+
+        <dt>Depth</dt>
+        <dd><code>current_height - carrier.height</code>, in blocks. Computed at query time, never stored.</dd>
+
+        <dt>Deployment record</dt>
+        <dd>The binding of a network to its window heights, minimums, and <code>spec_sha256</code>.</dd>
+
+        <dt>Endowment</dt>
+        <dd>The sats held in the carrier. Yours the whole time. At least 100000 for a founding Seal.</dd>
+
+        <dt>Epoch</dt>
+        <dd>A 2016-block difficulty period, used as the unit for the census.</dd>
+
+        <dt>Firstlight Seal</dt>
+        <dd>An artifact created in the founding window, with <code>founding: true</code>. The genesis asset.</dd>
+
+        <dt>Flags</dt>
+        <dd>One reserved byte in the SEED payload with no assigned meaning. Accept any value and do not branch on
+          it.</dd>
+
+        <dt>Founding</dt>
+        <dd>True when the commit output confirmed inside the window and the reveal landed at or before the end of
+          the grace period.</dd>
+
+        <dt>Grace period</dt>
+        <dd>4032 blocks after the window closes, during which a commit made inside the window can still be revealed
+          as founding.</dd>
+
+        <dt>KEEP</dt>
+        <dd>Marker opcode <code>0x02</code>. Routes artifacts to chosen outputs when carriers are spent. One to
+          eight entries.</dd>
+
+        <dt>Marker</dt>
+        <dd>An OP_RETURN output with one minimal push containing
+          <code>"PTNA" | version | op | payload</code>.</dd>
+
+        <dt>Magic</dt>
+        <dd>The four bytes <code>50 54 4e 41</code>, ASCII <code>PTNA</code>, at the start of every marker
+          payload.</dd>
+
+        <dt>Minimal push</dt>
+        <dd>The shortest valid script encoding for a piece of data. Required, so that one marker has exactly one
+          valid spelling.</dd>
+
+        <dt>Museum</dt>
+        <dd>The endpoint listing the longest completed rings. History, as opposed to the leaderboard which is the
+          present.</dd>
+
+        <dt>Outpoint</dt>
+        <dd>A transaction id and an output index together, identifying one output.</dd>
+
+        <dt>Reason code</dt>
+        <dd>One of eighteen frozen strings recording why a marked transaction did not do what it appeared to
+          attempt.</dd>
+
+        <dt>Relic</dt>
+        <dd>An artifact whose carrier was spent with no eligible successor. Terminal. Keeps its id and rings
+          forever.</dd>
+
+        <dt>Reorg</dt>
+        <dd>A chain reorganisation. Handled by rolling state back to the fork point and replaying.</dd>
+
+        <dt>Reveal</dt>
+        <dd>The second mint transaction. Spends the commit by the script path and carries the SEED marker.</dd>
+
+        <dt>Ring</dt>
+        <dd>The permanent record of one completed stretch: start height, end height, depth, value carried, and
+          where the artifact went next.</dd>
+
+        <dt>Salt</dt>
+        <dd>16 random bytes, chosen at commit time, repeated in the SEED payload. Never reuse one.</dd>
+
+        <dt>SEED</dt>
+        <dd>Marker opcode <code>0x01</code>. Creates an artifact. Payload is
+          <code>salt(16) | flags(1) | carrier_vout(1)</code>.</dd>
+
+        <dt>Shatter</dt>
+        <dd>The endpoint listing recently closed rings, newest first.</dd>
+
+        <dt>spec_sha256</dt>
+        <dd>The hash of the specification a deployment is bound to. Published through <code>status</code>. Quote it
+          instead of a version label.</dd>
+
+        <dt>State root</dt>
+        <dd><code>SHA256("PTNA/state" || canonical snapshot encoding)</code>. Two implementations agree when their
+          roots match at the same height.</dd>
+
+        <dt>Stretch</dt>
+        <dd>One continuous period during which a carrier stays unspent. A stretch becomes a ring when it ends.</dd>
+
+        <dt>Successor</dt>
+        <dd>The output an artifact follows when its carrier is spent. Chosen by a valid KEEP entry, or by the
+          default rule.</dd>
+
+        <dt>Tier</dt>
+        <dd>One of eight named bands on depth: Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder.</dd>
+
+        <dt>Window</dt>
+        <dd>The 4032 block period during which founding commits are accepted. Opens once.</dd>
+
+        <dt>Wire order</dt>
+        <dd>A transaction id in internal byte order, the reverse of what a block explorer displays. Used inside the
+          artifact id derivation.</dd>
+      </dl>
+
+      <h2>Bitcoin terms used here</h2>
+      <dl class="fields">
+        <dt>BIP-322</dt>
+        <dd>The standard for signing a message with a Bitcoin key, including Taproot addresses. Used for
+          attestations.</dd>
+
+        <dt>BIP-341</dt>
+        <dd>The Taproot specification. Defines tapleaf hashing and script path spends, which the commit output
+          uses.</dd>
+
+        <dt>Coin control</dt>
+        <dd>Choosing which outputs a wallet spends, and locking outputs so it cannot spend them. The main defence
+          against an accidental reset.</dd>
+
+        <dt>CPFP</dt>
+        <dd>Child pays for parent. Spending an output of a slow transaction to raise the effective fee. Safe for a
+          PATINA artifact only when the child spends an output that is not the carrier.</dd>
+
+        <dt>OP_RETURN</dt>
+        <dd>An output that is provably unspendable and carries data. Every PATINA marker is one.</dd>
+
+        <dt>P2TR</dt>
+        <dd>Pay to Taproot. The output type used for the commit.</dd>
+
+        <dt>RBF</dt>
+        <dd>Replace by fee. Replacing an unconfirmed transaction with a higher fee version. Changes the txid, which
+          matters when the transaction is your reveal.</dd>
+
+        <dt>Script path spend</dt>
+        <dd>Spending a Taproot output by revealing a script from its tree, rather than with the key path. The
+          reveal must do this.</dd>
+
+        <dt>x-only public key</dt>
+        <dd>A 32 byte public key encoding used by Taproot, with the y coordinate implied.</dd>
+      </dl>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

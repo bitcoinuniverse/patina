@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>State machine | PATINA docs</title>
+<meta name="description" content="The PATINA state model: the artifact record, the two states ALIVE and RELIC, the transitions between them, and how bundles behave.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/state-machine.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>State machine</h1>
+      <p class="lede">Two states, three transitions, and one record. Everything else is derived at query time.</p>
+
+      <h2>The artifact record</h2>
+      <pre data-label="State model"><code>Artifact {
+  artifact_id
+  birth_txid, birth_height, birth_vout
+  endowment_sats
+  founding
+  status: ALIVE | RELIC
+  carrier: { txid, vout, height, value } | null
+  rings: Ring[]
+}
+
+Ring {
+  index
+  start_height, end_height
+  depth
+  carried_value
+  successor_txid | null
+  successor_vout | null
+  relic
+}</code></pre>
+      <p>Depth and tier are not in the record. They are computed when you ask, from the carrier height and the
+        current tip. Nothing is written per block.</p>
+
+      <h2>The two states</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>ALIVE and RELIC.</caption>
+          <thead><tr><th></th><th>ALIVE</th><th>RELIC</th></tr></thead>
+          <tbody>
+            <tr><td>carrier</td><td>An unspent outpoint</td><td><code>null</code></td></tr>
+            <tr><td>depth</td><td><code>tip_height - carrier.height</code></td><td>Not applicable</td></tr>
+            <tr><td>Can gain rings</td><td>Yes, one each time the carrier is spent</td><td>No</td></tr>
+            <tr><td>Can return to the other state</td><td>Becomes RELIC when a spend has no successor</td><td>Never. Terminal.</td></tr>
+            <tr><td>Rings readable</td><td>Yes</td><td>Yes, forever</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The three transitions</h2>
+      <h3>Birth: nothing to ALIVE</h3>
+      <p>A valid SEED transaction creates the artifact. <code>carrier</code> is set to the named output, at the
+        height of the block containing the reveal. <code>rings</code> is empty. Depth starts at zero and increments
+        with every block that passes.</p>
+      <p>Conditions on <a href="seed-rules.html">SEED rules</a>.</p>
+
+      <h3>Move: ALIVE to ALIVE</h3>
+      <p>A confirmed spend of the carrier ends the stretch.</p>
+      <ol>
+        <li>Append a ring with <code>start_height = carrier.height</code>,
+          <code>end_height = spend_height</code>, and
+          <code>depth = spend_height - carrier.height</code>.</li>
+        <li>Record <code>carried_value</code> as the value the carrier held.</li>
+        <li>Choose the successor with a valid KEEP entry, or the default rule.</li>
+        <li>Set <code>carrier</code> to the successor outpoint, with the spend block's height and the successor's
+          value.</li>
+        <li>Record <code>successor_txid</code> and <code>successor_vout</code> on the ring.</li>
+      </ol>
+      <p>Depth is now zero again, counting from the block that made the successor.</p>
+
+      <h3>End: ALIVE to RELIC</h3>
+      <p>Same spend, but no eligible successor exists: no valid KEEP entry, and no output that is both non
+        OP_RETURN and at or above 10000 sats.</p>
+      <ol>
+        <li>Append a ring the same way, with <code>successor_txid</code> and <code>successor_vout</code> null and
+          <code>relic: true</code>.</li>
+        <li>Set <code>carrier</code> to null and <code>status</code> to <code>RELIC</code>.</li>
+      </ol>
+      <p>There is no path out. A relic keeps its id, its rings, and its founding flag forever.</p>
+
+      <h2>What does not change, ever</h2>
+      <ul>
+        <li><code>artifact_id</code></li>
+        <li><code>birth_txid</code>, <code>birth_height</code>, <code>birth_vout</code></li>
+        <li><code>founding</code></li>
+        <li>Any ring that has already been appended</li>
+      </ul>
+      <p>The only exception is a reorg, which does not change these values so much as unwind the blocks that
+        produced them. See <a href="reorgs.html">Reorg behavior</a>.</p>
+
+      <h2>Everything happens in block order</h2>
+      <p>State is a function of the blockchain and nothing else. Given the same chain, every correct implementation
+        produces the same state.</p>
+      <ol>
+        <li>Process blocks in height order.</li>
+        <li>Inside a block, process transactions in the order they appear in the block.</li>
+        <li>Inside a transaction, the spend of an existing carrier and the creation of a new artifact are
+          independent. Whether a spent input was a carrier is decided by the state before this transaction, and a
+          newly created carrier is an output of this transaction, so it cannot also be spent by it.</li>
+        <li>Nothing in the mempool affects state. An unconfirmed spend has not happened.</li>
+      </ol>
+
+      <h2>Bundles: several artifacts, one carrier</h2>
+      <p>Successor routing can land two artifacts on the same output. From then on they share a carrier and move
+        together.</p>
+      <ul>
+        <li>All artifacts on a shared carrier have the same depth, because depth is a property of the outpoint.</li>
+        <li>Spending that carrier ends every one of their stretches at once and engraves a ring on each.</li>
+        <li>A KEEP entry names an input, and one input can name only one vout. So one transaction routes every
+          artifact on that carrier to the same place.</li>
+      </ul>
+      <div class="note">
+        <span class="lbl">Splitting a bundle takes several transactions</span>
+        <p>Because a single spend of a carrier moves everything on it to one destination, you cannot split a bundle
+          in one transaction. You split it across a sequence: move the bundle, then move the resulting carrier
+          again, arranging along the way for the artifacts you want apart to end up on different carriers. Each
+          step is a spend, so each step resets depth for everything it touches. Plan it before you need it, not
+          during a sale.</p>
+      </div>
+
+      <h2>Invalid events are part of the state</h2>
+      <p>A transaction that carries a marker and fails a rule does not change any artifact, but it does record an
+        invalid event with a reason code. Those events are served by
+        <code>GET /patina/invalid-events</code>, and they are what makes a failed mint diagnosable instead of
+        mysterious.</p>
+      <p>Treat them as part of the state you must reproduce. Two implementations that agree on artifacts but
+        disagree on invalid events do not agree. See <a href="reason-codes.html">Reason codes</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

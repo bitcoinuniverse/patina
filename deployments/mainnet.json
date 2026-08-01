@@ -1,0 +1,11 @@
+{
+  "network": "mainnet",
+  "protocol_id": "PTNA",
+  "spec_sha256": "3503126ca9a9c61145459cbbac18d39bb8bc3ecf743e3e0fa68455bbac91b796",
+  "h_open": null,
+  "h_close": null,
+  "grace_end": null,
+  "min_carrier_founding": 100000,
+  "min_carrier_open": 10000,
+  "commit_min_age": 144
+}

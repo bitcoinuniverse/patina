@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verify and monitor | PATINA docs</title>
+<meta name="description" content="How to prove a PATINA indexer is correct, and what to watch continuously: sync gap, readiness, root agreement, and invalid event rates.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="operator/verify.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Verify and monitor</h1>
+      <p class="lede">Verification proves the state is right. Monitoring tells you when that stops being true.
+        You need both.</p>
+
+      <h2>Verification, in order of strength</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Ways to check an indexer, weakest first.</caption>
+          <thead><tr><th>Check</th><th>Proves</th><th>Run it</th></tr></thead>
+          <tbody>
+            <tr><td>The process answers</td><td>Almost nothing</td><td>Continuously</td></tr>
+            <tr><td>Sync gap is small</td><td>The data is current, not that it is correct</td><td>Continuously</td></tr>
+            <tr><td>Golden vectors pass</td><td>The parser handles every known case correctly</td><td>Every build, before deploy</td></tr>
+            <tr><td>Spot checks against a block explorer</td><td>Individual artifacts look right</td><td>After any incident</td></tr>
+            <tr><td>State root matches a second implementation at the same height</td><td>The whole state agrees with another codebase</td><td>Daily, and after every reindex</td></tr>
+            <tr><td>A rebuild from scratch reproduces the same root</td><td>Your incremental path did not drift</td><td>Periodically, and after any rollback problem</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The last two are the ones that matter. Everything above them can pass while the state is wrong.</p>
+
+      <h2>Daily verification</h2>
+      <pre data-label="Compare with a second indexer at a fixed height"><code># pick a height both have passed, then compare state roots at that height
+curl -s https://mine.example.org/patina/status
+curl -s https://other.example.org/patina/status</code></pre>
+      <ol>
+        <li>Confirm both report the same <code>network</code> and <code>spec_sha256</code>.</li>
+        <li>Pick a height at or below both <code>indexed_height</code> values.</li>
+        <li>Compare state roots at that height.</li>
+        <li>If they differ, stop and follow <a href="../compat/disagreements.html">Report a disagreement</a>.</li>
+      </ol>
+      <p>Comparing at the tip is a mistake. One indexer will be a block ahead and you will chase a difference that
+        is not one.</p>
+
+      <h2>Signals to monitor</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>What to watch, and what a change means.</caption>
+          <thead><tr><th>Signal</th><th>Healthy</th><th>Investigate when</th></tr></thead>
+          <tbody>
+            <tr><td>Sync gap, <code>tip_height - indexed_height</code></td><td>Zero or one</td><td>It grows for several blocks in a row, or stops changing</td></tr>
+            <tr><td>Time since last processed block</td><td>Roughly block interval</td><td>Much longer than the node's own gap. Blocks are irregular, so alert on the difference from the node, not on absolute time.</td></tr>
+            <tr><td>Readiness</td><td>Ready, except during sync and replay</td><td>Ready while <code>indexed_height</code> is far behind, which means readiness is lying</td></tr>
+            <tr><td>Reorg events</td><td>Rare and shallow</td><td>Deep reorgs, frequent reorgs, or a rollback that fails to reach a fork point</td></tr>
+            <tr><td>Node connectivity</td><td>Connected</td><td>Any RPC failure. The indexer should fail closed, not guess.</td></tr>
+            <tr><td>Invalid event rate</td><td>Low and mostly grammar errors during a launch</td><td>A sudden spike, especially of one code, which usually means a broken tool in the wild</td></tr>
+            <tr><td>Error rate by status</td><td>Mostly 200</td><td>A rise in 500. A rise in 503 during sync is expected and correct.</td></tr>
+            <tr><td>Latency of artifact lookups</td><td>Stable</td><td>Growth with artifact count, which means a missing index</td></tr>
+            <tr><td>Storage growth</td><td>Slow and steady</td><td>Sudden growth without matching chain activity</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <span class="lbl">Thresholds are yours to set</span>
+        <p>This page deliberately does not publish alert numbers. The right threshold depends on your hardware,
+          your node, and your traffic. Measure your own baseline for a week, then alert on deviation from it.
+          Copying someone else's numbers produces alerts that fire for no reason and silence when it matters.</p>
+      </div>
+
+      <h2>Invalid events are a product signal</h2>
+      <p>A spike in one reason code usually means a wallet or a tool is building transactions wrongly, not that the
+        indexer is broken.</p>
+      <ul>
+        <li><code>SEED_COMMIT_TOO_YOUNG</code> spiking means people are miscounting the wait, or a tool is.</li>
+        <li><code>SEED_CARRIER_BELOW_MIN</code> spiking means fees are being taken out of the carrier
+          somewhere.</li>
+        <li><code>KEEP_ENTRY_BELOW_MIN</code> spiking means artifacts are landing somewhere their owners did not
+          intend.</li>
+        <li><code>SEED_BAD_GRAMMAR</code> spiking means a builder is producing malformed markers.</li>
+      </ul>
+      <p>Each of those is a reason to publish guidance, not to change the protocol. Route these alerts to whoever
+        writes the documentation as well as to whoever runs the servers.</p>
+
+      <h2>What not to alert on</h2>
+      <ul>
+        <li>An artifact resetting to depth zero. That is a holder spending their own coins, which is normal.</li>
+        <li>A relic appearing. Also normal.</li>
+        <li>A slow block. Bitcoin does that.</li>
+        <li>A drop in mint rate. It is not an outage and treating it as one leads to dishonest urgency.</li>
+      </ul>
+
+      <h2>Keep a verification log</h2>
+      <p>Record, for each verification run: the date, the height compared, both state roots, both
+        <code>spec_sha256</code> values, and the result. When something does eventually go wrong, this log tells you
+        the last height at which you know the state was right, which turns an open ended investigation into a
+        bisection.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

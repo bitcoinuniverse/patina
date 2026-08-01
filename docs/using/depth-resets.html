@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What resets depth | PATINA docs</title>
+<meta name="description" content="Every way a PATINA carrier gets spent by accident, including consolidation, sweeps and exchange deposits, plus the one common case that does not reset depth.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="using/depth-resets.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>What resets depth</h1>
+      <p class="lede">One rule covers all of it. If the carrier outpoint is spent in a confirmed transaction, the
+        stretch ends and depth restarts at zero.</p>
+
+      <p>Everything on this page is that rule wearing different clothes. There is no separate list of forbidden
+        actions, and nothing is watching your intent. The chain sees an outpoint consumed, and that is the whole
+        event.</p>
+
+      <h2>The table</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Actions people take, and whether the carrier gets spent.</caption>
+          <thead><tr><th>Action</th><th>Resets depth</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Sending the endowment to someone</td><td>Yes</td><td>The carrier is an input</td></tr>
+            <tr><td>Sending part of it, with change back to yourself</td><td>Yes</td><td>The carrier is still consumed. The change output is a new output at a new height.</td></tr>
+            <tr><td>Consolidating several outputs into one</td><td>Yes</td><td>Consolidation spends every input, carrier included</td></tr>
+            <tr><td>Sweeping a wallet to a new seed</td><td>Yes</td><td>A sweep spends everything it can find</td></tr>
+            <tr><td>Depositing to an exchange</td><td>Yes</td><td>The deposit transaction spends the carrier. The exchange then spends it again into its own wallet.</td></tr>
+            <tr><td>Selling the artifact</td><td>Yes</td><td>Delivery to the buyer is a spend. See <a href="transfer.html">Transferring an artifact</a>.</td></tr>
+            <tr><td>Replacing an unconfirmed transaction that created the carrier</td><td>Yes, and worse</td><td>The replacement has a different txid, so the carrier outpoint is different. For a reveal, the artifact id changes too.</td></tr>
+            <tr><td>Bumping the fee of a transaction that spends the carrier</td><td>Yes</td><td>The replacement still spends the carrier</td></tr>
+            <tr><td>Moving to a new address for privacy</td><td>Yes</td><td>Any move is a move</td></tr>
+            <tr><td>CPFP by spending a different output of the same transaction</td><td>No</td><td>A sibling output is a different outpoint. The carrier is untouched.</td></tr>
+            <tr><td>Receiving more coins to the same address</td><td>No</td><td>New outputs do not affect the carrier outpoint</td></tr>
+            <tr><td>Signing an attestation</td><td>No</td><td>Signing a message spends nothing</td></tr>
+            <tr><td>An unconfirmed spend sitting in the mempool</td><td>Not yet</td><td>Depth ends at the height the spend confirms. Replace it with a transaction that leaves the carrier alone and nothing happened.</td></tr>
+            <tr><td>Your indexer going offline</td><td>No</td><td>Depth is chain data, not indexer data</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>The case that does not reset: CPFP on a different output</h2>
+      <p>Say your reveal transaction created two outputs: vout 1 is the carrier, vout 2 is a small change output.
+        The transaction is stuck at a low fee.</p>
+      <ul>
+        <li>Spending <strong>vout 2</strong> in a child transaction with a high fee bumps the parent and leaves the
+          carrier alone. Depth is unaffected.</li>
+        <li>Spending <strong>vout 1</strong> does the same fee job and destroys the stretch.</li>
+      </ul>
+      <p>This is why the mint walkthrough tells you to keep a separate output for fee bumping. Build the escape
+        hatch before you need it.</p>
+      <div class="note">
+        <span class="lbl">While the parent is unconfirmed</span>
+        <p>If the transaction that creates your carrier has not confirmed yet, CPFP is the only safe way to speed
+          it up. Replacing it by fee is not safe: the replacement has a new txid, so the carrier becomes a
+          different outpoint, and a replaced reveal produces a different artifact id.</p>
+      </div>
+
+      <h2>Where accidents actually come from</h2>
+      <ol>
+        <li><strong>Automatic coin selection.</strong> Your wallet picks inputs to minimise fees and picks the
+          carrier. Fix: lock the output.</li>
+        <li><strong>Consolidation during low fees.</strong> A wallet or a helpful script tidies up when fees drop.
+          Fix: never point consolidation tooling at the artifact wallet.</li>
+        <li><strong>Restore and sweep.</strong> Restoring some wallets sweeps found coins to fresh addresses. Fix:
+          check the restore behaviour before restoring, and restore watch only first if you can.</li>
+        <li><strong>Sending "everything".</strong> A max send spends every output that is not locked. Fix: lock
+          the carrier, then max sends skip it.</li>
+        <li><strong>Custodial anything.</strong> Once coins reach a custodian, they are moved on the custodian's
+          schedule. Fix: do not deposit an artifact carrier anywhere.</li>
+      </ol>
+
+      <h2>If it happens</h2>
+      <p>You did not lose the artifact. You lost the current stretch.</p>
+      <ul>
+        <li>The artifact id is unchanged.</li>
+        <li>A ring is engraved for the stretch that just ended, recording exactly how deep it got.</li>
+        <li>The artifact follows the money to a successor output, and depth restarts from that block.</li>
+        <li>If no output qualifies as a successor, the artifact becomes a relic and stops.</li>
+      </ul>
+      <p>Successor selection is deterministic and you can steer it. See
+        <a href="../protocol/keep-rules.html">KEEP and the default rule</a>.</p>
+
+      <h2>Check before you sign</h2>
+      <p>Any wallet that can list transaction inputs can answer the only question that matters: is my carrier
+        outpoint one of the inputs. If your tooling supports it, the indexer answers it in bulk without storing
+        anything:</p>
+      <pre data-label="Safety check before signing"><code>curl -s -X POST https://indexer.example.org/patina/safety/outpoints \
+  -H 'content-type: application/json' \
+  -d '{"outpoints":["1d29e5ba13cecf357a9218518914617f872eeaa83a33bf6be6fd78dfdd1ce9c6:1"]}'</code></pre>
+      <p>Each outpoint comes back classified as <code>carrier</code>, <code>commit</code>, or <code>none</code>,
+        with the artifact ids it would affect. The endpoint stores nothing you send it. Details in the
+        <a href="../api/endpoints.html">endpoint reference</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

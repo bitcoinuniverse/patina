@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Golden vectors and state roots | PATINA docs</title>
+<meta name="description" content="What the PATINA golden vectors must cover, how to run them, and how to compare state roots between two implementations.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="compat/golden-vectors.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Golden vectors and state roots</h1>
+      <p class="lede">Two implementations agree when they produce the same state root from the same blocks. The
+        vectors are how you find out before real money depends on it.</p>
+
+      <h2>Why a state root</h2>
+      <p>Comparing two indexers field by field is slow and misses things. A state root reduces a whole snapshot to
+        32 bytes: same root, same state, no argument.</p>
+      <pre data-label="Definition"><code>state_root = SHA256("PTNA/state" || canonical snapshot encoding)</code></pre>
+      <div class="note">
+        <span class="lbl">The vectors define the encoding</span>
+        <p>The baseline freezes the hash and the domain tag. It does not spell out the field order and widths of
+          the canonical encoding. That makes the vectors the authority: an implementation is correct when it
+          reproduces the published roots, not when its encoding looks reasonable.</p>
+        <p>If you are building from scratch and your roots do not match, the problem is almost always encoding
+          before it is logic. Compare the underlying records first, then the bytes you feed the hash.</p>
+      </div>
+
+      <h2>What the vectors have to cover</h2>
+      <p>A vector suite that skips any of these leaves a way for two implementations to disagree in production.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>Required coverage.</caption>
+          <thead><tr><th>Area</th><th>Cases</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Derivations</td>
+              <td>Commit commitment, artifact id, event leaf, state root, attestation message, each with at least
+                one known answer</td>
+            </tr>
+            <tr>
+              <td>Marker grammar</td>
+              <td>Valid SEED, valid KEEP at 1, 2 and 8 entries, non minimal push, multiple pushes, extra opcodes,
+                oversize script, unknown version, unknown opcode, two PTNA outputs in one transaction</td>
+            </tr>
+            <tr>
+              <td>SEED validity</td>
+              <td>Each of the six checks passing, and each failing with its own reason code. Commit age at exactly
+                144 and at 143.</td>
+            </tr>
+            <tr>
+              <td>Founding boundaries</td>
+              <td>Commit one block before <code>h_open</code>, at <code>h_open</code>, at
+                <code>h_close - 1</code>, at <code>h_close</code>. Reveal at the last grace block and one past
+                it.</td>
+            </tr>
+            <tr>
+              <td>Minimums</td>
+              <td>Carrier at exactly 100000 and 99999 for founding, exactly 10000 and 9999 for open, successor at
+                exactly 10000 and 9999</td>
+            </tr>
+            <tr>
+              <td>Successor selection</td>
+              <td>Default rule with an OP_RETURN at vout 0, with a dust output before an eligible one, KEEP
+                overriding the default, and every void condition falling through</td>
+            </tr>
+            <tr>
+              <td>Relic</td>
+              <td>No eligible output, everything to fees, all outputs below the minimum</td>
+            </tr>
+            <tr>
+              <td>Bundles</td>
+              <td>Two artifacts routed onto one carrier, then moved together</td>
+            </tr>
+            <tr>
+              <td>Rings</td>
+              <td>Depth arithmetic across several stretches, <code>carried_value</code> per ring, ring index
+                ordering</td>
+            </tr>
+            <tr>
+              <td>Tiers</td>
+              <td>Depth exactly at each of the seven thresholds, and one below each</td>
+            </tr>
+            <tr>
+              <td>Reorgs</td>
+              <td>Roll back one block, roll back past a SEED, roll back past a carrier spend, and replay to the
+                same root</td>
+            </tr>
+            <tr>
+              <td>Invalid events</td>
+              <td>Every one of the eighteen reason codes produced at least once</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Vector shape</h2>
+      <p>Each vector is a scenario: a starting deployment, a list of blocks with the transactions in them, and the
+        expected result after each block.</p>
+      <pre data-label="Scenario, shape"><code>{
+  "name": "seed-commit-too-young",
+  "deployment": { "network": "regtest", "h_open": 0, "h_close": 4032, "commit_min_age": 144 },
+  "blocks": [
+    { "height": 0, "txs": ["..."] }
+  ],
+  "expect": [
+    {
+      "height": 0,
+      "state_root": "...",
+      "artifacts": 0,
+      "invalid_events": [ { "reason": "SEED_COMMIT_TOO_YOUNG" } ]
+    }
+  ]
+}</code></pre>
+      <p>Two properties make a vector useful. It must be self contained, so no network access is needed to run it.
+        And it must assert per block, not only at the end, so a failure points at the block that broke rather than
+        at the finish line.</p>
+
+      <h2>Running them</h2>
+      <ol>
+        <li>Load a scenario and apply its blocks in order.</li>
+        <li>After each block, compute your state root and compare with the expected root.</li>
+        <li>Stop at the first mismatch and report the height. Later mismatches are usually consequences of the
+          first.</li>
+        <li>Compare invalid events too, including their order.</li>
+        <li>Then replay the reorg scenarios and confirm the roots return to the earlier values.</li>
+      </ol>
+
+      <h2>Comparing two live implementations</h2>
+      <p>Vectors cover what somebody thought to write down. A differential run over a real chain covers the rest.</p>
+      <ol class="steps">
+        <li>
+          <h3>Confirm they are comparable</h3>
+          <pre data-label="Same network, same spec"><code>curl -s https://a.example.org/patina/status
+curl -s https://b.example.org/patina/status</code></pre>
+          <p>Compare <code>network</code>, <code>protocol_id</code>, and <code>spec_sha256</code>. Different specs
+            are allowed to differ, and comparing them proves nothing.</p>
+        </li>
+        <li>
+          <h3>Index the same range with both</h3>
+          <p>Same start height, same end height, same chain.</p>
+        </li>
+        <li>
+          <h3>Compare roots at the same height</h3>
+          <p>Not at the same wall clock time. One indexer being ahead is not a disagreement.</p>
+        </li>
+        <li>
+          <h3>Bisect to the first differing height</h3>
+          <p>Halve the range until you find the single block where the roots diverge. That block contains the
+            disagreement, and usually one transaction in it explains everything.</p>
+        </li>
+        <li>
+          <h3>Reduce it to a vector</h3>
+          <p>Extract the transaction into a new scenario with the smallest surrounding context that still
+            reproduces the mismatch. That vector is the deliverable, and it becomes a permanent test.</p>
+        </li>
+      </ol>
+
+      <h2>When roots differ</h2>
+      <p>Do not assume the older or larger implementation is right. Work out what the baseline requires, in
+        writing, before either side changes code. Then follow
+        <a href="disagreements.html">Report a disagreement</a>. A disagreement resolved privately is a disagreement
+        that will happen again to somebody else.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

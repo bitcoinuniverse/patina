@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Incident actions | PATINA docs</title>
+<meta name="description" content="What a PATINA operator can actually do during an incident, what can be paused, and the long list of things nobody can pause.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="operator/incidents.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Incident actions</h1>
+      <p class="lede">Know before the incident which levers exist. Most of the ones people reach for do not exist
+        here, by design.</p>
+
+      <h2>What can be paused</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Levers an operator actually has.</caption>
+          <thead><tr><th>Action</th><th>Effect</th><th>Cost</th></tr></thead>
+          <tbody>
+            <tr><td>Fail <code>/ready</code></td><td>Load balancers stop sending traffic to this instance</td><td>Reads fail while it is off. Nothing on chain is affected.</td></tr>
+            <tr><td>Stop the indexer</td><td>No new blocks are processed</td><td>State goes stale. It catches up when restarted, with nothing lost.</td></tr>
+            <tr><td>Set <code>PATINA_ENABLED</code> to false</td><td>The backend module unloads and the routes stop existing</td><td>The product surface disappears. Artifacts are unaffected.</td></tr>
+            <tr><td>Set <code>VITE_PATINA_ENABLED</code> to false</td><td>The workspace is hidden in the frontend</td><td>People cannot use the interface. They can still use any indexer directly.</td></tr>
+            <tr><td>Disable the build helpers</td><td>No new unsigned plans are produced</td><td>Minting through our tooling stops. Anyone building transactions themselves is unaffected.</td></tr>
+            <tr><td>Rate limit or block traffic at the edge</td><td>Protects the instance</td><td>Legitimate readers are slowed too</td></tr>
+            <tr><td>Roll back to a previous build</td><td>Reverts serving behaviour</td><td>May require a reindex if the parser changed</td></tr>
+            <tr><td>Publish a notice</td><td>People learn what is happening</td><td>None. Do this early rather than last.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What cannot be paused, by anyone</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>These have no lever. There is no admin key.</caption>
+          <thead><tr><th>Not possible</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Stopping mints</td><td>A mint is two Bitcoin transactions. Nothing in this stack is required for them.</td></tr>
+            <tr><td>Freezing an artifact</td><td>The artifact is an unspent output controlled by its holder's key</td></tr>
+            <tr><td>Reversing a spend</td><td>The spend is confirmed on Bitcoin</td></tr>
+            <tr><td>Restoring depth after a reset</td><td>Depth is derived from the carrier's height. There is nothing to edit.</td></tr>
+            <tr><td>Un-relicking an artifact</td><td>Relic is terminal in the state model</td></tr>
+            <tr><td>Extending the founding window</td><td>The heights are in the deployment record and the chain has already passed them</td></tr>
+            <tr><td>Changing a reason code after the fact</td><td>It is a function of a confirmed transaction</td></tr>
+            <tr><td>Hiding an artifact from the protocol</td><td>Anyone can index the same chain and see it</td></tr>
+            <tr><td>Editing rings</td><td>Rings are derived. Editing a database changes your copy, not the truth, and would show up as a state root mismatch.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">Never hand edit the store</span>
+        <p>The only supported way to change indexed state is to change the blocks it comes from, which nobody can
+          do, or to reindex. An operator who edits records has created a private fork of reality that will disagree
+          with every other implementation at the next state root comparison.</p>
+      </div>
+
+      <h2>Incident playbooks</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>First action by incident type.</caption>
+          <thead><tr><th>Incident</th><th>First action</th><th>Then</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Indexer far behind the tip</td>
+              <td>Fail <code>/ready</code></td>
+              <td>Find out whether the node or the indexer is stuck. Do not serve stale data as current.</td>
+            </tr>
+            <tr>
+              <td>Bitcoin node unreachable</td>
+              <td>Fail <code>/ready</code></td>
+              <td>Fix the node. The indexer must not guess in the meantime.</td>
+            </tr>
+            <tr>
+              <td>State root disagrees with another implementation</td>
+              <td>Publish the disagreement</td>
+              <td>Bisect to the first differing height, reduce to a vector, follow <a href="../compat/disagreements.html">Report a disagreement</a>. Do not change code by inspection.</td>
+            </tr>
+            <tr>
+              <td>Deep reorg beyond rollback history</td>
+              <td>Fail <code>/ready</code></td>
+              <td>Reindex from the deployment start height.</td>
+            </tr>
+            <tr>
+              <td>Spike in one invalid reason code</td>
+              <td>Read the transactions</td>
+              <td>A tool is probably broken. Publish guidance. This is not an outage.</td>
+            </tr>
+            <tr>
+              <td>Storage corruption</td>
+              <td>Take the instance out of rotation</td>
+              <td>Restore a verified snapshot, or reindex. See <a href="backup.html">Back up and restore</a>.</td>
+            </tr>
+            <tr>
+              <td>Traffic overload</td>
+              <td>Rate limit at the edge</td>
+              <td>Scale reads. Never shed load by serving cached numbers without their height.</td>
+            </tr>
+            <tr>
+              <td>A bug in the planner produces bad transactions</td>
+              <td>Disable the build helpers</td>
+              <td>This is the one case where stopping a lever prevents real user loss. Do it immediately, then explain.</td>
+            </tr>
+            <tr>
+              <td>Someone reports a lost artifact</td>
+              <td>Look up the artifact and the spend</td>
+              <td>Explain exactly what happened, honestly. There is nothing to restore, and saying otherwise would be a lie.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Communication rules</h2>
+      <ol>
+        <li>Say what is broken, what still works, and what you do not yet know.</li>
+        <li>Say which heights are affected. Heights are checkable and adjectives are not.</li>
+        <li>Never imply that artifacts are at risk when only your service is degraded. Those are different
+          things.</li>
+        <li>Never promise a recovery that the protocol cannot deliver.</li>
+        <li>Publish the resolution, including what the cause was.</li>
+      </ol>
+
+      <h2>After every incident</h2>
+      <ul>
+        <li>Record the last verified height and root from before the incident.</li>
+        <li>Re-run verification against a second implementation before declaring it over.</li>
+        <li>Add a golden vector if the cause was a parsing or state question.</li>
+        <li>Write down which lever you wished you had, and whether it can exist without breaking the promise that
+          nobody can freeze anything.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

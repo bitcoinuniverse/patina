@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Attestations | PATINA docs</title>
+<meta name="description" content="A PATINA attestation is a BIP-322 signature over the artifact id and a recent block hash. It shows the carrier key is still alive without spending anything.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="using/attestations.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Attestations</h1>
+      <p class="lede">Depth says the output has not moved. An attestation adds that somebody with the key is here
+        today. It costs nothing and spends nothing.</p>
+
+      <h2>The message</h2>
+      <p>An attestation is a BIP-322 signature over one exact string, produced by the key that controls the
+        carrier.</p>
+      <pre data-label="Message format"><code>"PTNA/attest" || artifact_id_hex || block_hash_hex</code></pre>
+      <p>All three parts are concatenated with no separator, no newline, and no spaces. The two hashes are
+        lowercase hex. A worked example, with the values computed by
+        <code>docs/tools/vectors.mjs</code>:</p>
+      <pre data-label="Example message, 139 characters"><code>PTNA/attestd3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff06b86b9521630996bec957312d95d273f4e19e1d87e00ca8928f3c736c6d73308</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>The three parts of the message above.</caption>
+          <thead><tr><th>Part</th><th>Length</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Tag</td><td>11 characters</td><td><code>PTNA/attest</code></td></tr>
+            <tr><td>Artifact id</td><td>64 characters</td><td><code>d3b8d301...ce5eff0</code></td></tr>
+            <tr><td>Block hash</td><td>64 characters</td><td><code>6b86b952...6d73308</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Why a block hash</h2>
+      <p>The block hash is the timestamp. It cannot be predicted before that block is mined, so a signature over it
+        cannot have been made earlier. That turns "I have the key" into "I had the key at or after this block".</p>
+      <ul>
+        <li>Pick a <strong>recent</strong> block. A signature over a block from last year proves you had the key
+          last year, which is much weaker.</li>
+        <li>Whoever verifies it decides what counts as recent. A common rule is within 144 blocks.</li>
+        <li>Signing again later is normal. Attestations are meant to be repeated, not permanent.</li>
+      </ul>
+
+      <h2>Producing one</h2>
+      <ol class="steps">
+        <li>
+          <h3>Get the artifact id</h3>
+          <p>From your own records, or from <code>GET /patina/artifacts/:id</code>. Use the lowercase hex form
+            exactly as it appears.</p>
+        </li>
+        <li>
+          <h3>Get a recent block hash</h3>
+          <pre data-label="From your own node"><code>bitcoin-cli getbestblockhash</code></pre>
+          <p>Use the block hash in the standard display order, the same string a block explorer shows.</p>
+        </li>
+        <li>
+          <h3>Build the message and sign it</h3>
+          <p>Concatenate the three parts. Sign with BIP-322 using the key that controls the carrier output. Do not
+            sign with a different key from the same wallet, because a verifier checks the signature against the
+            carrier's address.</p>
+        </li>
+        <li>
+          <h3>Publish the three items together</h3>
+          <p>The signature alone is useless. Publish artifact id, block hash, and signature, so anyone can rebuild
+            the message and check it.</p>
+        </li>
+      </ol>
+
+      <h2>Verifying one</h2>
+      <ol>
+        <li>Fetch the artifact and read <code>carrier.txid</code> and <code>carrier.vout</code>.</li>
+        <li>Look up the address that carrier output pays.</li>
+        <li>Confirm the block hash is a real block on the chain you care about, and note its height.</li>
+        <li>Rebuild the message exactly and verify the BIP-322 signature against that address.</li>
+        <li>Decide whether the block is recent enough for your purpose.</li>
+      </ol>
+      <div class="note">
+        <span class="lbl">Verify against the carrier, not against a claim</span>
+        <p>Always read the carrier from the artifact record at verification time. If you verify against an address
+          someone told you about, you are trusting the teller. The point of the exercise is to avoid that.</p>
+      </div>
+
+      <h2>What it proves and what it does not</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Reading an attestation honestly.</caption>
+          <thead><tr><th>Proves</th><th>Does not prove</th></tr></thead>
+          <tbody>
+            <tr><td>Somebody could sign for the carrier at or after that block</td><td>That the signer is the original minter</td></tr>
+            <tr><td>The key is not lost, at least for that signer</td><td>That only one person holds the key</td></tr>
+            <tr><td>Combined with depth: unmoved since height H, and signable now</td><td>That the same person held it for the whole stretch</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Keys can be copied and keys can be sold. An attestation raises the floor on what is verifiable. It does
+        not close the gap, and no message signature can. See
+        <a href="../start/limits.html">What it does not promise</a>.</p>
+
+      <h2>Attestations are off chain</h2>
+      <ul>
+        <li>They cost nothing, publish nothing to the blockchain, and cannot reset depth.</li>
+        <li>The indexer does not require them and does not store them. Nothing in the state model depends on an
+          attestation.</li>
+        <li>You can produce as many as you like, for as many different blocks as you like.</li>
+        <li>An artifact with no attestation is not suspicious. It is just an artifact whose holder did not sign
+          anything.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

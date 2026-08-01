@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protocol, PATINA</title>
+<meta name="description" content="PATINA for a technical reader: the marker byte layout, the commit leaf, the commit and reveal transaction shapes, successor selection and the default rule, rings, reason codes and reorg behaviour.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/protocol.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Protocol, PATINA">
+<meta property="og:description" content="Marker byte layout, commit leaf, transaction shapes, successor selection, rings, reason codes and reorg behaviour.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/protocol.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section drawn as a technical diagram.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Protocol, PATINA">
+<meta name="twitter:description" content="Marker byte layout, commit leaf, transaction shapes, successor selection, rings, reason codes and reorg behaviour.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html" aria-current="page">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a href="faq.html">Questions</a></li>
+        <li><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <p class="eyebrow">For a technical reader</p>
+    <h1>How PATINA works</h1>
+    <p class="lede">Two opcodes, one carrier output per artifact, and subtraction. Everything below is readable from an ordinary Bitcoin node with no extra index and no extra trust.</p>
+    <div class="actions">
+      <a class="btn" data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a>
+      <a class="btn" data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a>
+      <a class="btn btn-quiet" data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Repository</a>
+    </div>
+  </section>
+
+  <section class="wrap band" id="depth">
+    <p class="eyebrow">The core</p>
+    <h2>Depth is a subtraction</h2>
+    <div class="prose">
+      <p>An artifact points at exactly one unspent output, its carrier. For a live artifact at chain height H:</p>
+    </div>
+    <div class="code">
+      <div class="code-head"><span>depth</span></div>
+      <pre>depth = H - carrier.height
+tier  = the highest threshold that is not greater than depth</pre>
+    </div>
+    <div class="prose">
+      <p>Depth is computed at query time and never stored per block, so there is no counter to drift and nothing to update. Spending the carrier destroys it, and a destroyed output has no height to subtract from. That is the entire reset mechanism. It is inherited from the UTXO model, not enforced by anyone.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <caption>The tier ladder. Tier 0 has no threshold.</caption>
+        <thead>
+          <tr><th scope="col" class="num">Index</th><th scope="col">Name</th><th scope="col" class="num">Threshold in blocks</th><th scope="col" class="num">Nominal time</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">0</td><td>Raw</td><td class="num">0</td><td class="num">from the reveal</td></tr>
+          <tr><td class="num">1</td><td>Sheen</td><td class="num">1 008</td><td class="num">about 7 days</td></tr>
+          <tr><td class="num">2</td><td>Cast</td><td class="num">4 032</td><td class="num">about 28 days</td></tr>
+          <tr><td class="num">3</td><td>Verdigris</td><td class="num">12 960</td><td class="num">about 90 days</td></tr>
+          <tr><td class="num">4</td><td>Umber</td><td class="num">26 280</td><td class="num">about 6 months</td></tr>
+          <tr><td class="num">5</td><td>Bronze</td><td class="num">52 560</td><td class="num">about 1 year</td></tr>
+          <tr><td class="num">6</td><td>Oxide</td><td class="num">105 120</td><td class="num">about 2 years</td></tr>
+          <tr><td class="num">7</td><td>Elder</td><td class="num">210 000</td><td class="num">just under 4 years</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small faint">Nominal times assume ten minutes per block. Thresholds are counted in blocks, so they do not move when block times do.</p>
+  </section>
+
+  <section class="wrap band" id="marker">
+    <p class="eyebrow">Marker grammar</p>
+    <h2>The marker is one OP_RETURN output</h2>
+    <div class="code">
+      <div class="code-head"><span>script shape</span></div>
+      <pre>OP_RETURN PUSH(n) [ "PTNA" | version(1) | op(1) | payload ]</pre>
+    </div>
+    <div class="prose">
+      <ul>
+        <li>The push must be a single minimal data push. Multiple pushes, non minimal pushes, or extra opcodes make the marker invalid.</li>
+        <li>The protocol marker of a transaction is the OP_RETURN output with the <strong>lowest vout index</strong> whose payload starts with <code>PTNA</code>.</li>
+        <li>If more than one output carries a payload starting with <code>PTNA</code>, the marker is void with reason <code>VOID_DUPLICATE_MARKER</code> and the default rule applies as if no marker were present.</li>
+        <li>The whole scriptPubKey stays at or below 83 bytes.</li>
+      </ul>
+    </div>
+
+    <h3>SEED, opcode <code>0x01</code></h3>
+    <div class="table-scroll">
+      <table class="byte-table">
+        <caption>SEED marker push, 24 bytes. Offsets are inside the push, not inside the script.</caption>
+        <thead>
+          <tr><th scope="col" class="num">Offset</th><th scope="col" class="num">Length</th><th scope="col">Field</th><th scope="col">Value</th><th scope="col">Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">0</td><td class="num">4</td><td>magic</td><td class="mono">50 54 4e 41</td><td>ASCII <code>PTNA</code></td></tr>
+          <tr><td class="num">4</td><td class="num">1</td><td>version</td><td class="mono">01</td><td>Marker version. Anything else is <code>MARKER_UNKNOWN_VERSION</code>.</td></tr>
+          <tr><td class="num">5</td><td class="num">1</td><td>op</td><td class="mono">01</td><td>SEED, create an artifact.</td></tr>
+          <tr><td class="num">6</td><td class="num">16</td><td>salt</td><td class="mono">random</td><td>The same salt that went into the commitment.</td></tr>
+          <tr><td class="num">22</td><td class="num">1</td><td>flags</td><td class="mono">one byte</td><td>Position and length are frozen here. The specification defines the bits.</td></tr>
+          <tr><td class="num">23</td><td class="num">1</td><td>carrier_vout</td><td class="mono">index</td><td>Which output of this transaction becomes the carrier.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="code">
+      <div class="code-head"><span>example scriptPubKey, 26 bytes</span><button type="button" class="btn btn-small" data-copy="seed-hex" hidden>Copy</button></div>
+      <pre id="seed-hex">6a 18 50 54 4e 41 01 01 3f 8a 1c 5d 9e 04 b7 22 6c e1 40 93 aa 57 db 08 00 00
+
+<span class="cmt">6a          OP_RETURN
+18          push 24 bytes
+50544e41    "PTNA"
+01          version
+01          SEED
+3f8a...db08 16 byte salt, this one is only an example
+00          flags
+00          carrier is output 0</span></pre>
+    </div>
+
+    <h3>KEEP, opcode <code>0x02</code></h3>
+    <div class="table-scroll">
+      <table class="byte-table">
+        <caption>KEEP marker push, 7 + 2n bytes for n entries, n from 1 to 8.</caption>
+        <thead>
+          <tr><th scope="col" class="num">Offset</th><th scope="col" class="num">Length</th><th scope="col">Field</th><th scope="col">Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">0</td><td class="num">4</td><td>magic</td><td>ASCII <code>PTNA</code></td></tr>
+          <tr><td class="num">4</td><td class="num">1</td><td>version</td><td class="mono">01</td></tr>
+          <tr><td class="num">5</td><td class="num">1</td><td>op</td><td class="mono">02</td></tr>
+          <tr><td class="num">6</td><td class="num">1</td><td>count</td><td>Number of entries, 1 to 8. Anything else is <code>KEEP_BAD_GRAMMAR</code>.</td></tr>
+          <tr><td class="num">7 + 2i</td><td class="num">1</td><td>input_index of entry i</td><td>Which input of this transaction is the carrier being routed.</td></tr>
+          <tr><td class="num">8 + 2i</td><td class="num">1</td><td>vout of entry i</td><td>Which output that carrier continues on.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="code">
+      <div class="code-head"><span>example, two entries, 13 byte script</span><button type="button" class="btn btn-small" data-copy="keep-hex" hidden>Copy</button></div>
+      <pre id="keep-hex">6a 0b 50 54 4e 41 01 02 02 00 01 01 03
+
+<span class="cmt">6a          OP_RETURN
+0b          push 11 bytes
+50544e41    "PTNA"
+01          version
+02          KEEP
+02          two entries
+00 01       input 0 continues on output 1
+01 03       input 1 continues on output 3</span></pre>
+    </div>
+  </section>
+
+  <section class="wrap band" id="commit">
+    <p class="eyebrow">Claim safety</p>
+    <h2>The commit output</h2>
+    <div class="prose">
+      <p>A qualifying commit is a taproot output whose spend reveals this tapscript leaf:</p>
+    </div>
+    <div class="code">
+      <div class="code-head"><span>commit leaf</span></div>
+      <pre>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF</pre>
+    </div>
+    <div class="table-scroll">
+      <table class="byte-table">
+        <caption>The leaf script, 70 bytes.</caption>
+        <thead>
+          <tr><th scope="col" class="num">Offset</th><th scope="col" class="num">Length</th><th scope="col">Bytes</th><th scope="col">Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">0</td><td class="num">1</td><td class="mono">20</td><td>Push 32 bytes.</td></tr>
+          <tr><td class="num">1</td><td class="num">32</td><td class="mono">claimant key</td><td>The claimant x only public key.</td></tr>
+          <tr><td class="num">33</td><td class="num">1</td><td class="mono">ac</td><td>OP_CHECKSIG. Only the claimant can spend this leaf.</td></tr>
+          <tr><td class="num">34</td><td class="num">1</td><td class="mono">00</td><td>OP_0, pushes an empty value.</td></tr>
+          <tr><td class="num">35</td><td class="num">1</td><td class="mono">63</td><td>OP_IF, which never executes because the value above is false.</td></tr>
+          <tr><td class="num">36</td><td class="num">1</td><td class="mono">20</td><td>Push 32 bytes.</td></tr>
+          <tr><td class="num">37</td><td class="num">32</td><td class="mono">commitment</td><td>SHA-256 over the tag, the claimant key and the salt.</td></tr>
+          <tr><td class="num">69</td><td class="num">1</td><td class="mono">68</td><td>OP_ENDIF.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p>The <code>OP_0 OP_IF ... OP_ENDIF</code> envelope keeps the commitment out of execution, which is the same technique inscriptions already use at scale. The signature check is what makes the claim unstealable: the leaf is spendable only by the key committed inside it.</p>
+      <p>The leaf must be revealed in the SEED transaction's own witness, as a script path spend.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="shapes">
+    <p class="eyebrow">Transaction shapes</p>
+    <h2>What each transaction has to contain</h2>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Commit transaction</h3>
+        <ul>
+          <li>Any inputs that fund it.</li>
+          <li>One taproot output whose script tree contains the commit leaf above.</li>
+          <li>Change is allowed. Nothing else is required.</li>
+          <li>It carries no PATINA marker and means nothing on its own.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Reveal transaction, the SEED</h3>
+        <ul>
+          <li>Exactly one input must reveal a qualifying commit leaf by script path, and its commitment must match the salt in the marker payload and the leaf's claimant key.</li>
+          <li>The reveal height minus the commit output's creation height must be at least 144.</li>
+          <li>One OP_RETURN output carrying the SEED marker.</li>
+          <li>The output at <code>carrier_vout</code> must exist, must not be an OP_RETURN, and must hold at least the minimum for its era.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>The SEED checks, in order</h3>
+    <div class="table-scroll">
+      <table>
+        <caption>Run per transaction, in block order. Failing any check records an invalid event and creates nothing.</caption>
+        <thead><tr><th scope="col" class="num">Step</th><th scope="col">Check</th><th scope="col">Reason code on failure</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>The marker decodes as SEED with a well formed payload.</td><td class="mono">SEED_BAD_GRAMMAR</td></tr>
+          <tr><td class="num">2</td><td>Some input reveals a qualifying commit leaf.</td><td class="mono">SEED_NO_COMMIT_INPUT</td></tr>
+          <tr><td class="num">3</td><td>The commitment matches the claimant key and the payload salt.</td><td class="mono">SEED_COMMITMENT_MISMATCH</td></tr>
+          <tr><td class="num">4</td><td>The commit output is at least 144 blocks old.</td><td class="mono">SEED_COMMIT_TOO_YOUNG</td></tr>
+          <tr><td class="num">5</td><td><code>carrier_vout</code> is inside the output range.</td><td class="mono">SEED_CARRIER_OUT_OF_RANGE</td></tr>
+          <tr><td class="num">6</td><td>The carrier output is not an OP_RETURN.</td><td class="mono">SEED_CARRIER_IS_OPRETURN</td></tr>
+          <tr><td class="num">7</td><td>The carrier holds at least 100 000 sats when founding, otherwise 10 000.</td><td class="mono">SEED_CARRIER_BELOW_MIN</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p>An artifact is founding when its commit output was created inside the window, meaning <code>h_open</code> is less than or equal to the commit height and the commit height is below <code>h_close</code>, and the reveal lands at or before <code>h_close</code> plus the 4032 block grace period.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="successor">
+    <p class="eyebrow">Movement</p>
+    <h2>Where an artifact goes when its carrier is spent</h2>
+    <div class="prose">
+      <p>Any confirmed spend of a carrier closes the stretch. The record gains a ring, and the artifact either continues on a successor output at depth zero, or ends.</p>
+    </div>
+
+    <figure class="figure">
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 720 370" role="img" aria-labelledby="succ-title succ-desc">
+          <title id="succ-title">Successor selection</title>
+          <desc id="succ-desc">When a carrier is spent, a valid KEEP entry naming that input routes the artifact to the output it names. If there is no valid entry, the default rule picks the lowest index output that is not an OP_RETURN and holds at least ten thousand satoshis. If neither yields an output, the artifact becomes a relic.</desc>
+
+          <rect class="d-box" x="230" y="10" width="260" height="42" rx="3"/>
+          <text class="d-title" x="248" y="38">A carrier is spent</text>
+          <path class="d-line" d="M360 52 L360 84"/>
+          <path class="d-accent" d="M354 76 L360 86 L366 76"/>
+
+          <rect class="d-box" x="196" y="88" width="328" height="56" rx="3"/>
+          <text x="214" y="112">Is there a valid KEEP entry naming this input?</text>
+          <text class="d-mono" x="214" y="132">MAX 8 ENTRIES PER MARKER</text>
+
+          <path class="d-line" d="M196 116 L96 116 L96 190"/>
+          <path class="d-accent" d="M90 182 L96 192 L102 182"/>
+          <text class="d-mono" x="110" y="110">YES</text>
+
+          <path class="d-line" d="M524 116 L624 116 L624 190"/>
+          <path class="d-accent" d="M618 182 L624 192 L630 182"/>
+          <text class="d-mono" x="560" y="110">NO OR VOID</text>
+
+          <rect class="d-box" x="12" y="194" width="250" height="66" rx="3"/>
+          <text x="30" y="218">Route to the vout it names.</text>
+          <text class="d-soft" x="30" y="240">Out of range, an OP_RETURN, or below</text>
+          <text class="d-soft" x="30" y="255">10 000 sats voids the entry.</text>
+
+          <rect class="d-box" x="458" y="194" width="250" height="66" rx="3"/>
+          <text x="476" y="218">Default rule.</text>
+          <text class="d-soft" x="476" y="240">Lowest index output that is not an</text>
+          <text class="d-soft" x="476" y="255">OP_RETURN and holds 10 000 sats.</text>
+
+          <path class="d-line" d="M262 227 L458 227"/>
+          <text class="d-mono" x="300" y="220">A VOID ENTRY FALLS THROUGH</text>
+
+          <path class="d-line" d="M137 260 L137 300 L360 300"/>
+          <path class="d-line" d="M583 260 L583 300 L360 300"/>
+          <path class="d-line" d="M360 300 L360 316"/>
+          <path class="d-accent" d="M354 308 L360 318 L366 308"/>
+
+          <rect class="d-box" x="150" y="320" width="420" height="42" rx="3"/>
+          <text x="168" y="347">An eligible output continues the artifact at depth zero. Otherwise it is a relic.</text>
+        </svg>
+      </div>
+      <figcaption>A relic is terminal. The rings it already engraved stay in the record forever, and no further stretch can be added.</figcaption>
+    </figure>
+
+    <h3>The ring that gets engraved</h3>
+    <div class="table-scroll">
+      <table>
+        <caption>One ring per completed stretch.</caption>
+        <thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">index</th><td>Position in the artifact's ring list, starting at zero.</td></tr>
+          <tr><th scope="row">start_height</th><td>The height at which the carrier was created.</td></tr>
+          <tr><th scope="row">end_height</th><td>The height of the block that spent it.</td></tr>
+          <tr><th scope="row">depth</th><td>end_height minus start_height. The depth the stretch reached.</td></tr>
+          <tr><th scope="row">carried_value</th><td>The value the carrier held, in satoshis.</td></tr>
+          <tr><th scope="row">successor_txid, successor_vout</th><td>Where the artifact went, or null.</td></tr>
+          <tr><th scope="row">relic</th><td>True when nothing eligible was found and the artifact ended here.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note note-warn">
+      <p class="note-title">Bundles move together</p>
+      <p>Several artifacts can share one carrier output. One input cannot be routed to two different outputs, so a bundle cannot be split inside a single transaction. Splitting means spending the carrier once per destination, across separate transactions, and each of those spends closes a stretch and engraves a ring on every artifact riding that carrier.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="derivations">
+    <p class="eyebrow">Derivations</p>
+    <h2>Every identifier is a single SHA-256</h2>
+    <div class="code">
+      <div class="code-head"><span>byte exact, tags are ASCII with no separator</span><button type="button" class="btn btn-small" data-copy="derivation-block" hidden>Copy</button></div>
+      <pre id="derivation-block">commitment  = SHA256("PTNA/commit"   || claimant_xonly(32) || salt(16))
+artifact_id = SHA256("PTNA/artifact" || reveal_txid_wire(32) || carrier_vout_le(4))
+event_leaf  = SHA256("PTNA/event"    || canonical event encoding)
+state_root  = SHA256("PTNA/state"    || canonical snapshot encoding)
+attestation = "PTNA/attest" || artifact_id_hex || block_hash_hex</pre>
+    </div>
+    <div class="prose">
+      <p><code>reveal_txid_wire</code> is the txid in internal byte order, which is the reverse of the txid your block explorer shows you. Display ids are lowercase hex. The attestation message is signed off chain with BIP-322 and is the only way to show that the key behind a carrier is still alive.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="reorgs">
+    <p class="eyebrow">Reorgs</p>
+    <h2>What happens when the chain changes its mind</h2>
+    <div class="prose">
+      <p>PATINA state is a pure function of the confirmed chain read in block order. There is no state that exists outside the blocks, so a reorg needs no special handling beyond replaying.</p>
+      <ul>
+        <li>An indexer disconnects the orphaned blocks, discards every event they produced, and applies the new blocks in order.</li>
+        <li>An artifact created by a reveal that got orphaned stops existing until that reveal confirms again. If it confirms in a different transaction, its id changes too, because the id is derived from the reveal txid.</li>
+        <li>A ring closed by a spend that got orphaned reopens, and the stretch continues from the original carrier height.</li>
+        <li>Depth is never stored per block, so nothing has to be recomputed backwards. It is always the current height minus the carrier height.</li>
+        <li>Founding status can change across a reorg if the commit output's height moves across a window boundary. This is why the grace period exists and why claims near the edges deserve patience.</li>
+      </ul>
+      <p>Six confirmations is the depth at which the reference implementation treats a PATINA fact as final for reporting. That is a reporting convention, not a consensus rule. Bitcoin decides, and PATINA reads.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="codes">
+    <p class="eyebrow">Frozen registry</p>
+    <h2>Reason codes</h2>
+    <div class="prose">
+      <p>Every rejected marker is recorded with a code rather than dropped in silence. The registry is frozen, and the order below is the registry order.</p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <caption>All 18 reason codes.</caption>
+        <thead><tr><th scope="col">Code</th><th scope="col">Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">SEED_BAD_GRAMMAR</td><td>The SEED payload did not decode.</td></tr>
+          <tr><td class="mono">SEED_NO_COMMIT_INPUT</td><td>No input revealed a qualifying commit leaf.</td></tr>
+          <tr><td class="mono">SEED_COMMITMENT_MISMATCH</td><td>The commitment did not match the key and salt.</td></tr>
+          <tr><td class="mono">SEED_COMMIT_TOO_YOUNG</td><td>The commit output was less than 144 blocks old.</td></tr>
+          <tr><td class="mono">SEED_CARRIER_OUT_OF_RANGE</td><td>carrier_vout pointed past the last output.</td></tr>
+          <tr><td class="mono">SEED_CARRIER_IS_OPRETURN</td><td>carrier_vout pointed at an OP_RETURN output.</td></tr>
+          <tr><td class="mono">SEED_CARRIER_BELOW_MIN</td><td>The carrier held less than the minimum for its era.</td></tr>
+          <tr><td class="mono">KEEP_BAD_GRAMMAR</td><td>The KEEP payload did not decode.</td></tr>
+          <tr><td class="mono">KEEP_NO_CARRIER_INPUT</td><td>The transaction spent no carrier at all.</td></tr>
+          <tr><td class="mono">KEEP_ENTRY_NOT_CARRIER</td><td>An entry named an input that is not a carrier.</td></tr>
+          <tr><td class="mono">KEEP_ENTRY_OUT_OF_RANGE</td><td>An entry named a vout that does not exist.</td></tr>
+          <tr><td class="mono">KEEP_ENTRY_IS_OPRETURN</td><td>An entry named an OP_RETURN output.</td></tr>
+          <tr><td class="mono">KEEP_ENTRY_BELOW_MIN</td><td>An entry named an output below 10 000 sats.</td></tr>
+          <tr><td class="mono">KEEP_DUPLICATE_INPUT</td><td>Two entries named the same input.</td></tr>
+          <tr><td class="mono">VOID_DUPLICATE_MARKER</td><td>More than one output carried a PTNA payload.</td></tr>
+          <tr><td class="mono">MARKER_UNKNOWN_OP</td><td>The op byte is not SEED or KEEP.</td></tr>
+          <tr><td class="mono">MARKER_UNKNOWN_VERSION</td><td>The version byte is not recognised.</td></tr>
+          <tr><td class="mono">MARKER_TOO_LARGE</td><td>The marker script exceeded the size ceiling.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">A void KEEP entry does not void the whole marker. It falls through to the default rule for that carrier alone.</p>
+  </section>
+
+  <section class="wrap band" id="networks">
+    <h2>Deployments</h2>
+    <div class="prose">
+      <p>A deployment record binds a network to a protocol id, the specification hash, the window heights, the grace end, both carrier minimums and the commit age. Regtest and signet deployment records ship in the repository. Mainnet values stay unset until activation is authorised, and the construction code refuses to build mainnet transactions without that authorisation. <a href="transparency.html">The transparency page</a> explains who holds that authority.</p>
+    </div>
+    <ul class="link-list">
+      <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol"><span><span class="link-title">Specification</span><span class="link-desc">The normative document. This page is a summary of it, not a replacement.</span></span><span aria-hidden="true">&gt;</span></a></li>
+      <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors"><span><span class="link-title">Test vectors</span><span class="link-desc">Encode and decode cases, valid and invalid, for anyone writing another implementation.</span></span><span aria-hidden="true">&gt;</span></a></li>
+      <li><a href="verify.html"><span><span class="link-title">Verify it yourself</span><span class="link-desc">Read depth off your own node with copyable commands.</span></span><span aria-hidden="true">&gt;</span></a></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

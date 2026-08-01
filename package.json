@@ -1,0 +1,80 @@
+{
+  "name": "@bitcoinuniverse/patina",
+  "version": "1.0.0",
+  "description": "Canonical PATINA protocol specification, codec, validator and deterministic state reducer.",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "patina": "./cli.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./constants": {
+      "types": "./dist/constants.d.ts",
+      "import": "./dist/constants.js",
+      "default": "./dist/constants.js"
+    },
+    "./vectors/golden.json": "./vectors/golden.json",
+    "./vectors/manifest.json": "./vectors/manifest.json",
+    "./patina-protocol.md": "./patina-protocol.md",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "cli.mjs",
+    "scripts",
+    "vectors",
+    "examples",
+    "schemas",
+    "deployments",
+    "docs/deviations.md",
+    "patina-protocol.md",
+    "README.md",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "spec:check": "node scripts/verify-spec.mjs",
+    "spec:stamp": "node scripts/stamp-spec-hash.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "vectors:generate": "node scripts/generate-vectors.mjs",
+    "vectors:verify": "node cli.mjs vectors verify",
+    "pretest": "npm run build",
+    "test": "node --test test/*.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitcoinuniverse/patina.git"
+  },
+  "homepage": "https://github.com/bitcoinuniverse/patina#readme",
+  "bugs": {
+    "url": "https://github.com/bitcoinuniverse/patina/issues"
+  },
+  "keywords": [
+    "bitcoin",
+    "patina",
+    "protocol",
+    "op_return",
+    "taproot",
+    "indexer"
+  ],
+  "sideEffects": false,
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

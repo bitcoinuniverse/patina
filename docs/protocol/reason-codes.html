@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reason codes | PATINA docs</title>
+<meta name="description" content="All eighteen frozen PATINA reason codes, what the parser saw in each case, what it means for a holder, and whether anything can be done.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/reason-codes.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Reason codes</h1>
+      <p class="lede">Eighteen codes, frozen. Every one of them means a transaction confirmed on Bitcoin and the
+        protocol declined to act on it. None of them means you lost coins.</p>
+
+      <h2>Where you see them</h2>
+      <pre data-label="Recent invalid events"><code>GET /patina/invalid-events</code></pre>
+      <p>Each event names the transaction, the height, and one code. If your mint did not appear, this is where the
+        explanation is.</p>
+
+      <h2>SEED codes</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Failures while creating an artifact. In all seven, nothing is created and your coins are in the
+            outputs your reveal made.</caption>
+          <thead><tr><th>Code</th><th>What the parser saw</th><th>What it means for you</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>SEED_BAD_GRAMMAR</code></td>
+              <td>The marker did not decode as a SEED: wrong payload length, a non minimal push, more than one
+                push, or extra opcodes</td>
+              <td>A construction bug. Compare your script against the byte table on
+                <a href="marker-grammar.html">Marker grammar</a> and try again with a new commit.</td>
+            </tr>
+            <tr>
+              <td><code>SEED_NO_COMMIT_INPUT</code></td>
+              <td>No input revealed a qualifying commit leaf</td>
+              <td>You spent the commit by the key path instead of the script path, or the leaf script did not match
+                byte for byte. Retry with a new commit.</td>
+            </tr>
+            <tr>
+              <td><code>SEED_COMMITMENT_MISMATCH</code></td>
+              <td>A commit leaf was revealed, but
+                <code>SHA256("PTNA/commit" || key || salt)</code> did not equal the commitment in the leaf</td>
+              <td>The salt in the marker is not the salt you committed to, or the key differs. Check both. Retry
+                with a new commit.</td>
+            </tr>
+            <tr>
+              <td><code>SEED_COMMIT_TOO_YOUNG</code></td>
+              <td>Fewer than 144 blocks between the commit output's block and the reveal's block</td>
+              <td>You revealed early. The commit is spent and the claim is gone. Retry with a new commit and count
+                the blocks.</td>
+            </tr>
+            <tr>
+              <td><code>SEED_CARRIER_OUT_OF_RANGE</code></td>
+              <td><code>carrier_vout</code> names an output index that does not exist</td>
+              <td>Off by one in the marker payload. Retry.</td>
+            </tr>
+            <tr>
+              <td><code>SEED_CARRIER_IS_OPRETURN</code></td>
+              <td><code>carrier_vout</code> pointed at a data output</td>
+              <td>You pointed the artifact at the marker itself. Retry.</td>
+            </tr>
+            <tr>
+              <td><code>SEED_CARRIER_BELOW_MIN</code></td>
+              <td>The carrier held less than 100000 sats for a founding claim, or less than 10000 sats
+                otherwise</td>
+              <td>Underfunded carrier, often because fees came out of the wrong output. Retry with more in the
+                carrier.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>KEEP codes</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Failures while routing a spend. The spend still happened. Only the routing instruction was
+            ignored.</caption>
+          <thead><tr><th>Code</th><th>What the parser saw</th><th>What it means for you</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>KEEP_BAD_GRAMMAR</code></td>
+              <td>count was zero, above 8, or the payload length did not match count</td>
+              <td>The whole KEEP marker is ignored. Every carrier in the transaction followed the default rule.
+                Check where each artifact landed.</td>
+            </tr>
+            <tr>
+              <td><code>KEEP_NO_CARRIER_INPUT</code></td>
+              <td>The transaction carried a KEEP marker but spent no carrier at all</td>
+              <td>Nothing happened. The marker was pointless, not harmful.</td>
+            </tr>
+            <tr>
+              <td><code>KEEP_ENTRY_NOT_CARRIER</code></td>
+              <td>An entry named an input that does not spend a carrier</td>
+              <td>That entry is void. Other valid entries still apply.</td>
+            </tr>
+            <tr>
+              <td><code>KEEP_ENTRY_OUT_OF_RANGE</code></td>
+              <td>An entry named a vout that does not exist</td>
+              <td>Entry void, default rule applies to that carrier. Check where the artifact went.</td>
+            </tr>
+            <tr>
+              <td><code>KEEP_ENTRY_IS_OPRETURN</code></td>
+              <td>An entry named a data output</td>
+              <td>Entry void, default rule applies.</td>
+            </tr>
+            <tr>
+              <td><code>KEEP_ENTRY_BELOW_MIN</code></td>
+              <td>An entry named an output holding less than 10000 sats</td>
+              <td>Entry void, default rule applies. This is the common one: the intended destination was too
+                small.</td>
+            </tr>
+            <tr>
+              <td><code>KEEP_DUPLICATE_INPUT</code></td>
+              <td>Two entries named the same input index</td>
+              <td>Ambiguous instruction, so it is not followed. Check where the artifact landed.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Marker codes</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Failures before the opcode is even considered.</caption>
+          <thead><tr><th>Code</th><th>What the parser saw</th><th>What it means for you</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>VOID_DUPLICATE_MARKER</code></td>
+              <td>More than one output had a payload starting with <code>PTNA</code></td>
+              <td>The transaction is treated as unmarked. A SEED creates nothing. A carrier spend follows the
+                default rule.</td>
+            </tr>
+            <tr>
+              <td><code>MARKER_UNKNOWN_OP</code></td>
+              <td>The opcode byte was not <code>0x01</code> or <code>0x02</code></td>
+              <td>Nothing happened. Either a construction bug, or a future opcode your indexer does not
+                implement.</td>
+            </tr>
+            <tr>
+              <td><code>MARKER_UNKNOWN_VERSION</code></td>
+              <td>The version byte was not <code>0x01</code></td>
+              <td>Nothing happened. Same two possibilities.</td>
+            </tr>
+            <tr>
+              <td><code>MARKER_TOO_LARGE</code></td>
+              <td>The scriptPubKey exceeded 83 bytes</td>
+              <td>Nothing happened. No legal marker is anywhere near that size, so this is a construction bug.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Codes are frozen</h2>
+      <p>This list of eighteen is part of the baseline. An implementation must not invent codes, rename them, or
+        merge two into one. If you find a failure case that none of these describe, that is a specification gap and
+        it should be reported, not papered over with a nineteenth code.</p>
+      <p>Two consequences for operators:</p>
+      <ul>
+        <li>Seeing a code you do not recognise means your software is older or newer than the one that produced the
+          event. Check <code>spec_sha256</code> and <code>parser_version</code> from
+          <code>GET /patina/status</code> on both sides.</li>
+        <li>Codes are part of what implementations must agree on. Same chain, same codes, in the same order. See
+          <a href="../compat/golden-vectors.html">Golden vectors and state roots</a>.</li>
+      </ul>
+
+      <h2>What none of these codes mean</h2>
+      <ul>
+        <li>They never mean your bitcoin moved somewhere you did not send it.</li>
+        <li>They never mean an artifact was taken from you.</li>
+        <li>They never mean a transaction was rejected by Bitcoin. Every one of these transactions confirmed
+          normally. The protocol simply declined to interpret it.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

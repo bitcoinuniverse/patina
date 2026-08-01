@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mint walkthrough | PATINA docs</title>
+<meta name="description" content="Minting a PATINA artifact in two steps: publish an aged commit output, wait 144 blocks, then reveal with a SEED marker over a carrier of at least 100000 sats.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="using/mint.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Mint walkthrough</h1>
+      <p class="lede">Two transactions with at least 144 blocks between them. The wait is what makes your claim
+        impossible to snipe.</p>
+
+      <div class="note">
+        <span class="lbl">Every hex value on this page</span>
+        <p>Computed by <code>docs/tools/vectors.mjs</code> from the example key and salt shown below. Your values
+          will differ because your salt and key differ. Rerun the script to check the arithmetic.</p>
+      </div>
+
+      <h2>Before you start</h2>
+      <ol>
+        <li>Finish <a href="wallet-setup.html">wallet setup</a>, including one full rehearsal on regtest.</li>
+        <li>Check the window is open. Ask your indexer:</li>
+      </ol>
+      <pre data-label="Check the window"><code>curl -s https://indexer.example.org/patina/window</code></pre>
+      <p>A response with <code>"state": "OPEN"</code> and a positive <code>blocks_remaining</code> means founding
+        commits are still being accepted. Field by field detail is in the
+        <a href="../api/endpoints.html">endpoint reference</a>.</p>
+
+      <h2>Step one, the commit</h2>
+      <ol class="steps">
+        <li>
+          <h3>Generate a claimant key and a salt</h3>
+          <p>The claimant key is a 32 byte x-only public key that you control. The salt is 16 random bytes from a
+            cryptographically secure generator. Never reuse a salt.</p>
+          <pre data-label="Example values, documentation only"><code>claimant_xonly  f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866a
+salt            2fe862993a92197e084e4070cc8aa1c3</code></pre>
+          <p class="footnote">No private key exists for that example point. Do not use it.</p>
+        </li>
+        <li>
+          <h3>Compute the commitment</h3>
+          <p>Single SHA-256 over the ASCII tag, the key, then the salt. No separators.</p>
+          <pre data-label="Commitment"><code>commitment = SHA256("PTNA/commit" || claimant_xonly(32) || salt(16))
+           = ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd6</code></pre>
+        </li>
+        <li>
+          <h3>Build the commit leaf</h3>
+          <p>A tapscript that requires your signature and carries the commitment inside a branch that never
+            executes.</p>
+          <pre data-label="Commit leaf script"><code>&lt;claimant_xonly(32)&gt; OP_CHECKSIG OP_0 OP_IF PUSH32(commitment) OP_ENDIF
+
+70 bytes:
+20f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866aac006320ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd668</code></pre>
+          <p>The <code>OP_0 OP_IF ... OP_ENDIF</code> wrapper is the same envelope technique that inscriptions
+            use. It stores data in a script without ever running it.</p>
+        </li>
+        <li>
+          <h3>Fund the commit output</h3>
+          <p>Build the P2TR output that commits to that leaf, then pay it. Fund it with enough to cover the reveal
+            fee plus the carrier value you intend, or plan to add a second input at reveal time.</p>
+          <p>Record the exact outpoint. You need <code>txid:vout</code> at reveal time.</p>
+        </li>
+        <li>
+          <h3>Broadcast and wait for confirmation</h3>
+          <p>The height at which the commit output confirms is the height that decides founding status. Note it.</p>
+        </li>
+      </ol>
+
+      <h3>Using the planner instead</h3>
+      <pre data-label="Illustrative planner request"><code>POST /patina/plan/commit
+Content-Type: application/json
+
+{
+  "network": "signet",
+  "claimant_xonly": "f13dc99dc544736fca031f924b0ae1c54ff4a331f5c3b2951c6d4d5e1878866a",
+  "salt": "2fe862993a92197e084e4070cc8aa1c3",
+  "fee_rate_sat_vb": 12
+}</code></pre>
+      <div class="note">
+        <span class="lbl">On this example</span>
+        <p>The baseline freezes that the planner returns an unsigned plan and a human review summary, holds no keys
+          and broadcasts nothing you have not signed. The exact request field names belong to the app backend, not
+          to the protocol. Treat the block above as the shape of the information the planner needs, and check the
+          backend for the current field names.</p>
+      </div>
+
+      <h2>The wait</h2>
+      <p>The reveal is invalid unless <code>reveal_height - commit_output_height &gt;= 144</code>. That is about 24
+        hours at ten minutes a block, and it can be longer if blocks are slow.</p>
+      <div class="warn">
+        <span class="lbl">Do not reveal early</span>
+        <p>A reveal published one block too early does not fail politely. It confirms on chain, spends your commit
+          output, produces the reason code <code>SEED_COMMIT_TOO_YOUNG</code>, and creates nothing. You keep your
+          coins and lose the fees and the commit. Count the blocks, and add a safety margin of a few blocks.</p>
+      </div>
+      <p>While you wait, verify your commit output height with your own node or your indexer, and confirm the
+        window was still open at that height.</p>
+
+      <h2>Step two, the reveal</h2>
+      <ol class="steps">
+        <li>
+          <h3>Spend the commit output by the script path</h3>
+          <p>The reveal transaction must have exactly one input that reveals the commit leaf in its witness, with
+            your signature satisfying the <code>OP_CHECKSIG</code>. The indexer recomputes
+            <code>SHA256("PTNA/commit" || claimant_xonly || salt)</code> from the leaf and the SEED payload, and the
+            result must equal the commitment inside the leaf.</p>
+        </li>
+        <li>
+          <h3>Create the carrier output</h3>
+          <p>Pick which output is the carrier and note its index. It must not be an OP_RETURN, and its value must
+            be at least 100000 sats for a founding Seal, or 10000 sats after the window closes.</p>
+          <p>This output is the artifact. Its confirmation height is where depth starts counting.</p>
+        </li>
+        <li>
+          <h3>Add the SEED marker</h3>
+          <p>One OP_RETURN output, one minimal push, 24 bytes of data.</p>
+          <pre data-label="SEED marker for carrier_vout 1"><code>OP_RETURN PUSH(24) [ "PTNA" | 0x01 | 0x01 | salt(16) | flags(1) | carrier_vout(1) ]
+
+payload       18 bytes  2fe862993a92197e084e4070cc8aa1c30001
+push data     24 bytes  50544e4101012fe862993a92197e084e4070cc8aa1c30001
+scriptPubKey  26 bytes  6a1850544e4101012fe862993a92197e084e4070cc8aa1c30001</code></pre>
+          <p>The trailing <code>00 01</code> is <code>flags = 0x00</code> then <code>carrier_vout = 1</code>. Get
+            that last byte wrong and you point the artifact at the wrong output. Full grammar on
+            <a href="../protocol/marker-grammar.html">Marker grammar</a>.</p>
+        </li>
+        <li>
+          <h3>Check the transaction before signing</h3>
+          <ul>
+            <li>Exactly one OP_RETURN output whose payload starts with <code>PTNA</code>. Two of them void the
+              marker.</li>
+            <li>The <code>carrier_vout</code> byte matches the index of the output you funded.</li>
+            <li>That output holds at least the minimum for the cohort you are claiming.</li>
+            <li>The salt in the payload is byte for byte the salt in your commitment.</li>
+            <li>The commit input is at least 144 blocks old at the height you expect to confirm at.</li>
+          </ul>
+        </li>
+        <li>
+          <h3>Broadcast</h3>
+          <p>Once it confirms, the artifact exists. Compute the id yourself if you want to check the indexer:</p>
+          <pre data-label="Artifact id"><code>artifact_id = SHA256("PTNA/artifact" || reveal_txid_wire(32) || carrier_vout_le(4))</code></pre>
+          <p><code>reveal_txid_wire</code> is the internal byte order, which is the reverse of the txid a block
+            explorer shows you. Worked example on <a href="../protocol/identity.html">Identity and
+            derivations</a>.</p>
+        </li>
+      </ol>
+
+      <h2>Confirm it landed</h2>
+      <pre data-label="Look up the artifact"><code>curl -s https://indexer.example.org/patina/artifacts/d3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff0</code></pre>
+      <p>Check <code>status</code> is <code>ALIVE</code>, <code>founding</code> is what you expected,
+        <code>carrier</code> is your outpoint, and <code>endowment_sats</code> matches the value you funded. If the
+        artifact is missing, look for your reveal in <code>GET /patina/invalid-events</code>, which tells you
+        the reason code.</p>
+      <p>Six confirmations is where the indexer treats the record as final. Before that, a reorg can undo it.</p>
+
+      <h2>What can go wrong, and what it looks like</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Common mint failures and their reason codes.</caption>
+          <thead><tr><th>Mistake</th><th>Reason code</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>Revealed before 144 blocks passed</td><td><code>SEED_COMMIT_TOO_YOUNG</code></td><td>Commit spent, nothing created</td></tr>
+            <tr><td>Salt in the payload differs from the salt in the commitment</td><td><code>SEED_COMMITMENT_MISMATCH</code></td><td>Nothing created</td></tr>
+            <tr><td>No input revealed a qualifying commit leaf</td><td><code>SEED_NO_COMMIT_INPUT</code></td><td>Nothing created</td></tr>
+            <tr><td><code>carrier_vout</code> points past the last output</td><td><code>SEED_CARRIER_OUT_OF_RANGE</code></td><td>Nothing created</td></tr>
+            <tr><td><code>carrier_vout</code> points at the OP_RETURN</td><td><code>SEED_CARRIER_IS_OPRETURN</code></td><td>Nothing created</td></tr>
+            <tr><td>Carrier funded below the minimum</td><td><code>SEED_CARRIER_BELOW_MIN</code></td><td>Nothing created</td></tr>
+            <tr><td>Two OP_RETURN outputs start with PTNA</td><td><code>VOID_DUPLICATE_MARKER</code></td><td>Marker void, nothing created</td></tr>
+            <tr><td>Push is not minimal, or extra opcodes present</td><td><code>SEED_BAD_GRAMMAR</code></td><td>Nothing created</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>In every one of these cases your bitcoin stays yours. You lose fees and the commit, not the coins. Full
+        list on <a href="../protocol/reason-codes.html">Reason codes</a>, and repair paths on
+        <a href="recovery.html">When something goes wrong</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

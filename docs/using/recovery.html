@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>When something goes wrong | PATINA docs</title>
+<meta name="description" content="Recovery paths for PATINA: stuck reveals, wrong carrier index, lost salts, reorgs, accidental spends, and what genuinely cannot be undone.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="using/recovery.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>When something goes wrong</h1>
+      <p class="lede">Start here: in every failure below, your bitcoin is still yours. What can be lost is a claim,
+        a stretch, or fees.</p>
+
+      <h2>First, find out what actually happened</h2>
+      <ol>
+        <li>Get the transaction id from your wallet.</li>
+        <li>Confirm whether it is in a block, and at what height.</li>
+        <li>Ask the indexer whether it produced anything:</li>
+      </ol>
+      <pre data-label="Look for the failure"><code>curl -s https://indexer.example.org/patina/invalid-events | head -c 2000</code></pre>
+      <p>Each entry carries a reason code. Look yours up on
+        <a href="../protocol/reason-codes.html">Reason codes</a>, which lists what every code means and whether
+        anything can be done about it.</p>
+      <div class="note">
+        <span class="lbl">If the indexer shows nothing at all</span>
+        <p>Check <code>GET /patina/status</code> and compare <code>indexed_height</code> against
+          <code>tip_height</code>. An indexer that is behind has not seen your transaction yet. That is not a
+          protocol failure and waiting fixes it.</p>
+      </div>
+
+      <h2>The reveal is stuck in the mempool</h2>
+      <p>Fee too low, and the reveal has not confirmed.</p>
+      <ul>
+        <li><strong>Safe fix:</strong> replace the reveal by fee. Nothing has been created yet, so nothing is lost.
+          The artifact id will follow whichever version confirms, because it is derived from the confirmed txid.</li>
+        <li><strong>Watch the clock:</strong> if you are claiming founding status, the reveal must confirm before
+          the grace period ends. Bump early rather than hoping.</li>
+        <li><strong>Do not</strong> spend the intended carrier output of the unconfirmed reveal to bump it. That is
+          CPFP from the wrong output and it would end the stretch the moment both confirm.</li>
+      </ul>
+
+      <h2>You revealed too early</h2>
+      <p>The reveal confirmed with fewer than 144 blocks between the commit output and the reveal. The reason code
+        is <code>SEED_COMMIT_TOO_YOUNG</code>.</p>
+      <ul>
+        <li>Nothing was created. The commit output is spent and gone.</li>
+        <li>The coins from it are in whatever outputs your reveal created. They are still yours.</li>
+        <li>Recovery is to start again: new salt, new commit, new 144 block wait. Never reuse the old salt.</li>
+        <li>If the window has closed by the time you retry, the new artifact will not be founding. That part is not
+          recoverable.</li>
+      </ul>
+
+      <h2>You pointed carrier_vout at the wrong output</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Wrong carrier index, three cases.</caption>
+          <thead><tr><th>Case</th><th>Reason code</th><th>What to do</th></tr></thead>
+          <tbody>
+            <tr><td>Index past the last output</td><td><code>SEED_CARRIER_OUT_OF_RANGE</code></td><td>Nothing created. Start again with a new commit.</td></tr>
+            <tr><td>Index points at the OP_RETURN</td><td><code>SEED_CARRIER_IS_OPRETURN</code></td><td>Nothing created. Start again.</td></tr>
+            <tr><td>Index points at a real output that is below the minimum</td><td><code>SEED_CARRIER_BELOW_MIN</code></td><td>Nothing created. Start again with a larger carrier.</td></tr>
+            <tr><td>Index points at a real, funded output that was not the one you meant</td><td>None, it is valid</td><td>The artifact exists on that output. It is fine. Protect that outpoint, or move it once and accept the reset.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>You lost the salt</h2>
+      <p>The commitment is a hash of your claimant key and the salt. Without the salt you cannot build a SEED
+        payload that matches, so the claim cannot be completed.</p>
+      <ul>
+        <li>The commit output is still spendable, because the leaf also requires your signature. Sweep it back as
+          ordinary coins.</li>
+        <li>The claim itself is gone. Start again with a fresh salt if the window is still open.</li>
+        <li>A 16 byte salt cannot be brute forced. Do not try.</li>
+      </ul>
+
+      <h2>You lost the claimant key</h2>
+      <p>Then you cannot spend the commit output at all, and both the claim and the coins in that output are gone.
+        This is ordinary Bitcoin key loss, and nothing in this protocol changes it.</p>
+
+      <h2>Two markers in one transaction</h2>
+      <p>If a transaction has more than one OP_RETURN output whose payload starts with <code>PTNA</code>, the marker
+        is void: <code>VOID_DUPLICATE_MARKER</code>. For a SEED that means nothing was created. For a spend of an
+        existing carrier it means the KEEP instruction is ignored and the default rule decides where the artifact
+        went. Check where it landed before you assume it is lost.</p>
+
+      <h2>The artifact vanished after a reorg</h2>
+      <p>Blocks can be replaced. An indexer rolls its state back to the fork point and replays.</p>
+      <ul>
+        <li>Under 6 confirmations, treat everything as provisional.</li>
+        <li>If your reveal was dropped by the reorg, it may be mined again in a later block, in which case the
+          artifact returns with a new <code>birth_height</code>. If the transaction stays dropped, rebroadcast it.</li>
+        <li>If your reveal was reorged past the end of the grace period, founding status is lost even though the
+          artifact may still be created.</li>
+      </ul>
+      <p>Details on <a href="../protocol/reorgs.html">Reorg behavior</a>.</p>
+
+      <h2>You spent the carrier by accident</h2>
+      <p>This one is not recoverable and nobody can undo it.</p>
+      <ol>
+        <li>Find where the artifact went. Fetch it and read the new <code>carrier</code>, or read the newest ring's
+          <code>successor_txid</code>.</li>
+        <li>If it landed on an output you control, protect that outpoint now. Lock it.</li>
+        <li>If it landed on an output you do not control, whoever controls that output controls the artifact.</li>
+        <li>If it became a <code>RELIC</code>, the artifact is over. The rings remain readable forever.</li>
+      </ol>
+      <p>The rest of the loss is real. The ring you closed records exactly how deep the stretch got, which is a
+        precise and permanent record of what happened.</p>
+
+      <h2>Your indexer disagrees with another one</h2>
+      <p>That is a bug in one of them, and it matters more than one artifact. Do not patch quietly.</p>
+      <ol>
+        <li>Get <code>GET /patina/status</code> from both, including <code>spec_sha256</code> and
+          <code>parser_version</code>.</li>
+        <li>Find the first block height where they differ.</li>
+        <li>Follow <a href="../compat/disagreements.html">Report a disagreement</a>.</li>
+      </ol>
+
+      <h2>What can never be fixed</h2>
+      <ul>
+        <li>A confirmed spend of your carrier.</li>
+        <li>A missed founding window.</li>
+        <li>A lost private key.</li>
+        <li>A relic. Terminal means terminal.</li>
+      </ul>
+      <p>There is no admin key, no support override, and no rollback. Anyone offering one is lying to you.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

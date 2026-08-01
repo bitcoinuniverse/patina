@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre launch checklist | PATINA docs</title>
+<meta name="description" content="Everything that must be true before the PATINA founding window is announced, grouped by protocol, infrastructure, product, and communication.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="launch/checklist.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Pre launch checklist</h1>
+      <p class="lede">Every line is a yes or a no. A maybe is a no. The window opens once, and it cannot be
+        reopened, extended, or undone.</p>
+
+      <h2>Protocol</h2>
+      <ol>
+        <li>Golden vectors pass on the exact build that will run.</li>
+        <li>Two independent implementations produce the same state root over the full signet range.</li>
+        <li>Every one of the eighteen reason codes is produced by at least one vector.</li>
+        <li>Reorg rollback and replay reproduce the same root, tested deliberately on regtest.</li>
+        <li><code>spec_sha256</code> is published and matches what <code>GET /patina/status</code> reports.</li>
+        <li>The mainnet deployment record exists, names two approvers, and both have approved.</li>
+        <li><code>PATINA_MAINNET_AUTHORIZED</code> is set deliberately, by a person, as a separate act from
+          deploying.</li>
+        <li>The window heights <code>h_open</code>, <code>h_close</code>, and <code>grace_end</code> are decided,
+          written down, and arithmetically checked against 4032 and 4032.</li>
+        <li><code class="mono">docs/deviations.md</code> lists every known difference between implementations and
+          the baseline, or states that there are none.</li>
+      </ol>
+
+      <h2>Infrastructure</h2>
+      <ol>
+        <li>A fully validating mainnet node, synced, with RPC reachable only by the indexer.</li>
+        <li>The indexer is synced to the tip and <code>/ready</code> behaves correctly during sync.</li>
+        <li>A second, independently operated indexer exists and agrees at a common height.</li>
+        <li>A restore drill has been completed end to end, and the measured recovery time is written down.</li>
+        <li>Alerts route to a human who is awake for the first 24 hours of the window.</li>
+        <li>Rate limiting is configured at the edge.</li>
+        <li>Rollback to the previous build is tested, including whether it requires a reindex.</li>
+      </ol>
+
+      <h2>Product</h2>
+      <ol>
+        <li>Every statistic on every surface comes from a live API call, with an honest empty state.</li>
+        <li>No surface displays a countdown that is not a real block count.</li>
+        <li>No surface shows a supply cap, a sold out state, a price, or a projected value.</li>
+        <li>The three honest limits appear in the product, not only in documentation: depth does not prove one
+          holder, founding membership can be farmed, and buying resets depth.</li>
+        <li>Concentration statistics are live before the window opens, not added afterwards.</li>
+        <li>The mint flow shows the 144 block wait as a block count and never simulates success.</li>
+        <li>The workspace renders without a wallet connected.</li>
+        <li>Failure paths show the actual reason code and what it means.</li>
+        <li>The safety check is wired into any flow that spends coins.</li>
+        <li>Accessibility pass: keyboard navigation, visible focus, AA contrast, reduced motion, and screen reader
+          labels on every control.</li>
+      </ol>
+
+      <h2>Documentation</h2>
+      <ol>
+        <li>These pages are published and reachable without a build step.</li>
+        <li>Every byte example has been recomputed by the script that generated it.</li>
+        <li>The mint walkthrough has been followed literally, by someone who did not write it, on signet.</li>
+        <li>The recovery page covers every failure the rehearsals actually produced.</li>
+        <li>Search index is regenerated and every internal link resolves.</li>
+      </ol>
+
+      <h2>Communication</h2>
+      <ol>
+        <li>The announcement states the window heights, not a marketing date.</li>
+        <li>It says minting is free of protocol charge and lists the real costs: two fees and 100000 sats of your
+          own bitcoin.</li>
+        <li>It states the limits in the announcement itself, not in a linked page.</li>
+        <li>It contains no urgency framing, no scarcity claim, and no projection.</li>
+        <li>A plain explanation of the 144 block wait is ready, because it will be the most asked question.</li>
+        <li>The answer to "can you restore my depth" is written down in advance, and the answer is no.</li>
+      </ol>
+
+      <h2>Rehearsal</h2>
+      <ol>
+        <li>A complete signet mint by at least two people who did not build the tooling.</li>
+        <li>A deliberate early reveal, to confirm <code>SEED_COMMIT_TOO_YOUNG</code> appears and is explained
+          clearly.</li>
+        <li>A deliberate underfunded carrier, to confirm <code>SEED_CARRIER_BELOW_MIN</code>.</li>
+        <li>A deliberate accidental spend, to confirm the reset shows up correctly and the ring is written.</li>
+        <li>A deliberate relic, to confirm terminal state renders honestly.</li>
+        <li>A reorg on regtest across a SEED and across a carrier spend.</li>
+      </ol>
+
+      <h2>Sign off</h2>
+      <p>The checklist is complete when someone who did not write it has verified each line and the go criteria on
+        <a href="go-no-go.html">Go, conditional go, no go</a> are met. Record who verified what and at which block
+        height, because the window opening is a decision that will be examined later.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

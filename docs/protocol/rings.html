@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rings | PATINA docs</title>
+<meta name="description" content="A ring is a permanent record of one completed holding stretch on a PATINA artifact: start height, end height, depth, value carried, and where it went next.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/rings.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Rings</h1>
+      <p class="lede">A ring is what a finished stretch leaves behind. It is written once, when the carrier is
+        spent, and never edited.</p>
+
+      <h2>The record</h2>
+      <pre data-label="Ring"><code>Ring {
+  index             position in the list, from 0
+  start_height      height of the block that created the carrier
+  end_height        height of the block that spent it
+  depth             end_height - start_height
+  carried_value     sats the carrier held during the stretch
+  successor_txid    where the artifact went, or null
+  successor_vout    which output, or null
+  relic             true when this ring ended the artifact
+}</code></pre>
+
+      <h2>When a ring is written</h2>
+      <p>One ring per confirmed spend of a carrier. Not per block, not per year, not on request.</p>
+      <ul>
+        <li>An artifact that has never moved has zero rings, however deep it is.</li>
+        <li>An artifact that has moved four times has four rings, and is on its fifth stretch.</li>
+        <li>A relic's last ring has <code>relic: true</code> and no successor.</li>
+        <li>The current stretch is <strong>not</strong> a ring. It is live depth, and it becomes a ring only when it
+          ends.</li>
+      </ul>
+
+      <h2>Worked example</h2>
+      <p>An artifact born at height 880000, moved twice, currently alive.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>The life of one artifact, read from its rings plus its live carrier.</caption>
+          <thead><tr><th>index</th><th>start</th><th>end</th><th>depth</th><th>carried</th><th>result</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>880000</td><td>893000</td><td>13000</td><td>100000</td><td>moved to a successor</td></tr>
+            <tr><td>1</td><td>893000</td><td>894008</td><td>1008</td><td>96000</td><td>moved again</td></tr>
+            <tr><td>live</td><td>894008</td><td></td><td>growing</td><td>92000</td><td>current stretch, not yet a ring</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Reading that record honestly: this holder once went 13000 blocks without moving, which is Verdigris tier,
+        then moved twice. The current stretch started at 894008 and its depth is whatever the tip is minus that.
+        The carried value drops each time because fees come out of the successor.</p>
+
+      <h2>Depth is per stretch, never cumulative</h2>
+      <div class="warn">
+        <span class="lbl">Rings do not add up</span>
+        <p>13000 plus 1008 is not a depth of 14008. There is no lifetime total, and the protocol does not compute
+          one. A ring is a claim about one continuous stretch, and stretches do not concatenate.</p>
+        <p>If you build a view that sums rings, you are inventing a number the protocol does not stand behind. Show
+          the deepest ring, the ring count, and the live depth. Those are all real.</p>
+      </div>
+
+      <h2>Why rings exist</h2>
+      <p>Without rings, a move would erase the entire history and the artifact would be indistinguishable from one
+        minted yesterday. That would make a single mistake, or a single sale, delete years of evidence.</p>
+      <p>With rings, the record is honest in both directions. It shows what was achieved, and it shows that it
+        ended. Nothing is inflated and nothing is hidden.</p>
+
+      <h2>Rings across a transfer</h2>
+      <p>The buyer receives the seller's rings, because rings belong to the artifact and not to a holder. That is a
+        design decision with a consequence worth stating plainly: a deep ring is not proof that the current holder
+        earned it. Read <a href="../start/limits.html">What it does not promise</a>.</p>
+
+      <h2>Reading rings from the API</h2>
+      <pre data-label="Rings on the artifact record"><code>GET /patina/artifacts/:id     rings, oldest first, inside the full record</code></pre>
+      <pre data-label="Recently closed rings, across all artifacts"><code>GET /patina/shatter           newest first</code></pre>
+      <pre data-label="The longest completed rings"><code>GET /patina/museum            longest completed rings</code></pre>
+      <p>The museum is history. The <a href="../api/endpoints.html">leaderboard</a> is the present: deepest live
+        stretches, which change as blocks arrive and drop to zero when someone moves.</p>
+
+      <h2>What a ring does not contain</h2>
+      <ul>
+        <li>No holder identity, no address history, no label.</li>
+        <li>No price and no valuation.</li>
+        <li>No reason for the move. The chain does not record why anyone spends anything.</li>
+        <li>No score. Depth in blocks is the number, and readers can judge it themselves.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build it | PATINA docs</title>
+<meta name="description" content="The exact steps to build a PATINA implementation that agrees with every other one, in the order that finds bugs earliest.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="compat/build.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Build it</h1>
+      <p class="lede">Build in this order. Each step is testable on its own, and the order puts the cheap checks
+        before the expensive ones.</p>
+
+      <h2>Step order</h2>
+      <ol class="steps">
+        <li>
+          <h3>Read the baseline, not the docs</h3>
+          <p>These pages explain the baseline. The baseline is the authority. Where they differ, the baseline wins
+            and the page is a bug you should report.</p>
+        </li>
+        <li>
+          <h3>Implement the five derivations</h3>
+          <p>Single SHA-256, ASCII tags, no separators. Test against the worked examples on
+            <a href="../protocol/identity.html">Identity and derivations</a> before writing anything else. If your
+            artifact id does not match, nothing downstream can.</p>
+          <pre data-label="First test to pass"><code>SHA256("PTNA/commit" || claimant_xonly || salt)
+  with the example key and salt
+  = ac2e3090ef3265ff4fc99463cec7e2b8d9227ac29f3ac0f5fc8e24dbaa2afdd6</code></pre>
+        </li>
+        <li>
+          <h3>Implement the marker parser</h3>
+          <p>Take a scriptPubKey, return either a decoded marker or a reason code. This is a pure function with no
+            chain state, so it is the easiest part to test exhaustively.</p>
+          <p>Cover: minimal push enforcement, the 83 byte ceiling, lowest index selection, duplicate voiding,
+            unknown version, unknown opcode, and both payload layouts.</p>
+        </li>
+        <li>
+          <h3>Implement SEED validation</h3>
+          <p>All six checks from <a href="../protocol/seed-rules.html">SEED rules</a>, in that order, emitting the
+            right reason code at the right step. Order matters because it decides which code you emit for a
+            transaction that fails more than one check.</p>
+        </li>
+        <li>
+          <h3>Track carriers</h3>
+          <p>Maintain a map from outpoint to the artifacts riding it. Every block, check whether any input spends a
+            tracked carrier. This is the hot path.</p>
+        </li>
+        <li>
+          <h3>Implement successor selection</h3>
+          <p>Valid KEEP entry first, then the default rule, then relic. Every void condition falls through rather
+            than failing.</p>
+        </li>
+        <li>
+          <h3>Append rings</h3>
+          <p>One per confirmed carrier spend. Append only. Never edit a ring, and never recompute one except by
+            replay after a rollback.</p>
+        </li>
+        <li>
+          <h3>Compute depth and tier at query time</h3>
+          <p>Do not store depth. Do not update anything per block. If you find yourself writing a job that ticks
+            depths forward, you have the model wrong.</p>
+        </li>
+        <li>
+          <h3>Record invalid events</h3>
+          <p>Every marker that decodes but fails a rule produces an event with a reason code. These are part of the
+            state you must reproduce, not logging.</p>
+        </li>
+        <li>
+          <h3>Implement rollback and replay</h3>
+          <p>Store block hashes per height. On a mismatch, roll back to the fork point and replay. Prove that
+            rolling back to height H and replaying to H reproduces the same state root.</p>
+        </li>
+        <li>
+          <h3>Match the state root</h3>
+          <p>Reproduce the canonical snapshot encoding until your roots match the vectors. The vectors are the
+            authority for the encoding.</p>
+        </li>
+        <li>
+          <h3>Serve the API</h3>
+          <p>Last, not first. An API over wrong state is worse than no API. Contract on the
+            <a href="../api/endpoints.html">endpoint reference</a>.</p>
+        </li>
+      </ol>
+
+      <h2>Conformance checklist</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Answer yes to all of these before calling an implementation compatible.</caption>
+          <thead><tr><th>Area</th><th>Check</th></tr></thead>
+          <tbody>
+            <tr><td>Derivations</td><td>All five reproduce the documented worked examples byte for byte</td></tr>
+            <tr><td>Grammar</td><td>Non minimal pushes are rejected, and two PTNA outputs void the marker</td></tr>
+            <tr><td>SEED</td><td>All six checks, in order, with the right reason code per failure</td></tr>
+            <tr><td>Age</td><td>Exactly 144 blocks passes, 143 fails</td></tr>
+            <tr><td>Founding</td><td><code>h_open</code> inclusive, <code>h_close</code> exclusive, grace inclusive</td></tr>
+            <tr><td>Minimums</td><td>100000 founding, 10000 open, 10000 successor, all inclusive</td></tr>
+            <tr><td>KEEP</td><td>Every void condition falls through to the default rule</td></tr>
+            <tr><td>Default rule</td><td>Lowest index, not OP_RETURN, at or above 10000 sats</td></tr>
+            <tr><td>Relic</td><td>Terminal, with a final ring carrying <code>relic: true</code></td></tr>
+            <tr><td>Depth</td><td>Computed, never stored per block</td></tr>
+            <tr><td>Tiers</td><td>Thresholds inclusive, eight names, Elder has no next tier</td></tr>
+            <tr><td>Bundles</td><td>Several artifacts on one carrier all move together</td></tr>
+            <tr><td>Reorgs</td><td>Rollback to fork point and replay reproduces state exactly</td></tr>
+            <tr><td>Invalid events</td><td>Recorded with frozen codes and reproducible order</td></tr>
+            <tr><td>Serialisation</td><td>Sats as strings, heights as numbers, ids lowercase hex</td></tr>
+            <tr><td>Vectors</td><td>Every golden vector passes, including state roots</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Pitfalls that have caught people</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>The mistakes most likely to make two implementations disagree.</caption>
+          <thead><tr><th>Pitfall</th><th>What goes wrong</th></tr></thead>
+          <tbody>
+            <tr><td>Txid byte order</td><td>The artifact id uses wire order, the reverse of the display txid. Using the display order gives a wrong id that still looks like a hash.</td></tr>
+            <tr><td>Vout width</td><td>The marker payload carries <code>carrier_vout</code> in one byte. The artifact id hashes it as four bytes little endian. Both are correct, in different places.</td></tr>
+            <tr><td>Double hashing</td><td>Bitcoin uses SHA-256 twice in many places. These derivations use it once.</td></tr>
+            <tr><td>Tagged hashing</td><td>These are not BIP-340 tagged hashes. The tag is concatenated as plain ASCII.</td></tr>
+            <tr><td>Non minimal pushes</td><td>Accepting <code>OP_PUSHDATA1</code> for a short payload makes you accept markers others reject.</td></tr>
+            <tr><td>Inclusive comparisons</td><td>144 passes, 10000 sats passes, a threshold exactly equal to depth counts. Off by one here changes real outcomes.</td></tr>
+            <tr><td>Fee outputs</td><td>Sats paid to the miner are not an output and can never be a successor.</td></tr>
+            <tr><td>Mempool</td><td>Unconfirmed transactions never affect state.</td></tr>
+            <tr><td>Reason code order</td><td>Checking rules in a different order emits different codes for the same transaction.</td></tr>
+            <tr><td>Storing depth</td><td>Any stored depth drifts and disagrees at the tip.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Testing strategy</h2>
+      <ol>
+        <li><strong>Unit test the pure functions.</strong> Derivations and the marker parser need no chain.</li>
+        <li><strong>Property test the parser.</strong> Random bytes should never panic and should always produce
+          either a marker or a code.</li>
+        <li><strong>Run the golden vectors.</strong> They are the shared definition of correct.</li>
+        <li><strong>Run a regtest scenario suite.</strong> Mint, move, bundle, relic, reorg. Compare state roots at
+          every height.</li>
+        <li><strong>Differential test against another implementation.</strong> Index the same signet range with
+          both and compare roots per block. This finds what unit tests do not.</li>
+      </ol>
+      <p>When you find a difference, do not adjust your code to match ours by inspection. Work out which behaviour
+        the baseline requires, then <a href="disagreements.html">report the disagreement</a> so the answer is
+        written down for everyone.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

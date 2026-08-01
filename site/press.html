@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Press and brand, PATINA</title>
+<meta name="description" content="Brand assets for PATINA: wordmark, protocol mark, favicon and social cards as SVG, a short description, a longer description, colour values and usage rules.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/press.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Press and brand, PATINA">
+<meta property="og:description" content="Wordmark, protocol mark, favicon and social cards, plus a short and a long description and the rules for using them.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/press.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Press and brand, PATINA">
+<meta name="twitter:description" content="Wordmark, protocol mark, favicon and social cards, plus descriptions and usage rules.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a href="faq.html">Questions</a></li>
+        <li><a href="press.html" aria-current="page">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <p class="eyebrow">Press and brand</p>
+    <h1>Assets and words you can reuse</h1>
+    <p class="lede">Everything here is free to use when writing about PATINA. The only rule that really matters is not to imply we endorsed something we did not.</p>
+  </section>
+
+  <section class="wrap band" id="copy">
+    <h2>Descriptions</h2>
+
+    <h3>One paragraph</h3>
+    <div class="code">
+      <div class="code-head"><span>short description</span><button type="button" class="btn btn-small" data-copy="desc-short" hidden>Copy</button></div>
+      <pre id="desc-short">PATINA is a Bitcoin protocol that marks one unspent output as the carrier of an
+artifact. The artifact's depth is simply the number of blocks that output has
+stayed unspent, so it deepens on its own and resets to zero the moment the
+output is spent. That reset is inherited from Bitcoin's own model rather than
+enforced by anyone, because spending an output destroys it. Each completed
+stretch is engraved permanently as a ring. The genesis asset, the Firstlight
+Seals, is minted for network fees only inside a single window of 4032 blocks,
+with at least 100 000 sats of the minter's own bitcoin sealed inside as an
+endowment that stays theirs.</pre>
+    </div>
+
+    <h3>Longer</h3>
+    <div class="code">
+      <div class="code-head"><span>long description</span><button type="button" class="btn btn-small" data-copy="desc-long" hidden>Copy</button></div>
+      <pre id="desc-long">PATINA is a Bitcoin protocol for artifacts that measure one thing: how long an
+output has been left alone.
+
+An artifact points at exactly one unspent output, its carrier. Depth is the
+current block height minus the height at which that carrier was created, so it
+is a subtraction any Bitcoin node can perform, with no index and no trusted
+party. Depth is never stored, only computed when asked. Eight named tiers mark
+ranges of depth, from Raw at zero through Sheen, Cast, Verdigris, Umber,
+Bronze and Oxide to Elder at 210 000 blocks.
+
+Spending the carrier ends the stretch. Nothing enforces that reset, because
+nothing has to: a spent output no longer exists, and a destroyed output has no
+age. What remains is a ring, a permanent record of where the stretch started
+and ended, how deep it went and what value it carried. Rings accumulate and
+cannot be removed. The artifact then continues on a successor output at depth
+zero, or becomes a relic if the spend left nothing eligible behind.
+
+The genesis asset is the Firstlight Seals. They can be claimed only inside a
+single window of 4032 blocks, with no price, no cap, no reserve and no
+allocation to the people who built the protocol. Claiming uses an aged commit
+and reveal: the commit output must be at least 144 blocks old before the reveal
+can spend it, and only the committer can spend it, which makes a claim
+impossible to snipe and removes any advantage to acting at a particular
+second. A founding carrier must hold at least 100 000 sats of the minter's own
+bitcoin. That bitcoin is not paid to anyone. It stays theirs, spendable at any
+time, and spending it resets the depth.
+
+PATINA is explicit about what it does not do. Depth proves that an outpoint has
+not moved, and with a signed attestation over the artifact id and a recent
+block hash it also shows the key is alive. It does not prove that the same
+person held it throughout, because keys can be sold off chain with nothing
+recorded. Founding membership can be farmed by anyone willing to park real
+bitcoin, so concentration figures are published live while the window is open
+rather than after it closes. Buying an artifact moves it, which resets its
+depth. PATINA is built by Bitcoin Universe, and neither Bitcoin Universe nor
+anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
+    </div>
+
+    <h3>Names and spelling</h3>
+    <ul>
+      <li>The protocol is <strong>PATINA</strong> in running text, in capitals.</li>
+      <li>The genesis asset is <strong>Firstlight Seals</strong>, one word for Firstlight.</li>
+      <li>The tiers are Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder.</li>
+      <li>Depth is measured in blocks, never in days. Days are always an estimate.</li>
+      <li>There is no version number in the name. Please do not add one.</li>
+    </ul>
+  </section>
+
+  <section class="wrap band" id="assets">
+    <h2>Assets</h2>
+    <p class="prose">Every file is hand authored SVG. They scale to any size and stay sharp in print.</p>
+
+    <div class="asset-row">
+      <div class="asset-preview"><img src="assets/brand/wordmark.svg" alt="The PATINA wordmark, six monoline capital letters."></div>
+      <div class="asset-meta">
+        <h3>Wordmark</h3>
+        <p>Monoline capitals, drawn as paths so it needs no font. It inherits the surrounding text colour when used inline, and switches with the reader's system theme when used as an image.</p>
+        <p><a href="assets/brand/wordmark.svg">assets/brand/wordmark.svg</a></p>
+      </div>
+    </div>
+
+    <div class="asset-row">
+      <div class="asset-preview"><img src="assets/brand/mark.svg" alt="The PATINA protocol mark, six concentric rings with a wedge cut out at the top."></div>
+      <div class="asset-meta">
+        <h3>Protocol mark</h3>
+        <p>A ring cross section cut open at the top. Six strata run from a bronze core out to a verdigris rim, one band per tier the ladder can reach. The wedge is what makes it a cross section rather than a target.</p>
+        <p><a href="assets/brand/mark.svg">assets/brand/mark.svg</a></p>
+      </div>
+    </div>
+
+    <div class="asset-row">
+      <div class="asset-preview"><img src="assets/brand/favicon.svg" alt="The PATINA favicon, three concentric rings with a cut at the top." width="48" height="48"></div>
+      <div class="asset-meta">
+        <h3>Favicon</h3>
+        <p>Three rings instead of six, so it survives being drawn at 16 pixels. Adapts to light and dark on its own.</p>
+        <p><a href="assets/brand/favicon.svg">assets/brand/favicon.svg</a> and <a href="assets/brand/apple-touch-icon.svg">assets/brand/apple-touch-icon.svg</a> for the padded 180 pixel version.</p>
+      </div>
+    </div>
+
+    <div class="asset-row">
+      <div class="asset-preview"><img src="assets/brand/og-default.svg" alt="Social card showing the PATINA wordmark and a ring cross section." width="200"></div>
+      <div class="asset-meta">
+        <h3>Social cards</h3>
+        <p>Three cards at 1200 by 630: a general one, one for the mint, one for the protocol pages.</p>
+        <p><a href="assets/brand/og-default.svg">og-default.svg</a>, <a href="assets/brand/og-mint.svg">og-mint.svg</a>, <a href="assets/brand/og-protocol.svg">og-protocol.svg</a></p>
+      </div>
+    </div>
+
+    <div class="note note-warn">
+      <p class="note-title">If you are publishing a link preview</p>
+      <p>These cards are SVG, because this site ships no build step and no binary assets. Most social platforms only render raster previews, so export the card you need to PNG at 1200 by 630 before you publish. Nothing about the artwork changes when you do.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="colour">
+    <h2>Colour</h2>
+    <div class="table-scroll">
+      <table>
+        <caption>The palette. The tier ramp runs from raw metal to green, one stop per tier.</caption>
+        <thead><tr><th scope="col">Role</th><th scope="col" class="mono">Dark</th><th scope="col" class="mono">Light</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Ground</th><td class="mono">#0e1211</td><td class="mono">#f2efe7</td></tr>
+          <tr><th scope="row">Ink</th><td class="mono">#ece7dd</td><td class="mono">#1c211f</td></tr>
+          <tr><th scope="row">Bronze</th><td class="mono">#c98f3c</td><td class="mono">#7a5312</td></tr>
+          <tr><th scope="row">Verdigris</th><td class="mono">#4fb094</td><td class="mono">#1e6b57</td></tr>
+          <tr><th scope="row">Tier 0, Raw</th><td class="mono">#8f8578</td><td class="mono">#6f675c</td></tr>
+          <tr><th scope="row">Tier 3, Verdigris</th><td class="mono">#a89147</td><td class="mono">#7b672a</td></tr>
+          <tr><th scope="row">Tier 7, Elder</th><td class="mono">#3f9f8c</td><td class="mono">#1f6f5f</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small faint">Typography is a system serif for headings, the system interface font for body text and a system monospace for anything numeric. No web fonts are loaded anywhere on this site, so there is no font file to license or ship.</p>
+  </section>
+
+  <section class="wrap band" id="rules">
+    <h2>Usage rules</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Please do</h3>
+        <ul>
+          <li>Use the assets as they are, at any size, in any medium.</li>
+          <li>Recolour the wordmark to a single flat colour when a layout needs it.</li>
+          <li>Leave clear space around the mark equal to the radius of its innermost ring.</li>
+          <li>Link to this site when you quote it. Nothing here is behind a paywall.</li>
+          <li>Say what you actually think. Critical coverage does not need our permission.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Please do not</h3>
+        <ul>
+          <li>Stretch, skew, rotate or add effects to the wordmark or the mark.</li>
+          <li>Redraw the mark with a different ring count. The strata carry meaning.</li>
+          <li>Use the assets to imply that Bitcoin Universe endorses, audits or partners with your project.</li>
+          <li>Put the mark on a product that sells, custodies or lends artifacts.</li>
+          <li>Add a version number to the name anywhere.</li>
+          <li>Combine the assets with price predictions, return figures or invented statistics.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">
+      <p class="note-title">Facts worth checking before you publish</p>
+      <ul>
+        <li>There is no mint price, no supply cap, no team allocation and no reserve.</li>
+        <li>Depth resets on any movement, including a sale.</li>
+        <li>The founding cohort can be farmed by anyone with bitcoin to park.</li>
+        <li>All eight tier thresholds are on <a href="protocol.html#depth">the protocol page</a>, in blocks.</li>
+        <li>Any number you have seen about live activity should come from an indexer, not from us. <a href="verify.html">Here is how to query one</a>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap band" id="contact">
+    <h2>Contact</h2>
+    <p class="prose">Brand and press questions go to <a href="mailto:legal@bitcoinuniverse.io" data-config="pressEmail">legal@bitcoinuniverse.io</a>. Technical questions are better as an issue on the <a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">protocol repository</a>, where the answer is public and stays findable.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

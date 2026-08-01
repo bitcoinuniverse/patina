@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The upgrade boundary | PATINA docs</title>
+<meta name="description" content="What is frozen in PATINA and can never change, what may be added, and the process that has to be followed for anything on the boundary.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/upgrade-boundary.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>The upgrade boundary</h1>
+      <p class="lede">Some things are frozen because changing them would rewrite history. Others can be added
+        because they change nothing that already exists. The line between them is this page.</p>
+
+      <h2>Frozen</h2>
+      <p>Nothing below may change. A change here would produce different state from the same chain, which means the
+        artifacts people already hold would mean something different than they did when they were made.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>Frozen surfaces.</caption>
+          <thead><tr><th>Surface</th><th>Includes</th></tr></thead>
+          <tbody>
+            <tr><td>Identity</td><td>Magic <code>PTNA</code>, version byte <code>0x01</code>, protocol slug</td></tr>
+            <tr><td>Derivations</td><td>The five domain tags, single SHA-256, the preimage layouts</td></tr>
+            <tr><td>Marker grammar</td><td>Single minimal push, 83 byte ceiling, lowest index selection, duplicate voiding</td></tr>
+            <tr><td>Opcodes</td><td><code>0x01</code> SEED and <code>0x02</code> KEEP, and their payload layouts</td></tr>
+            <tr><td>Constants</td><td>144, 4032, 4032, 100000, 10000, 10000, 8, 6, and the eight tier thresholds</td></tr>
+            <tr><td>Validity rules</td><td>The six SEED checks, KEEP entry rules, the default rule, relic terminality</td></tr>
+            <tr><td>Reason codes</td><td>All eighteen, by name</td></tr>
+            <tr><td>State semantics</td><td>Depth is computed, rings are append only, relic is terminal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Free to change</h2>
+      <p>None of these affect what a transaction means.</p>
+      <ul>
+        <li>Indexer internals: storage engine, schema, caching, concurrency, language.</li>
+        <li>Sync speed, memory use, and deployment shape.</li>
+        <li><strong>Additive</strong> API surface: new endpoints, new fields on existing responses. Removing or
+          repurposing a field is not additive.</li>
+        <li>Everything about presentation: renders, share cards, wording, this documentation.</li>
+        <li>Client tooling, planners, and wallet integrations.</li>
+        <li>Operational policy: rate limits, retention of invalid events, monitoring.</li>
+      </ul>
+
+      <h2>On the boundary</h2>
+      <p>Three things sit in between and need the process below.</p>
+      <h3>A new opcode</h3>
+      <p>The marker already reserves opcode space, and unknown opcodes are handled: they record
+        <code>MARKER_UNKNOWN_OP</code> and change nothing. That means a new opcode can be introduced without
+        breaking older indexers, but older indexers will disagree with newer ones about state from the moment
+        anyone uses it. Adding an opcode is a protocol change, not a feature.</p>
+
+      <h3>A new marker version</h3>
+      <p>Same shape. Version <code>0x02</code> markers would be ignored with
+        <code>MARKER_UNKNOWN_VERSION</code> by current parsers. Introducing one splits implementations the same
+        way.</p>
+
+      <h3>The flags byte</h3>
+      <p>SEED reserves one payload byte with no assigned meaning. Assigning a meaning to it later would change how
+        already confirmed transactions are interpreted, so it is a protocol change, and one to avoid.</p>
+      <div class="warn">
+        <span class="lbl">Do not act on flags</span>
+        <p>Until a meaning is published, an implementation must accept any value in the flags byte and must not
+          branch on it. An implementation that rejects non zero flags will produce different state from one that
+          accepts them.</p>
+      </div>
+
+      <h2>The process for anything frozen or on the boundary</h2>
+      <ol class="steps">
+        <li>
+          <h3>Write it down before writing code</h3>
+          <p>A change to the baseline is proposed as a change to the baseline file, with the reason, the affected
+            constants, and the effect on existing artifacts.</p>
+        </li>
+        <li>
+          <h3>Record deviations honestly</h3>
+          <p>Any implementation that already differs from the baseline records the difference in
+            <code class="mono">docs/deviations.md</code>, in this repo. A deviation that is not written down is a
+            bug wearing a disguise.</p>
+        </li>
+        <li>
+          <h3>Extend the golden vectors first</h3>
+          <p>A change is not real until vectors cover it. Two implementations must be able to prove they agree on
+            the new behaviour before it ships. See
+            <a href="../compat/golden-vectors.html">Golden vectors and state roots</a>.</p>
+        </li>
+        <li>
+          <h3>Bind it to a deployment record</h3>
+          <p>Deployment records carry <code>spec_sha256</code>. A change to the spec changes that hash, and
+            <code>GET /patina/status</code> publishes it. Anyone can tell which spec an indexer is running
+            without asking.</p>
+        </li>
+      </ol>
+
+      <h2>Networks and activation</h2>
+      <p>Deployments bind a network to the constants and window heights it uses:</p>
+      <pre data-label="Deployment record"><code>{ network, protocol_id: "PTNA", spec_sha256,
+  h_open, h_close, grace_end,
+  min_carrier_founding, min_carrier_open, commit_min_age }</code></pre>
+      <ul>
+        <li>Regtest and signet deployments ship in the repo.</li>
+        <li>Mainnet values stay unset until activation is authorised.</li>
+        <li>Software must refuse to construct mainnet transactions without both
+          <code>PATINA_MAINNET_AUTHORIZED=true</code> and a mainnet deployment record naming two approvers.</li>
+      </ul>
+      <p>This is a deliberate speed limit. It means an accidental deploy cannot open a founding window, and it
+        means the window's heights are a published decision rather than a runtime surprise.</p>
+
+      <h2>Naming rule</h2>
+      <p>There are no version labels in any name: not in file names, folder names, package names, URLs, or
+        interface copy. The one number that exists is the marker version byte, which is protocol data inside a
+        transaction, not a product name. When you need to say which spec is running, quote
+        <code>spec_sha256</code>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

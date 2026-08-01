@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Error taxonomy | PATINA docs</title>
+<meta name="description" content="How the PATINA indexer API reports failures: status codes, error bodies, retry guidance, and why protocol reason codes are not API errors.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="api/errors.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Error taxonomy</h1>
+      <p class="lede">Two kinds of failure exist and they are easy to confuse. Transport errors mean the API could
+        not answer. Reason codes mean the chain contained something the protocol declined to act on.</p>
+
+      <h2>The distinction</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Where each kind of failure lives.</caption>
+          <thead><tr><th></th><th>API error</th><th>Protocol reason code</th></tr></thead>
+          <tbody>
+            <tr><td>Produced by</td><td>The server answering your request</td><td>The parser reading a confirmed transaction</td></tr>
+            <tr><td>Looks like</td><td>An HTTP status of 400 or above</td><td>A 200 response listing invalid events</td></tr>
+            <tr><td>Means</td><td>Ask again, or fix your request</td><td>Something on chain did not qualify</td></tr>
+            <tr><td>Example</td><td><code>503</code> while the indexer replays a reorg</td><td><code>SEED_COMMIT_TOO_YOUNG</code></td></tr>
+            <tr><td>Documented at</td><td>This page</td><td><a href="../protocol/reason-codes.html">Reason codes</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <span class="lbl">Never surface a reason code as an outage</span>
+        <p>A failed mint is a successful API call. If your client shows "service error" when the real answer is
+          "your reveal was 12 blocks early", you have hidden the one fact the user needs.</p>
+      </div>
+
+      <h2>Status codes</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>What each status means and how a client should behave.</caption>
+          <thead><tr><th>Status</th><th>Meaning</th><th>Retry</th></tr></thead>
+          <tbody>
+            <tr><td><code>200</code></td><td>Answered. This includes empty lists and artifacts that do not exist yet from your point of view.</td><td>Not applicable</td></tr>
+            <tr><td><code>400</code></td><td>The request is malformed: an unparseable cursor, a bad id, a body that is not JSON</td><td>No. Fix the request.</td></tr>
+            <tr><td><code>404</code></td><td>No such artifact, carrier, or epoch at this indexed height</td><td>Only if the indexer was behind. Check <code>indexed_height</code> first.</td></tr>
+            <tr><td><code>413</code></td><td>The request body is too large, for example too many outpoints in one safety check</td><td>No. Split the batch.</td></tr>
+            <tr><td><code>429</code></td><td>Rate limited by the operator</td><td>Yes, with backoff. Respect <code>Retry-After</code> if present.</td></tr>
+            <tr><td><code>500</code></td><td>The indexer failed unexpectedly</td><td>Yes, with backoff. Report it if it persists.</td></tr>
+            <tr><td><code>503</code></td><td>Not ready: initial sync, a reorg replay, or the Bitcoin node is unreachable</td><td>Yes, with backoff. This is the correct answer during a rollback.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Error body</h2>
+      <pre data-label="Shape"><code>{
+  "error": {
+    "code": "NOT_READY",
+    "message": "indexer is replaying after a reorg",
+    "indexed_height": 0,
+    "tip_height": 0
+  }
+}</code></pre>
+      <ul>
+        <li><code>code</code> is a stable string your software can branch on.</li>
+        <li><code>message</code> is for humans and may change. Do not parse it.</li>
+        <li>Sync heights are included where they are known, because most transient failures are really a sync
+          story.</li>
+      </ul>
+      <div class="note">
+        <span class="lbl">Not frozen by the baseline</span>
+        <p>The baseline fixes the endpoints and their success payloads. It does not fix the error body. The shape
+          above is what this stack uses and what clients should expect from it, but treat the status code as the
+          contract and the body as a convenience.</p>
+      </div>
+
+      <h2>Fail closed</h2>
+      <p>The rule the whole stack follows: when the truth is unavailable, say so. Never substitute.</p>
+      <ul>
+        <li>An unreachable indexer produces an error, not a cached number presented as current.</li>
+        <li>An indexer that is behind answers for the height it has reached, and says what that height is.</li>
+        <li>A proxy that cannot reach the indexer returns an error rather than an empty list, because an empty list
+          is a claim that there is nothing.</li>
+        <li>A client that cannot fetch shows an empty state that says the data could not be read. It does not show
+          a zero.</li>
+      </ul>
+      <div class="note">
+        <span class="lbl">Zero and unknown are different</span>
+        <p><code>"artifacts_alive": 0</code> is a measurement. A missing response is not. Any interface that
+          renders them the same way is lying by omission, and that includes progress bars, charts, and share
+          cards.</p>
+      </div>
+
+      <h2>Client checklist</h2>
+      <ol>
+        <li>Read <code>/status</code> first and keep <code>indexed_height</code> alongside anything you cache.</li>
+        <li>Treat <code>503</code> as normal during sync and reorg replay. Back off, do not alarm the user.</li>
+        <li>Back off exponentially on <code>429</code>, <code>500</code>, and <code>503</code>. Do not retry
+          <code>400</code>, <code>404</code>, or <code>413</code>.</li>
+        <li>Set a request timeout. A hung request should surface as an honest empty state.</li>
+        <li>Show the height every number was read at.</li>
+        <li>Never invent a value to fill a gap in a layout.</li>
+      </ol>
+
+      <h2>Reporting a suspected bug</h2>
+      <p>If the API answers but the answer looks wrong, that is not an error taxonomy problem, it is possibly a
+        state disagreement. Collect <code>/status</code> from both implementations, find the first height where
+        they differ, and follow <a href="../compat/disagreements.html">Report a disagreement</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

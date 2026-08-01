@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What PATINA is | PATINA docs</title>
+<meta name="description" content="PATINA is a Bitcoin artifact whose state deepens for every block its carrier output stays unspent, resets when it moves, and engraves each completed stretch as a ring.">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="index.html" data-root="">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>What PATINA is</h1>
+      <p class="lede">PATINA is a Bitcoin artifact whose state deepens for every block its carrier output stays
+        unspent, resets to zero the moment that output moves, and permanently engraves each completed holding
+        stretch as a ring.</p>
+
+      <h2>The longer explanation</h2>
+      <p>Every PATINA artifact rides on one specific unspent transaction output. That output is called the
+        <strong>carrier</strong>. The artifact has one number that matters, its <strong>depth</strong>, and the number
+        is computed the same way by everyone:</p>
+      <pre data-label="Depth"><code>depth = current_block_height - carrier_creation_height</code></pre>
+      <p>Nothing accrues off chain. Nothing is minted per block. There is no staking contract, no lockup, and no
+        counterparty. The chain already records when an output was created, so depth is a subtraction that any
+        observer can redo from a block explorer.</p>
+      <p>Spending the carrier resets depth to zero. This rule is not enforced by code that could be patched or
+        bribed. It is inherited from how Bitcoin works. Spending an output destroys it, and a destroyed output has
+        no age. The artifact follows the money into a successor output, and the successor is brand new, so its
+        depth starts at zero.</p>
+      <p>When a stretch ends, it is not erased. The indexer engraves it as a <strong>ring</strong>: a permanent
+        record of the height the stretch started, the height it ended, how deep it got, and how many sats it
+        carried. An artifact accumulates rings the way a cut tree shows growth. A long ring you completed in 2027
+        stays legible in 2035, even if the artifact is sitting at depth 40 today.</p>
+      <p>Depth is bucketed into eight named tiers so that a number becomes a thing you can say out loud. Raw is
+        where everything starts. Elder is 210000 blocks, roughly four years at ten minutes a block.</p>
+
+      <ul class="tierstrip">
+        <li style="--tc:#8d8378"><span class="n">Raw</span><span class="b">0</span></li>
+        <li style="--tc:#c8a271"><span class="n">Sheen</span><span class="b">1008</span></li>
+        <li style="--tc:#c28d55"><span class="n">Cast</span><span class="b">4032</span></li>
+        <li style="--tc:#b58a53"><span class="n">Verdigris</span><span class="b">12960</span></li>
+        <li style="--tc:#9c8c58"><span class="n">Umber</span><span class="b">26280</span></li>
+        <li style="--tc:#7f9271"><span class="n">Bronze</span><span class="b">52560</span></li>
+        <li style="--tc:#5c9c8b"><span class="n">Oxide</span><span class="b">105120</span></li>
+        <li style="--tc:#3f9b8f"><span class="n">Elder</span><span class="b">210000</span></li>
+      </ul>
+      <p>The full table, with elapsed time for each tier and the exact rule for choosing one, is on
+        <a href="protocol/depth-and-tiers.html">Depth and tiers</a>.</p>
+
+      <h2>The genesis asset</h2>
+      <p>The first PATINA asset is the <strong>Firstlight Seals</strong>. It is the founding cohort, and it opens
+        once.</p>
+      <ul>
+        <li>Minting is free. You pay Bitcoin network fees to the miners and nothing to anyone else.</li>
+        <li>The commit window is 4032 blocks long, about 28 days. It opens once and does not reopen.</li>
+        <li>Every Seal is sealed over at least 100000 sats of your own bitcoin. That is the
+          <strong>endowment</strong>. It stays yours, inside the artifact, spendable by your key at any time.</li>
+        <li>Zero team allocation. Zero reserve. Zero price. No supply cap. No race for a low number.</li>
+      </ul>
+      <p>Minting is a two step aged commit and reveal. You publish a commit output, wait at least 144 blocks, then
+        reveal. Because only the committer can spend the commit output, nobody can watch your reveal and jump in
+        front of it. Details are on <a href="start/firstlight-seals.html">Firstlight Seals</a> and the step by step
+        is in the <a href="using/mint.html">mint walkthrough</a>.</p>
+
+      <h2>What this is not</h2>
+      <div class="honest">
+        <span class="lbl">Read this before you mint</span>
+        <p>Depth proves that an outpoint has not moved. Paired with a signed attestation it also shows the key is
+          still alive. It does not prove that the same person held it the whole time, because keys can be sold off
+          chain and nothing on chain would look different.</p>
+        <p>Founding membership can be farmed. Anyone willing to park real bitcoin can mint many Seals, and we
+          publish live concentration statistics during the window instead of hiding them.</p>
+        <p>Buying an artifact from someone else moves it, and moving it resets depth to zero. There is no transfer
+          that preserves depth. The rings survive; the current stretch does not.</p>
+        <p class="footnote"><a href="start/limits.html">The full list of limits</a></p>
+      </div>
+
+      <h2>Where to go next</h2>
+      <ul class="cards">
+        <li><a href="start/firstlight-seals.html"><span class="t">Firstlight Seals</span><span class="d">What the founding cohort is, and what free minting actually costs.</span></a></li>
+        <li><a href="using/mint.html"><span class="t">Mint walkthrough</span><span class="d">Both steps, with the 144 block wait and what to check at each one.</span></a></li>
+        <li><a href="protocol/marker-grammar.html"><span class="t">Marker grammar</span><span class="d">The exact bytes, with a table and verified hex.</span></a></li>
+        <li><a href="api/endpoints.html"><span class="t">Endpoint reference</span><span class="d">Every indexer endpoint with request and response examples.</span></a></li>
+        <li><a href="compat/build.html"><span class="t">Build a compatible implementation</span><span class="d">The steps, the golden vectors, and how to compare state roots.</span></a></li>
+        <li><a href="operator/deploy.html"><span class="t">Run an indexer</span><span class="d">Deploy, sync, verify, monitor, back up, restore.</span></a></li>
+      </ul>
+
+      <h2>How to read these docs</h2>
+      <dl class="fields">
+        <dt>Constants</dt>
+        <dd>Every number in these pages comes from the frozen implementation baseline. If a page and the baseline
+          disagree, the baseline wins and the page is a bug.</dd>
+        <dt>Byte examples</dt>
+        <dd>Every hex string was computed by <code>docs/tools/vectors.mjs</code> and pasted from that script's
+          output. You can rerun it and diff.</dd>
+        <dt>Statistics</dt>
+        <dd>These pages contain no counts, no totals, and no charts. Numbers about the live network belong to the
+          indexer, and you can point the <a href="api/endpoints.html">endpoint reference</a> at your own instance
+          to read them.</dd>
+        <dt>Deviations</dt>
+        <dd>Anything an implementation does differently from the baseline is recorded in
+          <code class="mono">docs/deviations.md</code> in this repo, not quietly in prose.</dd>
+      </dl>
+
+      <h2>How this site is built</h2>
+      <p>Hand written HTML, one stylesheet, and three small browser scripts. No framework, no bundler, no fonts or
+        scripts loaded from anyone else's server. It works served from GitHub Pages and it works when you open
+        <code>index.html</code> straight off a disk.</p>
+      <p>Search runs against <code>assets/search-index.json</code>, which is generated by
+        <code>docs/tools/build-search-index.mjs</code>. The same data is written to
+        <code>assets/search-index.js</code> as well, because a browser blocks a page opened from disk from
+        fetching a local file, and search has to work from disk too.</p>
+      <p>Run every check before publishing. It regenerates the search index and fails on a broken link, a bad byte
+        example, a contrast regression, or a house style slip.</p>
+      <pre data-label="From the repo root"><code>node docs/tools/verify.mjs</code></pre>
+      <div class="tablewrap">
+        <table>
+          <caption>What each script does. All of them use the Node standard library and nothing else.</caption>
+          <thead><tr><th>Script</th><th>Checks</th></tr></thead>
+          <tbody>
+            <tr><td><code>vectors.mjs</code></td><td>Computes every byte example printed in these pages</td></tr>
+            <tr><td><code>build-search-index.mjs</code></td><td>Regenerates the search index from the pages</td></tr>
+            <tr><td><code>check-html.mjs</code></td><td>Tag balance, duplicate ids, heading order, labels, captions</td></tr>
+            <tr><td><code>check-links.mjs</code></td><td>Every link and fragment resolves inside the docs</td></tr>
+            <tr><td><code>check-style.mjs</code></td><td>No em dashes, no version labels, no hype words, no external resources</td></tr>
+            <tr><td><code>check-vectors.mjs</code></td><td>Every hex string on every page is part of a computed value</td></tr>
+            <tr><td><code>check-contrast.mjs</code></td><td>Colour contrast in both themes</td></tr>
+            <tr><td><code>check-shell.mjs</code></td><td>Runs the browser scripts headless and asserts what they build</td></tr>
+            <tr><td><code>serve.mjs</code></td><td>Serves this directory locally for preview</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="assets/nav-data.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/shell.js"></script>
+</body>
+</html>

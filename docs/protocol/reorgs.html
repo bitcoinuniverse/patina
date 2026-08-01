@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reorg behavior | PATINA docs</title>
+<meta name="description" content="How a PATINA indexer handles chain reorganisations: roll back to the fork point, replay in order, and treat six confirmations as final.">
+<link rel="stylesheet" href="../assets/style.css">
+<script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body data-page="protocol/reorgs.html" data-root="../">
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span><b>PATINA</b> <span class="sub">docs</span></a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+  <main class="content" id="content">
+    <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+    <article>
+      <h1>Reorg behavior</h1>
+      <p class="lede">State is a pure function of the chain. When the chain changes, the state changes with it, by
+        rolling back and replaying.</p>
+
+      <h2>The rule</h2>
+      <ol>
+        <li>Detect that the block at some height no longer matches the chain your node reports.</li>
+        <li>Roll state back to the last common ancestor, the fork point.</li>
+        <li>Replay every block from the fork point forward, in order, applying the same rules as always.</li>
+        <li>Serve the result.</li>
+      </ol>
+      <p>There is no reconciliation logic, no patching, and no attempt to preserve anything that was built on
+        blocks that no longer exist. Replay is the only correct answer, and it is also the simplest one.</p>
+
+      <h2>Finality</h2>
+      <p><code>CONFIRMATIONS_FINAL</code> is 6. That is the depth at which the indexer treats a record as settled
+        and stops expecting it to change.</p>
+      <div class="tablewrap">
+        <table>
+          <caption>How to read confirmations on a new artifact or a new ring.</caption>
+          <thead><tr><th>Confirmations</th><th>How to treat it</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>It has not happened. Mempool state is not protocol state.</td></tr>
+            <tr><td>1 to 5</td><td>Provisional. Show it, label it as unconfirmed to that depth, and expect it might vanish.</td></tr>
+            <tr><td>6 or more</td><td>Final for practical purposes. A deeper reorg is possible and would still be handled by replay.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Six is a convention, not a law of physics. The protocol is correct under any reorg depth because it always
+        replays. Six is where the product stops warning you.</p>
+
+      <h2>What a reorg can change</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>Effects of a reorg that drops a block containing your transaction.</caption>
+          <thead><tr><th>If the reorg drops</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Your reveal</td>
+              <td>The artifact stops existing. If the transaction is mined again later, the artifact returns with a
+                new <code>birth_height</code>. The artifact id is unchanged as long as the txid is unchanged.</td>
+            </tr>
+            <tr>
+              <td>Your commit</td>
+              <td>The commit output moves to a different height, so the 144 block age is measured from the new
+                height. A reveal that was valid may become too young.</td>
+            </tr>
+            <tr>
+              <td>A spend of your carrier</td>
+              <td>The ring is removed and the artifact returns to its previous carrier with its old stretch intact.
+                Depth resumes as if the spend never happened, because it did not.</td>
+            </tr>
+            <tr>
+              <td>Blocks around a window boundary</td>
+              <td>Founding status is recomputed from the new heights. An artifact that qualified may not, and one
+                that did not may now qualify.</td>
+            </tr>
+            <tr>
+              <td>Nothing of yours</td>
+              <td>Heights below the fork point are untouched, so most artifacts see no change at all.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <span class="lbl">The artifact id survives a reorg, unless the txid changes</span>
+        <p>The id is derived from the reveal txid and the carrier index, not from a height. A reorg that moves your
+          reveal to a different block leaves the id alone. A replacement that changes the txid creates a different
+          id, and that is not a reorg, it is a different transaction.</p>
+      </div>
+
+      <h2>Requirements for an implementation</h2>
+      <ol>
+        <li><strong>Store block hashes, not just heights.</strong> You cannot detect a reorg by height alone.</li>
+        <li><strong>Keep enough history to roll back.</strong> Deep enough to cover any reorg you are willing to
+          survive without a full reindex. Deeper is cheaper than a rebuild.</li>
+        <li><strong>Make rollback exact.</strong> After rolling back to height H and replaying to height H, the
+          state root must equal what it was the first time. If it does not, your rollback is lossy.</li>
+        <li><strong>Never serve a mixture.</strong> While rolling back and replaying, either serve the old
+          consistent state or report not ready. Do not serve half replayed state.</li>
+        <li><strong>Reindex is always available.</strong> If rollback cannot reach the fork point, rebuild from the
+          deployment start height. Slow is acceptable, wrong is not.</li>
+      </ol>
+
+      <h2>What clients should do</h2>
+      <ul>
+        <li>Read <code>tip_height</code> and <code>indexed_height</code> from
+          <code>GET /patina/status</code> and show the height everything was read at.</li>
+        <li>Label anything under 6 confirmations as provisional.</li>
+        <li>Do not cache artifact records past the point where a reorg could invalidate them. If you cache, cache
+          with the height and revalidate.</li>
+        <li>Never celebrate a mint at zero confirmations.</li>
+      </ul>
+
+      <h2>Testing it</h2>
+      <p>Reorg handling is the part of an indexer most likely to be wrong, because it is rarely exercised in
+        production. Test it deliberately on regtest:</p>
+      <ol>
+        <li>Mine a chain, create an artifact, note the state root.</li>
+        <li>Invalidate the block containing the reveal and mine an alternative branch.</li>
+        <li>Confirm the artifact disappears.</li>
+        <li>Mine the reveal again on the new branch. Confirm the artifact returns with the new height.</li>
+        <li>Roll the whole thing back and replay from scratch. Confirm the state root matches a fresh index of the
+          final chain.</li>
+      </ol>
+      <p>The golden vectors include reorg cases. See <a href="../compat/golden-vectors.html">Golden vectors and
+        state roots</a>.</p>
+    </article>
+    <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+  </main>
+  <aside class="toc" id="toc" aria-label="On this page"></aside>
+</div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/search-index.js"></script>
+<script src="../assets/shell.js"></script>
+</body>
+</html>

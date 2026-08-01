@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Risks, PATINA</title>
+<meta name="description" content="Every way PATINA can disappoint you, in one place: depth is not provenance, founding membership can be farmed, buying resets depth, wallets can spend a carrier by accident, and nobody owes this anything.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/risks.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Risks, PATINA">
+<meta property="og:description" content="Depth is not provenance. Founding membership can be farmed. Buying resets depth. The full list, written down rather than buried.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/risks.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Risks, PATINA">
+<meta name="twitter:description" content="Depth is not provenance. Founding membership can be farmed. Buying resets depth.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
+<meta name="theme-color" content="#0e1211">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="transparency.html">Transparency</a></li>
+        <li><a href="risks.html" aria-current="page">Risks</a></li>
+        <li><a href="faq.html">Questions</a></li>
+        <li><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <p class="eyebrow">Read this before you claim anything</p>
+    <h1>Risks</h1>
+    <p class="lede">This page exists because the things below are easier to accept before you act than after. None of it is hedging language for something we think is fine.</p>
+  </section>
+
+  <section class="wrap band" id="meaning">
+    <h2>What the artifact means</h2>
+
+    <div class="note note-hard">
+      <h3>Depth is not provenance</h3>
+      <p>Depth proves one thing: this outpoint has not moved since a specific height. It does not prove that the same person controlled it for that whole time. Private keys can change hands off chain with nothing recorded anywhere, and no protocol on Bitcoin can see that.</p>
+      <p>A signed attestation over the artifact id and a recent block hash adds one more fact, that the key is alive right now. It still says nothing about the years before. Whoever holds the key today can sign it, including someone who bought the key yesterday.</p>
+    </div>
+
+    <div class="note note-warn">
+      <h3>Depth cannot tell discipline from loss</h3>
+      <p>An output that has not moved for four years might belong to someone with conviction, or to someone who lost their seed phrase in 2022. The chain sees the same thing either way. Some of the deepest artifacts that ever exist will be ones nobody can spend.</p>
+    </div>
+
+    <div class="note note-warn">
+      <h3>Founding membership can be farmed</h3>
+      <p>Anyone willing to park real bitcoin can claim as many Firstlight Seals as they can fund. There is no cap, no allowlist and no per person limit, because the protocol has no concept of a person. A single well funded participant could hold a large share of the founding cohort.</p>
+      <p>We publish <a href="transparency.html#concentration">live concentration figures</a> during the window rather than after it. That does not prevent farming. It only means you find out while you can still decide what to do about it.</p>
+    </div>
+
+    <div class="note note-warn">
+      <h3>Buying one resets it</h3>
+      <p>A transfer is a Bitcoin spend, which destroys the carrier. The stretch you were paying for closes as a ring, and the artifact restarts at depth zero on the new output. You inherit the record of what happened. You do not inherit the depth.</p>
+      <p>If somebody offers you a deep artifact, what you can actually buy is a deep set of rings and a fresh stretch. Price it that way.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="operational">
+    <h2>Ways to lose depth without meaning to</h2>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Your own wallet</h3>
+        <p>Ordinary coin selection knows nothing about carriers. A wallet consolidating dust, paying a fee from the wrong coin, or sweeping an address will spend a carrier without a warning, and the stretch ends there.</p>
+        <p>Check outpoints against the safety endpoint before you spend, or keep carriers in a wallet you never sweep. <a href="verify.html#indexer">How to check</a>.</p>
+      </div>
+      <div class="card">
+        <h3>Change below the floor</h3>
+        <p>The default rule needs an output holding at least 10 000 sats that is not an OP_RETURN. A spend that leaves only smaller outputs finds no eligible successor, and the artifact becomes a relic. Terminal, immediately, with no way back.</p>
+      </div>
+      <div class="card">
+        <h3>Bundles move together</h3>
+        <p>Several artifacts can ride one carrier. One input cannot go to two places, so splitting a bundle means spending the carrier once per destination, in separate transactions. Every one of those spends closes a stretch on every artifact in the bundle.</p>
+      </div>
+      <div class="card">
+        <h3>A void marker</h3>
+        <p>Two outputs carrying a PTNA payload void the marker for that transaction, and the default rule applies as if you had written nothing. A KEEP entry naming a non carrier input, a missing vout, an OP_RETURN, or an output under 10 000 sats is void and falls through the same way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="minting">
+    <h2>Risks at mint time</h2>
+    <div class="prose">
+      <ul>
+        <li><strong>A commit that is never revealed expires.</strong> The founding claim needs the reveal to land within the grace period. Miss it and the claim is gone. The coins in the commit output are still yours, because only your key can spend it, but the founding status is not.</li>
+        <li><strong>Fees can spike between the two transactions.</strong> There are at least 144 blocks between commit and reveal. The mempool can look very different by then, and the reveal still has to confirm.</li>
+        <li><strong>A reveal that fails a check creates nothing.</strong> It records an invalid event with a reason code, and you have paid a fee for it. Read the <a href="protocol.html#codes">reason codes</a> before you build anything by hand.</li>
+        <li><strong>Reorgs near a window edge can change founding status.</strong> If the commit output's height moves across the open or close boundary in a reorg, the founding flag moves with it. Claims near the edges deserve extra confirmations.</li>
+        <li><strong>A reorg can change the artifact id.</strong> The id derives from the reveal txid, so if the reveal is replaced by a different transaction the id is different too.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap band" id="systemic">
+    <h2>Risks that are not yours to control</h2>
+    <div class="table-scroll">
+      <table>
+        <caption>What can go wrong further out, and what it would actually do.</caption>
+        <thead><tr><th scope="col">Risk</th><th scope="col">What it would mean</th></tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">An indexer is wrong</th>
+            <td>State is derived, so a bug shows up as a disagreement with a node or with another indexer. Depth from <code>gettxout</code> is the check that settles it. This is why the <a href="verify.html">verify page</a> exists.</td>
+          </tr>
+          <tr>
+            <th scope="row">Every indexer goes offline</th>
+            <td>Your artifact is unaffected. It is an unspent output at a known height. Anyone can rebuild the index from the chain, because nothing lives outside the blocks.</td>
+          </tr>
+          <tr>
+            <th scope="row">Bitcoin Universe shuts down</th>
+            <td>The app's tab disappears. The protocol does not. Anyone can build markers and index them with no permission from us.</td>
+          </tr>
+          <tr>
+            <th scope="row">A bug in this software</th>
+            <td>This is new code. Test vectors and a frozen specification reduce the chance of two implementations disagreeing, but they do not make bugs impossible. Deviations get recorded in the repository rather than quietly patched.</td>
+          </tr>
+          <tr>
+            <th scope="row">Nobody else cares</th>
+            <td>There is no market maker, no liquidity commitment, no floor and no obligation on anyone to buy. An artifact may be worth nothing to anyone but you, forever. That is the honest base case for anything new.</td>
+          </tr>
+          <tr>
+            <th scope="row">Regulatory and tax treatment</th>
+            <td>Unsettled and jurisdiction specific. Spending a carrier is a Bitcoin transaction, and how that is treated where you live is a question for someone qualified to answer it. Nothing on this site is advice.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="wrap band">
+    <div class="note">
+      <p class="note-title">What ownership guarantees</p>
+      <p>That the record is readable, that the rules were applied the same way to everyone, and that nobody can alter your artifact without your key. That is the complete list. It does not include value, liquidity, attention, or a future.</p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="faq.html">Questions and answers</a>
+      <a class="btn" href="transparency.html">Transparency</a>
+      <a class="btn btn-quiet" href="verify.html">Verify it yourself</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="mint.html">Mint</a></li>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Source</h2>
+        <ul>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
+          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>
