@@ -11,12 +11,13 @@ const TOOLS = resolve(fileURLToPath(new URL('.', import.meta.url)));
 
 const STEPS = [
   ['vectors.mjs', 'recompute every byte example'],
+  ['stamp-meta.mjs', 'rewrite the sharing metadata and the scriptless contents'],
   ['build-search-index.mjs', 'regenerate the search index'],
   ['check-html.mjs', 'structure and accessibility'],
   ['check-links.mjs', 'every link resolves'],
   ['check-style.mjs', 'house style'],
   ['check-vectors.mjs', 'printed hex matches the computed values'],
-  ['check-contrast.mjs', 'colour contrast in both themes'],
+  ['check-contrast.mjs', 'colour contrast in both themes and both stylesheets'],
   ['check-shell.mjs', 'the browser scripts build what they should'],
 ];
 

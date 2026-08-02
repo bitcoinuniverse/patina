@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="card-title">
+  <title id="card-title">Verify PATINA yourself. Two independent indexers reach the same state root.</title>
+  <defs>
+    <pattern id="strata" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1" fill="#f0e8dc" fill-opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#14110d"/>
+  <rect width="1200" height="630" fill="url(#strata)"/>
+  <path d="M600 0 L600 630" stroke="#52463a" stroke-width="1" stroke-opacity="0.5"/>
+
+  <g>
+    <g>
+      <circle cx="786" cy="272" r="86" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="786" cy="272" r="64" fill="#8aa472" fill-opacity="0.26" stroke="#8aa472" stroke-width="2.6"/>
+      <circle cx="786" cy="272" r="42" fill="none" stroke="#b6a05a" stroke-width="2"/>
+      <circle cx="786" cy="272" r="20" fill="none" stroke="#d8b57e" stroke-width="2"/>
+      <circle cx="786" cy="272" r="5" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="1064" cy="272" r="86" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="1064" cy="272" r="64" fill="#8aa472" fill-opacity="0.26" stroke="#8aa472" stroke-width="2.6"/>
+      <circle cx="1064" cy="272" r="42" fill="none" stroke="#b6a05a" stroke-width="2"/>
+      <circle cx="1064" cy="272" r="20" fill="none" stroke="#d8b57e" stroke-width="2"/>
+      <circle cx="1064" cy="272" r="5" fill="#e0a463"/>
+    </g>
+    <path d="M910 262 L940 262" stroke="#6cc7ab" stroke-width="3"/>
+    <path d="M910 282 L940 282" stroke="#6cc7ab" stroke-width="3"/>
+    <text x="786" y="398" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="15" text-anchor="middle" letter-spacing="2">INDEXER ONE</text>
+    <text x="1064" y="398" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="15" text-anchor="middle" letter-spacing="2">INDEXER TWO</text>
+    <path d="M660 440 L1190 440" stroke="#52463a" stroke-width="1"/>
+    <text x="925" y="478" fill="#6cc7ab" font-family="ui-monospace, Consolas, monospace" font-size="17" text-anchor="middle" letter-spacing="3">SAME STATE ROOT</text>
+  </g>
+
+  <g transform="translate(80,150) scale(1.28)" fill="none" stroke="#f0e8dc" stroke-width="9" stroke-linecap="butt">
+    <g transform="translate(10,0)">
+      <path d="M0 80 L0 16 L22 16 A16 16 0 0 1 22 48 L0 48"/>
+      <g transform="translate(58,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+      <g transform="translate(122,0)">
+        <path d="M0 16 L44 16"/>
+        <path d="M22 16 L22 80"/>
+      </g>
+      <path d="M192 16 L192 80"/>
+      <path d="M218 80 L218 16 L258 80 L258 16"/>
+      <g transform="translate(278,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+    </g>
+  </g>
+
+  <text x="80" y="120" fill="#6cc7ab" font-family="ui-monospace, Consolas, monospace" font-size="20" letter-spacing="6">CHECK IT YOURSELF</text>
+
+  <text x="80" y="350" fill="#f0e8dc" font-family="Georgia, 'Times New Roman', serif" font-size="44">Refuse to take anyone</text>
+  <text x="80" y="404" fill="#f0e8dc" font-family="Georgia, 'Times New Roman', serif" font-size="44">at their word.</text>
+  <text x="80" y="472" fill="#a4977f" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="22">Read depth off your own node, decode a marker by hand, compare two indexers.</text>
+
+  <path d="M80 520 L520 520" stroke="#52463a" stroke-width="1"/>
+  <text x="80" y="558" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="18" letter-spacing="2">Golden vectors carry a root at every height</text>
+</svg>

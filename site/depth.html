@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How depth works, PATINA</title>
+<meta name="description" content="Depth is the number of blocks a PATINA carrier output has stayed unspent. Take an artifact apart part by part, watch a stretch close into a ring, and see why an artifact at depth forty can still carry four years of history.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/depth.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="How depth works, PATINA">
+<meta property="og:description" content="Depth counts blocks, not minutes. Moving the carrier resets it to zero and engraves the finished stretch as a ring that cannot be rewritten.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/depth.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-depth.svg">
+<meta property="og:image:alt" content="A PATINA artifact record with its depth, tier and completed rings labelled beside a cut section.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How depth works, PATINA">
+<meta name="twitter:description" content="Depth counts blocks, not minutes. Moving the carrier resets it and engraves the finished stretch as a ring.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-depth.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" id="site-nav" data-site-nav aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="depth.html" aria-current="page">Depth</a></li>
+        <li><a href="tiers.html">Tiers</a></li>
+        <li><a href="firstlight.html">Firstlight</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a class="to-docs" href="docs/index.html">Docs</a></li>
+        <li class="nav-more"><a href="transparency.html">Transparency</a></li>
+        <li class="nav-more"><a href="faq.html">Questions</a></li>
+        <li class="nav-more"><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+      <button type="button" class="btn btn-quiet btn-small menu-toggle" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open the menu">Menu</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">How depth works</p>
+        <h1>A subtraction between two block heights.</h1>
+        <p class="lede">There is no accrual, no emission, no staking contract and no counterparty. The chain already records when an output was created. Depth is what is left when you take that away from the current height.</p>
+
+        <div class="code">
+          <div class="code-head">
+            <span>The whole calculation</span>
+            <button type="button" class="btn btn-quiet btn-small" data-copy="depth-formula" hidden>Copy</button>
+          </div>
+          <pre id="depth-formula">depth = current_block_height - carrier_creation_height</pre>
+        </div>
+
+        <p>Any block explorer will do the arithmetic for you. So will a Bitcoin node. Nothing on this site is required to produce the number, which is the point.</p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="tiers.html">See what depth is worth calling</a>
+          <a class="btn" href="docs/protocol/depth-and-tiers.html">The normative rule</a>
+        </div>
+      </div>
+
+      <div class="specimen" data-specimen data-tier="0">
+        <div class="specimen-head">
+          <h2>Specimen, cut section</h2>
+          <span class="pill pill-sim">Simulated</span>
+        </div>
+
+        <div class="specimen-stage">
+          <svg class="specimen-cut" viewBox="0 0 360 360" role="img" aria-labelledby="spec-title" aria-describedby="spec-desc">
+            <title id="spec-title">A PATINA artifact drawn as a cut section</title>
+            <desc id="spec-desc" data-spec-desc>A cut section at depth 0 blocks, tier Raw. No stretch has closed yet, so there are no rings.</desc>
+            <defs>
+              <mask id="spec-kerf">
+                <rect width="360" height="360" fill="#ffffff"/>
+                <path d="M180 180 L171 4 L189 4 Z" fill="#000000"/>
+              </mask>
+              <radialGradient id="spec-age" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="var(--bronze)" stop-opacity="0.32"/>
+                <stop offset="55%" stop-color="var(--tier-ink, var(--bronze))" stop-opacity="0.34"/>
+                <stop offset="100%" stop-color="var(--tier-ink, var(--bronze))" stop-opacity="0.62"/>
+              </radialGradient>
+            </defs>
+            <g mask="url(#spec-kerf)">
+              <circle cx="180" cy="180" r="160" fill="none" stroke="var(--rule-strong)" stroke-width="1"/>
+              <circle class="fill-disc" data-spec-disc cx="180" cy="180" r="26" fill="url(#spec-age)"/>
+              <g fill="none" stroke-width="1.2">
+                <circle data-scribe="0" cx="180" cy="180" r="26" stroke="var(--t0)" stroke-opacity="0.9"/>
+                <circle data-scribe="1" cx="180" cy="180" r="44" stroke="var(--t1)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+                <circle data-scribe="2" cx="180" cy="180" r="62" stroke="var(--t2)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+                <circle data-scribe="3" cx="180" cy="180" r="80" stroke="var(--t3)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+                <circle data-scribe="4" cx="180" cy="180" r="98" stroke="var(--t4)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+                <circle data-scribe="5" cx="180" cy="180" r="116" stroke="var(--t5)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+                <circle data-scribe="6" cx="180" cy="180" r="134" stroke="var(--t6)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+                <circle data-scribe="7" cx="180" cy="180" r="152" stroke="var(--t7)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+              </g>
+              <circle class="fill-edge" data-spec-edge cx="180" cy="180" r="26" fill="none" stroke="var(--t0)" stroke-width="2.6"/>
+              <circle data-spec-rim cx="180" cy="180" r="157" fill="none" stroke="var(--bronze)" stroke-width="2.4"
+                      pathLength="1" stroke-dasharray="0 1" transform="rotate(-90 180 180)"/>
+              <circle cx="180" cy="180" r="3.6" fill="var(--bronze)"/>
+            </g>
+          </svg>
+
+          <dl class="specimen-readout">
+            <div>
+              <dt>Depth</dt>
+              <dd><span data-spec="depth">0</span> <span class="sub">blocks, <span data-spec="elapsed">none yet</span></span></dd>
+            </div>
+            <div>
+              <dt>Tier</dt>
+              <dd class="tier-name" data-spec="tier">Raw</dd>
+              <div class="progress-rail"><span data-spec-rail></span></div>
+              <dd class="sub" data-spec="next">1 008 blocks to Sheen</dd>
+            </div>
+            <div>
+              <dt>Rings engraved</dt>
+              <dd data-spec="rings">none yet</dd>
+              <div class="ring-row" data-spec-chips></div>
+            </div>
+          </dl>
+        </div>
+
+        <div class="specimen-foot">
+          <p class="note-line">Drive this with the controls below. Simulated blocks, simulated artifact. No live figure appears on this page unless an indexer answers for it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="advance">
+    <p class="eyebrow"><span class="num">01</span> The passage of blocks</p>
+    <h2>Push the artifact forward and watch what changes.</h2>
+    <p class="lede">Move it instead, and watch what does not come back. Every figure below is computed from the tier ladder in the specification, and every duration is an estimate at ten minutes per block.</p>
+
+    <div class="passage" data-passage data-tier="0">
+      <div>
+        <div class="step-row">
+          <button type="button" class="btn btn-small" data-advance="1">One block</button>
+          <button type="button" class="btn btn-small" data-advance="144">One day</button>
+          <button type="button" class="btn btn-small" data-advance="4320">One month</button>
+          <button type="button" class="btn btn-small" data-advance="52560">One year</button>
+          <button type="button" class="btn btn-small" data-advance="210240">Four years</button>
+        </div>
+        <div class="step-row">
+          <button type="button" class="btn btn-small btn-primary" data-artifact-move>Spend the carrier</button>
+          <button type="button" class="btn btn-small btn-quiet" data-artifact-reset>Start again</button>
+        </div>
+
+        <p class="visually-hidden" role="status" data-pass-announce></p>
+
+        <dl class="readout">
+          <div>
+            <dt>Depth</dt>
+            <dd><span data-pass="depth">0</span> <small>blocks</small></dd>
+          </div>
+          <div>
+            <dt>Elapsed</dt>
+            <dd><span data-pass="elapsed">none yet</span></dd>
+          </div>
+          <div>
+            <dt>Tier</dt>
+            <dd><span data-pass="tier">Raw</span></dd>
+          </div>
+          <div>
+            <dt>Next tier</dt>
+            <dd><span data-pass="next">Sheen</span></dd>
+          </div>
+          <div>
+            <dt>Blocks to next</dt>
+            <dd><span data-pass="to-next">1 008</span></dd>
+          </div>
+          <div>
+            <dt>Time to next</dt>
+            <dd><span data-pass="eta">about 7 days</span></dd>
+          </div>
+        </dl>
+
+        <div class="note">
+          <p class="note-title">Read the estimate as an estimate</p>
+          <p>Ten minutes a block is the target the difficulty adjustment aims at, not a promise any block keeps. A real artifact's depth is exact because it counts blocks. Every elapsed and remaining time on this site is a conversion, and it is labelled as one.</p>
+        </div>
+      </div>
+
+      <figure class="strata-column" data-strata>
+        <svg viewBox="0 0 200 260" role="img" aria-label="A column of sediment. The filled height is the current stretch measured against the tier thresholds scribed across it.">
+          <rect x="60" y="12" width="80" height="224" fill="none" class="s-rule"/>
+          <g data-strata-layers>
+            <rect data-strata-fill x="60" y="236" width="80" height="0" fill="var(--t0)" fill-opacity="0.5"/>
+          </g>
+          <g class="s-scribe">
+            <path d="M56 236 L144 236"/>
+            <path d="M56 204 L144 204"/>
+            <path d="M56 172 L144 172"/>
+            <path d="M56 140 L144 140"/>
+            <path d="M56 108 L144 108"/>
+            <path d="M56 76 L144 76"/>
+            <path d="M56 44 L144 44"/>
+            <path d="M56 12 L144 12"/>
+          </g>
+          <g class="s-label">
+            <text x="148" y="239">RAW</text>
+            <text x="148" y="207">SHEEN</text>
+            <text x="148" y="175">CAST</text>
+            <text x="148" y="143">VERDIGRIS</text>
+            <text x="148" y="111">UMBER</text>
+            <text x="148" y="79">BRONZE</text>
+            <text x="148" y="47">OXIDE</text>
+            <text x="148" y="15">ELDER</text>
+          </g>
+          <g data-strata-marker>
+            <path class="s-marker" d="M52 236 L148 236"/>
+            <path class="s-marker" d="M52 236 L56 232"/>
+            <path class="s-marker" d="M52 236 L56 240"/>
+          </g>
+          <text class="s-label" x="4" y="252">DEPTH, BLOCKS SINCE THE CARRIER WAS CREATED</text>
+        </svg>
+        <figcaption>
+          The column is the current stretch only, scaled one equal band per tier rather than linearly in blocks. Spending the carrier empties it, which is exactly what happens on chain.
+          <span class="strata-readout" data-strata-label>0 blocks</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="wrap band" id="anatomy">
+    <p class="eyebrow"><span class="num">02</span> Artifact anatomy</p>
+    <h2>Ten parts, and only three of them ever change.</h2>
+    <p class="lede">Select a part of the record to read what it is, where it comes from, and whether it can move. The record below is a worked example, not a real artifact.</p>
+
+    <div class="anatomy" data-anatomy>
+      <figure class="anatomy-figure" data-anatomy-figure>
+        <svg viewBox="0 0 460 470" role="img" aria-labelledby="anat-title" aria-describedby="anat-desc">
+          <title id="anat-title">A PATINA artifact record with its fields labelled</title>
+          <desc id="anat-desc">An engraved record plate. A cut section sits at the top right. Ten labelled fields run down the plate: identity, carrier outpoint, endowment, creation height, current depth, current tier, current stretch, completed rings, last movement and attestation.</desc>
+
+          <rect x="6" y="6" width="448" height="458" rx="4" fill="var(--plate)" stroke="var(--rule-strong)" stroke-width="1"/>
+          <path class="leader" d="M6 44 L454 44"/>
+          <text class="lbl" x="20" y="30">PATINA ARTIFACT RECORD</text>
+          <text class="lbl" x="330" y="30">SIMULATED</text>
+
+          <g transform="translate(352 128)">
+            <circle cx="0" cy="0" r="62" fill="none" stroke="var(--rule-strong)"/>
+            <circle cx="0" cy="0" r="34" fill="var(--t3)" fill-opacity="0.4" stroke="var(--t3)" stroke-width="1.6"/>
+            <circle cx="0" cy="0" r="16" fill="none" stroke="var(--t1)" stroke-opacity="0.7"/>
+            <circle cx="0" cy="0" r="48" fill="none" stroke="var(--t5)" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+            <circle cx="0" cy="0" r="2.6" fill="var(--bronze)"/>
+          </g>
+
+          <g class="d-soft">
+            <text x="24" y="80" class="lbl" data-part-mark="identity">ARTIFACT ID</text>
+            <text x="24" y="98">7c4f a1 ... 0b93</text>
+            <rect data-part-pick="identity" x="14" y="62" width="290" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="identity" data-on-class="leader-on" d="M14 108 L304 108"/>
+
+            <text x="24" y="132" class="lbl" data-part-mark="carrier">CARRIER OUTPOINT</text>
+            <text x="24" y="150">bd12 ... 44a1 : 0</text>
+            <rect data-part-pick="carrier" x="14" y="114" width="290" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="carrier" data-on-class="leader-on" d="M14 160 L304 160"/>
+
+            <text x="24" y="184" class="lbl" data-part-mark="endowment">ENDOWMENT</text>
+            <text x="24" y="202">100 000 sats</text>
+            <rect data-part-pick="endowment" x="14" y="166" width="290" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="endowment" data-on-class="leader-on" d="M14 212 L304 212"/>
+
+            <text x="24" y="236" class="lbl" data-part-mark="birth">CREATION HEIGHT</text>
+            <text x="24" y="254">the reveal height</text>
+            <rect data-part-pick="birth" x="14" y="218" width="428" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="birth" data-on-class="leader-on" d="M14 264 L446 264"/>
+
+            <text x="24" y="288" class="lbl" data-part-mark="depth">CURRENT DEPTH</text>
+            <text x="24" y="306">12 960 blocks</text>
+            <rect data-part-pick="depth" x="14" y="270" width="212" height="44" fill="transparent"/>
+
+            <text x="248" y="288" class="lbl" data-part-mark="tier">CURRENT TIER</text>
+            <text x="248" y="306">Verdigris</text>
+            <rect data-part-pick="tier" x="238" y="270" width="204" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="depth" data-on-class="leader-on" d="M14 316 L446 316"/>
+
+            <text x="24" y="340" class="lbl" data-part-mark="stretch">CURRENT STRETCH</text>
+            <text x="24" y="358">open, started at the last move</text>
+            <rect data-part-pick="stretch" x="14" y="322" width="428" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="stretch" data-on-class="leader-on" d="M14 368 L446 368"/>
+
+            <text x="24" y="392" class="lbl" data-part-mark="rings">COMPLETED RINGS</text>
+            <text x="24" y="410">3 engraved</text>
+            <rect data-part-pick="rings" x="14" y="374" width="212" height="44" fill="transparent"/>
+
+            <text x="248" y="392" class="lbl" data-part-mark="moved">LAST MOVEMENT</text>
+            <text x="248" y="410">the spend that closed ring 3</text>
+            <rect data-part-pick="moved" x="238" y="374" width="204" height="44" fill="transparent"/>
+            <path class="leader" data-part-mark="rings" data-on-class="leader-on" d="M14 420 L446 420"/>
+
+            <text x="24" y="444" class="lbl" data-part-mark="attest">ATTESTATION</text>
+            <text x="248" y="444">off chain, optional</text>
+            <rect data-part-pick="attest" x="14" y="428" width="428" height="30" fill="transparent"/>
+          </g>
+        </svg>
+        <figcaption class="small faint">The values shown are an example. Select a field to read what it means.</figcaption>
+      </figure>
+
+      <div>
+        <dl data-anatomy-list>
+          <dt data-part="identity" data-part-label="Identity" data-part-value="artifact_id, 32 bytes, lowercase hex">Artifact identity</dt>
+          <dd>One SHA-256 over the tag <code>PTNA/artifact</code>, the reveal transaction id in wire order, and the carrier output index as four little endian bytes. Two artifacts can never share an id, because a transaction id and an output index name at most one output in the whole chain.</dd>
+          <dd>It is fixed at creation and never changes, not when the artifact moves and not when it becomes a relic.</dd>
+
+          <dt data-part="carrier" data-part-label="Carrier" data-part-value="txid : vout, plus its height and value">Carrier outpoint</dt>
+          <dd>The one unspent output the artifact currently rides on. This is the field that moves. When the carrier is spent the artifact follows the money to a successor output, or stops if no output qualifies.</dd>
+          <dd>Depth is measured from the height of the block that created this output, which is why a new carrier always starts at zero.</dd>
+
+          <dt data-part="endowment" data-part-label="Endowment" data-part-value="endowment_sats, the carrier value at birth">Endowment</dt>
+          <dd>The value the carrier held at the moment the artifact was created. A founding artifact needs at least 100 000 sats. Outside the founding window the floor is 10 000 sats.</dd>
+          <dd>It is a birth fact and never changes, even if a later carrier holds more or less. The bitcoin itself stays yours: no timelock, no custody, no multisig with anyone. You can spend it in the next block, and doing so resets depth.</dd>
+
+          <dt data-part="birth" data-part-label="Creation" data-part-value="birth_height, birth_txid, birth_vout">Creation height</dt>
+          <dd>The height of the block that confirmed the reveal transaction. Depth starts counting here, not at the commit. The 144 block wait before the reveal buys the claim its safety, not its age.</dd>
+
+          <dt data-part="depth" data-part-label="Depth" data-part-value="current height minus carrier height">Current depth</dt>
+          <dd>Never stored. It is recomputed from the carrier height whenever anyone asks, which is why a replaying node and an API server cannot disagree about it.</dd>
+          <dd>For a relic, depth is frozen at the depth of its final ring.</dd>
+
+          <dt data-part="tier" data-part-label="Tier" data-part-value="the highest threshold not greater than depth">Current tier</dt>
+          <dd>A name for a band of depth. Raw applies to everything below 1 008 blocks, and Elder starts at 210 000. The tier is derived, so it moves the moment the depth crosses a threshold, with nothing to claim and nobody to ask.</dd>
+
+          <dt data-part="stretch" data-part-label="Stretch" data-part-value="open, from the carrier height to now">Current stretch</dt>
+          <dd>The span the artifact is living through right now. It is not a ring and must never be written as one. It becomes a ring only when the carrier is spent.</dd>
+
+          <dt data-part="rings" data-part-label="Rings" data-part-value="an append only list">Completed rings</dt>
+          <dd>Each ring records the height its stretch started, the height it ended, its depth, the value the carrier held, and where the artifact went next. Rings are appended and never edited.</dd>
+          <dd>Ring indexes run 0, 1, 2 with no gap, and the end height of one ring is the start height of the next. An artifact at depth 40 today can carry a ring of four years.</dd>
+
+          <dt data-part="moved" data-part-label="Last move" data-part-value="the successor named by the closing ring">Last movement</dt>
+          <dd>The transaction that spent the previous carrier. If it had an eligible successor the artifact continues there at depth zero. If it did not, the artifact became a relic and will never change again.</dd>
+
+          <dt data-part="attest" data-part-label="Attestation" data-part-value="off chain, never part of state">Attestation state</dt>
+          <dd>An owner may sign a message binding the artifact id to a recent block hash, which shows the key behind the carrier is still available. It is off chain, it is optional, and it never affects artifact state.</dd>
+          <dd>Depth alone proves an output has not moved. An attestation adds that somebody can still spend it. Neither proves the same person held it the whole time.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn" href="docs/using/artifact-page.html">Every field, in the documentation</a>
+      <a class="btn" href="docs/reference/glossary.html">Glossary</a>
+    </div>
+  </section>
+
+  <section class="wrap band" id="history">
+    <p class="eyebrow"><span class="num">03</span> Ring history</p>
+    <h2>Low depth now says nothing about what it has already done.</h2>
+    <p class="lede">One artifact, six years, four stretches. The current number is small. The record is not. This is a worked example of what a long lived artifact looks like, not a description of any real one.</p>
+
+    <ol class="chronicle">
+      <li data-tier="0">
+        <span class="when">Height 0 of its life, the reveal</span>
+        <span class="what">Created</span>
+        <p>The reveal confirmed, the carrier was named, and depth started at zero. Ring list empty.</p>
+      </li>
+      <li data-tier="5">
+        <span class="when">Ring 0, closed after 61 000 blocks</span>
+        <span class="what">A year and a bit, then a move to a new wallet</span>
+        <p>Reached Bronze. Spending the carrier closed the stretch and started a new one at zero. The ring keeps the start height, the end height, the depth of 61 000, and the value the carrier held.</p>
+        <span class="band-bar" style="width:29%"></span>
+      </li>
+      <li data-tier="2">
+        <span class="when">Ring 1, closed after 5 100 blocks</span>
+        <span class="what">A short stretch, ended by a fee consolidation</span>
+        <p>Reached Cast. A routine wallet operation spent the carrier, which is one of the commonest ways a stretch ends by accident rather than by choice.</p>
+        <span class="band-bar" style="width:3%"></span>
+      </li>
+      <li data-tier="6">
+        <span class="when">Ring 2, closed after 118 000 blocks</span>
+        <span class="what">Better than two years untouched</span>
+        <p>Reached Oxide. The longest stretch in the record, and the one that makes this artifact worth reading about. Nothing later can shorten it.</p>
+        <span class="band-bar" style="width:56%"></span>
+      </li>
+      <li data-tier="0" data-live="true">
+        <span class="when">Current stretch, open</span>
+        <span class="what">Depth 40, tier Raw</span>
+        <p>Three rings deep and back at the beginning. The current tier is the least interesting thing on this record.</p>
+        <span class="band-bar" style="width:1%"></span>
+      </li>
+    </ol>
+
+    <div class="grid grid-2">
+      <div class="note">
+        <p class="note-title">What a ring records</p>
+        <p>Its index, the height it started, the height it ended, its depth, the value the carrier held, and the successor it routed to, or nothing at all if the artifact became a relic there.</p>
+      </div>
+      <div class="note note-warn">
+        <p class="note-title">What a ring cannot do</p>
+        <p>It cannot be edited, and it cannot be transferred to another artifact. It also cannot tell you who held the keys. A ring is a fact about an output, over a span of blocks.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="ends">
+    <p class="eyebrow"><span class="num">04</span> When a stretch ends</p>
+    <h2>Where the artifact goes when its carrier is spent.</h2>
+    <p class="lede">The successor is chosen by the transaction, not by an owner and not by us. Two rules cover every case, and the second one is deliberately dull so that a wallet with no PATINA support still moves an artifact somewhere predictable.</p>
+
+    <div class="grid grid-2">
+      <div class="prose">
+        <h3>A KEEP marker names the successor</h3>
+        <p>The spending transaction can carry a marker that routes each spent carrier to a chosen output. Up to eight entries, each naming an input index and an output index.</p>
+        <p>An entry is void if it names an input that is not a carrier, an output the transaction does not have, an OP_RETURN output, or an output holding less than 10 000 sats. A void entry does not void the others.</p>
+      </div>
+      <div class="prose">
+        <h3>Otherwise the default rule applies</h3>
+        <p>The successor is the lowest index output that does not start with OP_RETURN and holds at least 10 000 sats.</p>
+        <p>If no output qualifies, there is no successor. The artifact becomes a relic, its final ring is marked as such, and it never changes again. Relic is terminal, and there is no path out of it.</p>
+      </div>
+    </div>
+
+    <div class="note note-hard">
+      <p class="note-title">Two artifacts on one output move as one</p>
+      <p>A routing entry names an input, not an artifact, so every artifact resting on a carrier follows the same decision. A bundle cannot be split by a single transaction. To split one, spend the carrier once to move the whole bundle, then spend the new carrier again.</p>
+    </div>
+
+    <div class="actions">
+      <a class="btn" href="docs/protocol/keep-rules.html">KEEP and the default rule</a>
+      <a class="btn" href="docs/protocol/rings.html">Ring semantics</a>
+      <a class="btn" href="risks.html">Ways to lose depth by accident</a>
+    </div>
+  </section>
+
+  <section class="wrap band" id="next">
+    <p class="eyebrow"><span class="num">05</span> Keep going</p>
+    <h2>Where this leads.</h2>
+    <ul class="routes">
+      <li>
+        <a href="tiers.html">
+          <span class="r-who">Next</span>
+          <span class="r-title">The tier journey</span>
+          <span class="r-desc">All eight tiers with their exact thresholds, their material, and how long each one takes at ten minutes a block.</span>
+        </a>
+      </li>
+      <li>
+        <a href="firstlight.html">
+          <span class="r-who">The founding cohort</span>
+          <span class="r-title">Firstlight Seals</span>
+          <span class="r-desc">One window, 4032 blocks, no price and no allocation. What you can prepare before it is announced.</span>
+        </a>
+      </li>
+      <li>
+        <a href="verify.html">
+          <span class="r-who">Check it</span>
+          <span class="r-title">Verify an artifact</span>
+          <span class="r-desc">Read the depth off your own node and recompute the identity by hand.</span>
+        </a>
+      </li>
+      <li>
+        <a href="docs/protocol/state-machine.html">
+          <span class="r-who">Go normative</span>
+          <span class="r-title">State machine</span>
+          <span class="r-desc">ALIVE, RELIC, and every transition between them, written as the specification states it.</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Understand</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="depth.html">How depth works</a></li>
+          <li><a href="tiers.html">Tier journey</a></li>
+          <li><a href="firstlight.html">Firstlight Seals</a></li>
+          <li><a href="mint.html">The mint</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Check</h2>
+        <ul>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Build</h2>
+        <ul>
+          <li><a href="docs/index.html">Documentation</a></li>
+          <li><a href="docs/api/endpoints.html">Endpoint reference</a></li>
+          <li><a href="docs/compat/build.html">Build an implementation</a></li>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

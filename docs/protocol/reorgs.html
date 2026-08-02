@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Reorg behavior | PATINA docs</title>
 <meta name="description" content="How a PATINA indexer handles chain reorganisations: roll back to the fork point, replay in order, and treat six confirmations as final.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/protocol/reorgs.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Reorg behavior, PATINA documentation">
+<meta property="og:description" content="How a PATINA indexer handles chain reorganisations: roll back to the fork point, replay in order, and treat six confirmations as final.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/protocol/reorgs.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta property="og:image:alt" content="The twenty six bytes of a PATINA marker, drawn as a grid with the magic bytes picked out.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Reorg behavior, PATINA documentation">
+<meta name="twitter:description" content="How a PATINA indexer handles chain reorganisations: roll back to the fork point, replay in order, and treat six confirmations as final.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,7 +115,20 @@
       <p class="lede">State is a pure function of the chain. When the chain changes, the state changes with it, by
         rolling back and replaying.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>The four steps an indexer takes when a block it already applied is no longer on the chain.</li>
+          <li>What <code>CONFIRMATIONS_FINAL</code> of 6 settles, and what it does not.</li>
+          <li>Which records a reorg can move: a birth height, a commit age, a ring, a founding flag.</li>
+          <li>Why the artifact id survives a reorg but not a replacement that changes the txid.</li>
+          <li>How to prove your rollback is exact instead of hoping, using regtest and a state root.</li>
+        </ul>
+      </div>
+
       <h2>The rule</h2>
+      <p>Four steps, with nothing in between them. The public
+        <a href="../../protocol.html">protocol page</a> puts it in one line: a reorg is a replay, not a repair.</p>
       <ol>
         <li>Detect that the block at some height no longer matches the chain your node reports.</li>
         <li>Roll state back to the last common ancestor, the fork point.</li>
@@ -38,7 +144,7 @@
       <div class="tablewrap">
         <table>
           <caption>How to read confirmations on a new artifact or a new ring.</caption>
-          <thead><tr><th>Confirmations</th><th>How to treat it</th></tr></thead>
+          <thead><tr><th scope="col">Confirmations</th><th scope="col">How to treat it</th></tr></thead>
           <tbody>
             <tr><td>0</td><td>It has not happened. Mempool state is not protocol state.</td></tr>
             <tr><td>1 to 5</td><td>Provisional. Show it, label it as unconfirmed to that depth, and expect it might vanish.</td></tr>
@@ -50,10 +156,12 @@
         replays. Six is where the product stops warning you.</p>
 
       <h2>What a reorg can change</h2>
+      <p>Find the row that matches what was in the dropped block. All five resolve by replay, but they do not leave
+        you in the same place, and the second row is the one that can turn a valid reveal into a too young one.</p>
       <div class="tablewrap">
         <table>
           <caption>Effects of a reorg that drops a block containing your transaction.</caption>
-          <thead><tr><th>If the reorg drops</th><th>Effect</th></tr></thead>
+          <thead><tr><th scope="col">If the reorg drops</th><th scope="col">Effect</th></tr></thead>
           <tbody>
             <tr>
               <td>Your reveal</td>
@@ -90,6 +198,8 @@
       </div>
 
       <h2>Requirements for an implementation</h2>
+      <p>Five requirements. The third is the one most often skipped, and the one that corrupts state without saying
+        anything.</p>
       <ol>
         <li><strong>Store block hashes, not just heights.</strong> You cannot detect a reorg by height alone.</li>
         <li><strong>Keep enough history to roll back.</strong> Deep enough to cover any reorg you are willing to

@@ -34,6 +34,33 @@ implementations are checked against.
 | `deployments/` | Shipped deployment records. Mainnet is deliberately unset. |
 | `examples/blocks.json` | A five block resolved chain you can replay. |
 | `docs/deviations.md` | Every place this implementation had to interpret the frozen baseline. |
+| `site/` | The public site. Published at the root of GitHub Pages. |
+| `docs/` | The documentation. Published at `/docs` inside that same root. |
+
+## The site and the documentation
+
+They are one product at two depths. The public site creates understanding, the
+documentation turns it into something you can build against. Both read their
+colours from the same token names with the same values, and
+`site/tools/check-site.mjs` fails if the two stylesheets ever drift apart.
+
+```
+node site/tools/verify.mjs     structure, links, metadata, tokens, behaviour
+node docs/tools/verify.mjs     structure, links, style, vectors, contrast, shell
+node site/tools/serve.mjs      local preview, assembled the way it publishes
+```
+
+The preview server matters because the published tree puts `site/` at the root
+and `docs/` inside it. Links that cross between the two resolve there, and only
+there, so a preview that serves the two directories separately would not tell
+you the truth about them.
+
+Three things in these trees are generated and must never be hand edited:
+`site/assets/brand/` comes from `site/tools/build-cards.mjs`, the sharing
+metadata block on every documentation page comes from
+`docs/tools/stamp-meta.mjs`, and the search index comes from
+`docs/tools/build-search-index.mjs`. Continuous integration regenerates all
+three and fails if anything changes.
 
 ## Install
 

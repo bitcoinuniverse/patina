@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>When something goes wrong | PATINA docs</title>
 <meta name="description" content="Recovery paths for PATINA: stuck reveals, wrong carrier index, lost salts, reorgs, accidental spends, and what genuinely cannot be undone.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/using/recovery.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="When something goes wrong, PATINA documentation">
+<meta property="og:description" content="Recovery paths for PATINA: stuck reveals, wrong carrier index, lost salts, reorgs, accidental spends, and what genuinely cannot be undone.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/using/recovery.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta property="og:image:alt" content="Two transactions on a block height line with a gap of at least 144 blocks between them.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="When something goes wrong, PATINA documentation">
+<meta name="twitter:description" content="Recovery paths for PATINA: stuck reveals, wrong carrier index, lost salts, reorgs, accidental spends, and what genuinely cannot be undone.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,10 +115,22 @@
       <p class="lede">Start here: in every failure below, your bitcoin is still yours. What can be lost is a claim,
         a stretch, or fees.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>Where to find the reason code for a transaction that confirmed and produced nothing.</li>
+          <li>Which mint failures you can retry with a fresh salt, and which one costs founding status for good.</li>
+          <li>Why replacing a stuck reveal by fee is safe, and why bumping it from the intended carrier is not.</li>
+          <li>The first four things to do after an accidental carrier spend, in order.</li>
+          <li>The four situations nobody can fix, including a relic.</li>
+        </ul>
+      </div>
+
       <h2>First, find out what actually happened</h2>
       <ol>
         <li>Get the transaction id from your wallet.</li>
-        <li>Confirm whether it is in a block, and at what height.</li>
+        <li>Confirm whether it is in a block, and at what height. Your own node is the better answer here, and the
+          public page on <a href="../../verify.html">verifying it yourself</a> has the commands.</li>
         <li>Ask the indexer whether it produced anything:</li>
       </ol>
       <pre data-label="Look for the failure"><code>curl -s https://indexer.example.org/patina/invalid-events | head -c 2000</code></pre>
@@ -62,10 +167,13 @@
       </ul>
 
       <h2>You pointed carrier_vout at the wrong output</h2>
+      <p>The first three rows created nothing, so the fix is always the same: a new commit and another 144 block
+        wait. The last row is the awkward one, because the reveal was valid and the artifact is sitting on an output
+        you did not intend.</p>
       <div class="tablewrap">
         <table>
-          <caption>Wrong carrier index, three cases.</caption>
-          <thead><tr><th>Case</th><th>Reason code</th><th>What to do</th></tr></thead>
+          <caption>Wrong carrier index, four cases.</caption>
+          <thead><tr><th scope="col">Case</th><th scope="col">Reason code</th><th scope="col">What to do</th></tr></thead>
           <tbody>
             <tr><td>Index past the last output</td><td><code>SEED_CARRIER_OUT_OF_RANGE</code></td><td>Nothing created. Start again with a new commit.</td></tr>
             <tr><td>Index points at the OP_RETURN</td><td><code>SEED_CARRIER_IS_OPRETURN</code></td><td>Nothing created. Start again.</td></tr>
@@ -134,7 +242,9 @@
         <li>A lost private key.</li>
         <li>A relic. Terminal means terminal.</li>
       </ul>
-      <p>There is no admin key, no support override, and no rollback. Anyone offering one is lying to you.</p>
+      <p>There is no admin key, no support override, and no rollback. Anyone offering one is lying to you. The same
+        four, with the rest of what this protocol does not promise, are set out on the public
+        <a href="../../risks.html">risks page</a>.</p>
     </article>
     <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
   </main>

@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SEED rules | PATINA docs</title>
 <meta name="description" content="The six checks a PATINA SEED transaction must pass, in order, with the reason code emitted when each one fails.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/protocol/seed-rules.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="SEED rules, PATINA documentation">
+<meta property="og:description" content="The six checks a PATINA SEED transaction must pass, in order, with the reason code emitted when each one fails.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/protocol/seed-rules.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta property="og:image:alt" content="The twenty six bytes of a PATINA marker, drawn as a grid with the magic bytes picked out.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SEED rules, PATINA documentation">
+<meta name="twitter:description" content="The six checks a PATINA SEED transaction must pass, in order, with the reason code emitted when each one fails.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,12 +115,26 @@
       <p class="lede">Six checks, applied in block order, in this order. A transaction that fails any of them
         records an invalid event and creates nothing.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>The six checks in the order an indexer applies them, and the reason code a failure at each one records.</li>
+          <li>That the 144 block wait is measured from the block that created the commit output, and that exactly 144 passes.</li>
+          <li>Which carrier minimum applies to your reveal: 100000 sats for a founding claim, 10000 sats otherwise.</li>
+          <li>Why a commit confirmed exactly at <code>h_close</code> is already outside the founding window.</li>
+          <li>What a failed reveal actually costs: the fees and the claim, never the coins.</li>
+        </ul>
+      </div>
+
       <h2>The six checks</h2>
+      <p>Work down the list and stop at the first failure. That is why the reason code on an invalid event tells you
+        how far your transaction got before the protocol declined it.</p>
       <ol class="steps">
         <li>
           <h3>The marker decodes as SEED with a well formed payload</h3>
           <p>Single minimal push, magic, version <code>0x01</code>, op <code>0x01</code>, and exactly 18 payload
-            bytes laid out as <code>salt(16) | flags(1) | carrier_vout(1)</code>.</p>
+            bytes laid out as <code>salt(16) | flags(1) | carrier_vout(1)</code>. Every bit of <code>flags</code>
+            is reserved and must be zero.</p>
           <p>Failure: <code>SEED_BAD_GRAMMAR</code>.</p>
         </li>
         <li>
@@ -44,8 +151,9 @@
           <p>The commitment in the leaf must equal
             <code>SHA256("PTNA/commit" || claimant_xonly || salt)</code>, using the claimant key from the leaf and
             the salt from the SEED payload.</p>
-          <p>Failure: <code>SEED_NO_COMMIT_INPUT</code> when no input reveals such a leaf, or
-            <code>SEED_COMMITMENT_MISMATCH</code> when a leaf is present but the recomputed commitment differs.</p>
+          <p>Failure: <code>SEED_NO_COMMIT_INPUT</code> when no input reveals such a leaf and equally when two or
+            more inputs qualify, or <code>SEED_COMMITMENT_MISMATCH</code> when a leaf is present but the recomputed
+            commitment differs.</p>
         </li>
         <li>
           <h3>The commit output is old enough</h3>
@@ -55,16 +163,17 @@
           <p>Failure: <code>SEED_COMMIT_TOO_YOUNG</code>.</p>
         </li>
         <li>
-          <h3>The carrier value clears the minimum</h3>
-          <p>At least 100000 sats if the artifact would be founding, otherwise at least 10000 sats.</p>
-          <p>Failure: <code>SEED_CARRIER_BELOW_MIN</code>.</p>
+          <h3>Founding status is decided</h3>
+          <pre data-label="Founding test"><code>founding = (h_open &lt;= commit_output_height &lt; h_close)
+        and (reveal_height &lt;= h_close + 4032)</code></pre>
+          <p>This is not a pass or fail check. It sets a flag on the artifact, and it selects which minimum the
+            last check applies. That is why it is decided before the carrier value is looked at.</p>
         </li>
         <li>
-          <h3>Founding status is decided</h3>
-          <pre data-label="Founding test"><code>founding = (H_open &lt;= commit_output_height &lt; H_close)
-        and (reveal_height &lt;= H_close + 4032)</code></pre>
-          <p>This is not a pass or fail check. It sets a flag on the artifact. An artifact that misses the window
-            is still created, as long as it clears the open minimum of 10000 sats.</p>
+          <h3>The carrier value clears the minimum</h3>
+          <p>At least 100000 sats if the artifact is founding, otherwise at least 10000 sats. An artifact that
+            missed the window is still created, as long as it clears the open minimum.</p>
+          <p>Failure: <code>SEED_CARRIER_BELOW_MIN</code>.</p>
         </li>
       </ol>
 
@@ -78,13 +187,18 @@
         <a href="../compat/disagreements.html">Report a disagreement</a>.</p>
 
       <h2>Founding, in detail</h2>
+      <p>What the founding cohort is, and what it does not entitle anyone to, is on the public
+        <a href="../../firstlight.html">Firstlight Seals page</a>. Here it is arithmetic on two heights.</p>
       <p>The window is defined by two heights in the deployment record: <code>h_open</code> and
         <code>h_close</code>, with <code>h_close = h_open + 4032</code>. The grace period runs a further 4032
         blocks after that.</p>
+      <p>The first two rows below are the requirements. The rows under them exist to kill an assumption: there is no
+        rank inside the window, no bonus for a larger carrier, and no effect from the fee. The last row says what a
+        late reveal leaves you holding.</p>
       <div class="tablewrap">
         <table>
           <caption>What decides founding status, and what does not.</caption>
-          <thead><tr><th>Fact</th><th>Effect on founding</th></tr></thead>
+          <thead><tr><th scope="col">Fact</th><th scope="col">Effect on founding</th></tr></thead>
           <tbody>
             <tr><td>Commit output confirmed at or after <code>h_open</code> and before <code>h_close</code></td><td>Required</td></tr>
             <tr><td>Reveal confirmed at or before <code>h_close + 4032</code></td><td>Required</td></tr>
@@ -108,7 +222,7 @@
       <div class="tablewrap">
         <table>
           <caption>Five reveals against the same window.</caption>
-          <thead><tr><th>Commit height</th><th>Reveal height</th><th>Age</th><th>Result</th></tr></thead>
+          <thead><tr><th scope="col">Commit height</th><th scope="col">Reveal height</th><th scope="col">Age</th><th scope="col">Result</th></tr></thead>
           <tbody>
             <tr><td>879999</td><td>880200</td><td>201</td><td>Artifact created, <code>founding: false</code>. The commit was one block early.</td></tr>
             <tr><td>880000</td><td>880144</td><td>144</td><td>Artifact created, <code>founding: true</code>. The age check passes at exactly 144.</td></tr>
@@ -129,6 +243,8 @@
       </ul>
       <p>Every failure is visible through <code>GET /patina/invalid-events</code> with its reason code, so you
         never have to guess which check you missed.</p>
+      <p>The two transactions and the wait between them are walked through, in order, on the public
+        <a href="../../mint.html">mint page</a>.</p>
 
       <h2>Bundling</h2>
       <p>One transaction contains one marker, and a SEED marker names one carrier. So one transaction creates at

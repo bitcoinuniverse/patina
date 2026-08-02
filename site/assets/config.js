@@ -83,6 +83,23 @@
     maxKeepEntries: 8,
     confirmationsFinal: 6,
     blockSeconds: 600,
+
+    /*
+     * Virtual byte sizes for the two mint transactions, derived from the
+     * transaction shapes the protocol requires. The assumptions are printed in
+     * full on the mint page: taproot throughout, a single key path input on the
+     * commit, a single script path input on the reveal exposing the 68 byte
+     * reduced-data leaf, 64 byte Schnorr signatures with the default sighash, a
+     * single leaf tree so the control block is 33 bytes, and no change output
+     * on the reveal.
+     */
+    mintVbytes: {
+      commit: 154,
+      reveal: 173,
+      total: 327,
+      extraTaprootOutput: 43
+    },
+
     tiers: [
       { index: 0, name: 'Raw', threshold: 0 },
       { index: 1, name: 'Sheen', threshold: 1008 },

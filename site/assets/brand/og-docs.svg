@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="card-title">
+  <title id="card-title">PATINA documentation for developers, integrators and operators.</title>
+  <defs>
+    <pattern id="strata" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1" fill="#f0e8dc" fill-opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#14110d"/>
+  <rect width="1200" height="630" fill="url(#strata)"/>
+  <path d="M600 0 L600 630" stroke="#52463a" stroke-width="1" stroke-opacity="0.5"/>
+
+  <g>
+    <rect x="648" y="172" width="476" height="40" rx="3" fill="#1b1712" stroke="#52463a" stroke-width="1.2"/>
+    <path d="M664 196 L1000 196" stroke="#52463a" stroke-width="1"/>
+    <circle cx="1100" cy="192" r="5" fill="#4ab7a4"/>
+    <rect x="664" y="224" width="444" height="40" rx="3" fill="#1b1712" stroke="#52463a" stroke-width="1.2"/>
+    <path d="M680 248 L984 248" stroke="#52463a" stroke-width="1"/>
+    <circle cx="1084" cy="244" r="5" fill="#63b294"/>
+    <rect x="680" y="276" width="412" height="40" rx="3" fill="#1b1712" stroke="#52463a" stroke-width="1.2"/>
+    <path d="M696 300 L968 300" stroke="#52463a" stroke-width="1"/>
+    <circle cx="1068" cy="296" r="5" fill="#8aa472"/>
+    <rect x="696" y="328" width="380" height="40" rx="3" fill="#1b1712" stroke="#52463a" stroke-width="1.2"/>
+    <path d="M712 352 L952 352" stroke="#52463a" stroke-width="1"/>
+    <circle cx="1052" cy="348" r="5" fill="#a89464"/>
+    <rect x="712" y="380" width="348" height="40" rx="3" fill="#1b1712" stroke="#52463a" stroke-width="1.2"/>
+    <path d="M728 404 L936 404" stroke="#52463a" stroke-width="1"/>
+    <circle cx="1036" cy="400" r="5" fill="#b6a05a"/>
+    <text x="648" y="472" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="15" letter-spacing="2">FORTY TWO PAGES, ONE CONTRACT</text>
+  </g>
+
+  <g transform="translate(80,150) scale(1.28)" fill="none" stroke="#f0e8dc" stroke-width="9" stroke-linecap="butt">
+    <g transform="translate(10,0)">
+      <path d="M0 80 L0 16 L22 16 A16 16 0 0 1 22 48 L0 48"/>
+      <g transform="translate(58,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+      <g transform="translate(122,0)">
+        <path d="M0 16 L44 16"/>
+        <path d="M22 16 L22 80"/>
+      </g>
+      <path d="M192 16 L192 80"/>
+      <path d="M218 80 L218 16 L258 80 L258 16"/>
+      <g transform="translate(278,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+    </g>
+  </g>
+
+  <text x="80" y="120" fill="#6cc7ab" font-family="ui-monospace, Consolas, monospace" font-size="20" letter-spacing="6">DOCUMENTATION</text>
+
+  <text x="80" y="350" fill="#f0e8dc" font-family="Georgia, 'Times New Roman', serif" font-size="44">Every byte, every rule,</text>
+  <text x="80" y="404" fill="#f0e8dc" font-family="Georgia, 'Times New Roman', serif" font-size="44">every reason code.</text>
+  <text x="80" y="472" fill="#a4977f" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="22">Protocol reference, endpoint reference, conformance vectors and operator procedures.</text>
+
+  <path d="M80 520 L520 520" stroke="#52463a" stroke-width="1"/>
+  <text x="80" y="558" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="18" letter-spacing="2">Independent implementations must agree</text>
+</svg>

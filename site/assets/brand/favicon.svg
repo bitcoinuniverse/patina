@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="PATINA">
   <style>
-    .rim { stroke: #3f9f8c; }
-    .mid { stroke: #6aa87c; }
-    .in  { stroke: #c08a3c; }
-    .core { fill: #c39a58; }
+    .rim { stroke: #4ab7a4; }
+    .mid { stroke: #8aa472; }
+    .in  { stroke: #c9954f; }
+    .core { fill: #e0a463; }
     @media (prefers-color-scheme: light) {
-      .rim { stroke: #1f6f5f; }
-      .mid { stroke: #4d7442; }
-      .in  { stroke: #8e6321; }
-      .core { fill: #8e6321; }
+      .rim { stroke: #135f4d; }
+      .mid { stroke: #435f33; }
+      .in  { stroke: #7d5410; }
+      .core { fill: #86500f; }
     }
   </style>
   <defs>

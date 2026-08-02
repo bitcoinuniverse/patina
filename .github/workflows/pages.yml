@@ -25,10 +25,20 @@ jobs:
           node-version: 24
 
       - name: Check the site
-        run: node site/tools/check-site.mjs
+        run: node site/tools/verify.mjs
 
       - name: Check the documentation
         run: node docs/tools/verify.mjs
+
+      # The cards, the sharing metadata and the search index are all generated
+      # from files in this repository. If regenerating them changes anything,
+      # somebody edited the output instead of the input.
+      - name: The generated files are reproducible
+        run: |
+          node site/tools/build-cards.mjs
+          node docs/tools/stamp-meta.mjs
+          node docs/tools/build-search-index.mjs
+          git diff --exit-code -- site docs
 
       - name: Assemble the published tree
         run: |

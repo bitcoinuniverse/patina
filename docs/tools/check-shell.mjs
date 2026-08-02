@@ -69,6 +69,14 @@ class El {
     if (sel.startsWith('#')) return this.id === sel.slice(1);
     return this.tagName === sel.toUpperCase();
   }
+  closest(sel) {
+    let node = this;
+    while (node) {
+      if (node.matches && node.matches(sel)) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
   querySelectorAll(selector) {
     const out = [];
     for (const part of selector.split(',').map((s) => s.trim())) {
@@ -245,11 +253,86 @@ const none = search('zzzznotaword');
 ok(none.length === 0, 'search for a missing word returned results');
 ok(results.textContent.includes('Nothing matched'), 'search has no empty state message');
 
+/*
+ * A search index that stops partway through a page is worse than a small one:
+ * a search that finds nothing reads as proof the word is not there. Every page
+ * has to be indexed to its own length.
+ */
+const indexed = (windowStub.PATINA_SEARCH && windowStub.PATINA_SEARCH.pages) || [];
+ok(indexed.length > 0, 'the search index is empty');
+for (const page of indexed) {
+  ok(
+    page.x.length === page.n,
+    `the search index truncates ${page.p} at ${page.x.length} of ${page.n} characters`
+  );
+}
+
 const theme = body.querySelector('.topbar').querySelectorAll('button')[0];
 theme.fire('click');
 ok(store['patina-docs-theme'] === 'light', `theme toggle stored "${store['patina-docs-theme']}"`);
 theme.fire('click');
 ok(store['patina-docs-theme'] === 'dark', 'theme toggle does not switch back');
+
+/* ------------------------------------------------- the way back to the site */
+const tosite = body.querySelector('.tosite');
+ok(!!tosite, 'the topbar offers no route back to the public site');
+ok(
+  tosite && tosite.getAttribute('href') === '../../index.html',
+  `the route back to the site points at ${tosite && tosite.getAttribute('href')}`
+);
+
+/* ------------------------------------------------------------- the drawer */
+const menuBtn = documentStub.getElementById('menubtn');
+const sidebar = documentStub.getElementById('sidebar');
+const backdrop = body.querySelector('.backdrop');
+ok(!!backdrop, 'the drawer has no backdrop');
+ok(menuBtn.getAttribute('aria-expanded') === 'false', 'the drawer starts closed');
+ok(backdrop && backdrop.hidden === true, 'the backdrop starts hidden');
+ok(menuBtn.getAttribute('aria-label') === 'Open the contents', 'the closed drawer button is unlabelled');
+
+menuBtn.fire('click');
+ok(menuBtn.getAttribute('aria-expanded') === 'true', 'the drawer does not report itself open');
+ok(sidebar.classList.contains('open'), 'the drawer does not open');
+ok(backdrop.hidden === false, 'the backdrop stays hidden with the drawer open');
+
+sidebar.fire('click', { target: navLinks[0], preventDefault() {} });
+ok(menuBtn.getAttribute('aria-expanded') === 'false', 'choosing a page leaves the drawer open');
+ok(backdrop.hidden === true, 'choosing a page leaves the backdrop up');
+
+menuBtn.fire('click');
+backdrop.fire('click');
+ok(menuBtn.getAttribute('aria-expanded') === 'false', 'the backdrop does not close the drawer');
+
+/* --------------------------------------------------------- the page meta */
+const meta = documentStub.getElementById('crumb').querySelector('.pagemeta');
+ok(!!meta, 'the page carries no kind, position or reading time');
+
+const kindBadge = meta && meta.querySelector('.kind');
+ok(kindBadge && kindBadge.textContent === 'generated', `marker grammar is marked "${kindBadge && kindBadge.textContent}", expected generated`);
+ok(
+  kindBadge && (kindBadge.getAttribute('title') || '').length > 20,
+  'the kind badge does not explain what the kind means'
+);
+
+const where = meta && meta.querySelector('.where');
+ok(where && where.textContent === 'page 2 of 10', `position reads "${where && where.textContent}", expected page 2 of 10`);
+
+const read = meta && meta.querySelector('.read');
+ok(read && /^\d+ minutes? read$/.test(read.textContent), `reading time reads "${read && read.textContent}"`);
+
+/* Every kind used by the map has to have an explanation behind it. */
+const kinds = windowStub.PATINA_KINDS || {};
+const used = new Set();
+windowStub.PATINA_NAV.forEach((s) => s.pages.forEach((p) => used.add(p.kind || 'introductory')));
+for (const kind of used) {
+  ok(typeof kinds[kind] === 'string' && kinds[kind].length > 10, `the kind "${kind}" has no explanation in PATINA_KINDS`);
+}
+
+/* Every section has to name the intent that brings a reader to it. */
+for (const section of windowStub.PATINA_NAV) {
+  ok(typeof section.intent === 'string' && section.intent.length > 8, `section "${section.title}" names no reader intent`);
+  ok(typeof section.blurb === 'string' && section.blurb.length > 20, `section "${section.title}" has no summary`);
+}
 
 console.log(`nav links          ${navLinks.length}`);
 console.log(`search cases       ${cases.length}`);

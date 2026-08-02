@@ -2,42 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/index.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://bitcoinuniverse.github.io/patina/depth.html</loc>
+    <lastmod>2026-08-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bitcoinuniverse.github.io/patina/tiers.html</loc>
+    <lastmod>2026-08-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bitcoinuniverse.github.io/patina/firstlight.html</loc>
+    <lastmod>2026-08-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://bitcoinuniverse.github.io/patina/mint.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/protocol.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/verify.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/transparency.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/risks.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/faq.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://bitcoinuniverse.github.io/patina/press.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://bitcoinuniverse.github.io/patina/docs/index.html</loc>
+    <lastmod>2026-08-02</lastmod>
+    <priority>0.9</priority>
   </url>
 </urlset>

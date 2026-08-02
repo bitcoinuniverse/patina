@@ -53,5 +53,21 @@ jobs:
           npm run vectors:generate
           git diff --exit-code -- vectors examples
 
+      - name: Check the public site
+        run: node site/tools/verify.mjs
+
+      - name: Check the documentation
+        run: node docs/tools/verify.mjs
+
+      # The cards, the sharing metadata and the search index are generated from
+      # files in this repository. If regenerating them changes anything, someone
+      # edited the output instead of the input.
+      - name: The generated pages are reproducible
+        run: |
+          node site/tools/build-cards.mjs
+          node docs/tools/stamp-meta.mjs
+          node docs/tools/build-search-index.mjs
+          git diff --exit-code -- site docs
+
       - name: Package contents
         run: npm pack --dry-run

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Transparency, PATINA</title>
-<meta name="description" content="Supply rules, zero allocations, who holds what authority, what can and cannot change, what the kill switches can and cannot do, known risks, and live concentration figures from the indexer.">
+<title>Transparency, who holds authority over PATINA and what it reaches</title>
+<meta name="description" content="Supply with no plan behind it, zero allocations, the authority table, what is frozen and what can change, what the kill switches can and cannot reach, and live concentration figures read from a connected indexer.">
 <link rel="canonical" href="https://bitcoinuniverse.github.io/patina/transparency.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="PATINA">
-<meta property="og:title" content="Transparency, PATINA">
-<meta property="og:description" content="Zero team allocation, zero reserve, zero price. Who holds what authority, what can change, and why the protocol itself cannot be paused.">
+<meta property="og:title" content="Transparency, who holds authority over PATINA and what it reaches">
+<meta property="og:description" content="Zero team allocation, zero reserve, zero price. Who holds what authority, what is frozen, and why the protocol itself cannot be paused.">
 <meta property="og:url" content="https://bitcoinuniverse.github.io/patina/transparency.html">
 <meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
-<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
+<meta property="og:image:alt" content="A PATINA artifact drawn as a ring cross section cut open at the top, with its depth and tier engraved beside it.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Transparency, PATINA">
-<meta name="twitter:description" content="Zero team allocation, zero reserve, zero price. Who holds what authority and what the kill switches cannot do.">
+<meta name="twitter:title" content="Transparency, who holds authority over PATINA and what it reaches">
+<meta name="twitter:description" content="Zero team allocation, zero reserve, zero price. Who holds what authority, and what a kill switch cannot touch.">
 <meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
-<meta name="theme-color" content="#0e1211">
+<meta name="theme-color" content="#14110d">
 <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
 <link rel="manifest" href="manifest.webmanifest">
@@ -41,20 +41,25 @@
       </svg>
       <span class="brand-name">Patina</span>
     </a>
-    <nav class="site-nav" aria-label="Primary">
+    <nav class="site-nav" id="site-nav" data-site-nav aria-label="Primary">
       <ul>
         <li><a href="index.html">Overview</a></li>
+        <li><a href="depth.html">Depth</a></li>
+        <li><a href="tiers.html">Tiers</a></li>
+        <li><a href="firstlight.html">Firstlight</a></li>
         <li><a href="mint.html">Mint</a></li>
         <li><a href="protocol.html">Protocol</a></li>
         <li><a href="verify.html">Verify</a></li>
-        <li><a href="transparency.html" aria-current="page">Transparency</a></li>
         <li><a href="risks.html">Risks</a></li>
-        <li><a href="faq.html">Questions</a></li>
-        <li><a href="press.html">Press</a></li>
+        <li><a class="to-docs" href="docs/index.html">Docs</a></li>
+        <li class="nav-more"><a href="transparency.html" aria-current="page">Transparency</a></li>
+        <li class="nav-more"><a href="faq.html">Questions</a></li>
+        <li class="nav-more"><a href="press.html">Press</a></li>
       </ul>
     </nav>
     <div class="header-tools">
       <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+      <button type="button" class="btn btn-quiet btn-small menu-toggle" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open the menu">Menu</button>
     </div>
   </div>
 </header>
@@ -62,21 +67,34 @@
 <main id="main">
 
   <section class="hero wrap">
-    <p class="eyebrow">Everything we would rather you found here first</p>
-    <h1>Transparency</h1>
-    <p class="lede">Who can do what, what is frozen, what a kill switch actually reaches, and how concentrated the founding cohort is right now.</p>
+    <p class="eyebrow">Authority, supply and change</p>
+    <h1>Nobody here has any power over your artifact.</h1>
+    <p class="lede">This page lists every party that touches PATINA and the exact edge of what each one holds. Most of the entries are about what cannot be done.</p>
+
+    <div class="prose">
+      <p>Nothing below is a claim about value. It is a map of powers, a list of the numbers that are frozen, and a live read of founding concentration, published during the window rather than after it.</p>
+    </div>
+
     <div class="override-banner" data-override-banner hidden>
-      <strong>Custom indexer in use.</strong> The live figures on this page come from <code data-override-url></code>, which you supplied in the address bar.
+      <strong>Custom indexer in use.</strong> The live figures on this page come from <code data-override-url></code>, which you supplied in the address bar. That server is not vouched for by anyone here.
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="risks.html">The full risk list</a>
+      <a class="btn" href="verify.html">Check any of it yourself</a>
     </div>
   </section>
 
   <section class="wrap band" id="supply">
-    <p class="eyebrow">Supply</p>
-    <h2>There is no supply plan</h2>
+    <p class="eyebrow"><span class="num">01</span> Supply</p>
+    <h2>There is no supply plan.</h2>
+    <p class="lede">The Firstlight cohort is whatever the window produced. Nobody picked a number, because there was nothing to pick.</p>
+
     <div class="prose">
-      <p>The Firstlight cohort is whatever the window produced. Nobody picked a number, because there is nothing to pick: anyone can claim, as many times as they can fund, for as long as the window is open.</p>
-      <p>After the window closes, no new founding artifact can exist. Artifacts can still be created outside the founding era, with a lower carrier floor, and they are not Firstlight Seals and never will be.</p>
+      <p>Anyone can claim, as many times as they can fund, for as long as the window is open. When it closes, no new founding artifact can exist.</p>
+      <p>Artifacts can still be created outside the founding era, with a lower carrier floor. They are not Firstlight Seals and never will be.</p>
     </div>
+
     <dl class="kv">
       <div><dt>Price</dt><dd>None. Bitcoin Universe charges nothing to mint. You pay miners, and nobody else.</dd></div>
       <div><dt>Cap</dt><dd>None. A cap would create a race, and a race is what the aged commit exists to prevent.</dd></div>
@@ -88,8 +106,10 @@
   </section>
 
   <section class="wrap band" id="allocations">
-    <p class="eyebrow">Allocations</p>
-    <h2>Nobody was given anything</h2>
+    <p class="eyebrow"><span class="num">02</span> Allocations</p>
+    <h2>Nobody was given anything.</h2>
+    <p class="lede">Six categories that usually hide a number. Every one of them is zero, and the honest limit of that claim is written under the table.</p>
+
     <div class="table-scroll">
       <table>
         <caption>Every allocation category, stated plainly.</caption>
@@ -104,21 +124,21 @@
         </tbody>
       </table>
     </div>
+
     <div class="note note-warn">
       <p class="note-title">The honest part</p>
-      <p>People who build this can still mint like anyone else, from their own coins, in the same window, under the same rules, with no head start. We are not going to claim otherwise. What we can promise is that no claim is reserved, and that the concentration figures below are published while the window is open rather than after it.</p>
+      <p>People who build this can still mint like anyone else, from their own coins, in the same window, under the same rules, with no head start. We are not going to claim otherwise.</p>
+      <p>What we can promise is that no claim is reserved, and that the concentration figures below are published while the window is open rather than after it.</p>
     </div>
   </section>
 
   <section class="wrap band" id="concentration">
-    <p class="eyebrow">Live</p>
-    <h2>How concentrated is it</h2>
-    <div class="prose">
-      <p>Founding membership can be farmed. Somebody with a lot of bitcoin can claim a lot of seals. Rather than discover that later, here is what the indexer reports right now.</p>
-    </div>
+    <p class="eyebrow"><span class="num">03</span> Concentration</p>
+    <h2>Founding membership can be farmed, so the count is published live.</h2>
+    <p class="lede">Somebody with enough bitcoin to park can claim a great many seals. Rather than let you discover that later, this panel asks the indexer now.</p>
 
-    <div class="card" data-live="stats">
-      <div class="card-title">
+    <div class="plate" data-live="stats">
+      <div class="plate-title">
         <h3>Counters and distribution</h3>
         <span class="pill pill-live">Live</span>
       </div>
@@ -138,12 +158,18 @@
       <p class="source-note" data-live-source></p>
     </div>
 
-    <p class="small faint">Concentration on Bitcoin is a measurement of outputs and addresses, not of people. One holder can spread claims across many addresses, and several people can share one. Read these figures as a floor on concentration, never as a headcount.</p>
+    <div class="note">
+      <p class="note-title">How to read those figures</p>
+      <p>Concentration on Bitcoin is a measurement of outputs and addresses, not of people. One holder can spread claims across many addresses, and several people can share one.</p>
+      <p>Read the numbers as a floor on concentration, never as a headcount. When no indexer answers, the panel says so instead of showing a number.</p>
+    </div>
   </section>
 
   <section class="wrap band" id="authority">
-    <p class="eyebrow">Authority</p>
-    <h2>Who can do what</h2>
+    <p class="eyebrow"><span class="num">04</span> Authority</p>
+    <h2>Who can do what, and where each one stops.</h2>
+    <p class="lede">Read the third column first. The limit is the part that decides what an authority is worth.</p>
+
     <div class="table-scroll">
       <table>
         <caption>Every party that touches PATINA, and the limit of what they hold.</caption>
@@ -180,11 +206,16 @@
   </section>
 
   <section class="wrap band" id="change">
-    <p class="eyebrow">Change control</p>
-    <h2>What can change, and what is frozen</h2>
+    <p class="eyebrow"><span class="num">05</span> Change control</p>
+    <h2>What is frozen, and what we are free to change.</h2>
+    <p class="lede">The frozen column is not a policy. Those values are baked into how a marker is read, so touching one produces a different protocol rather than a newer one.</p>
+
     <div class="grid grid-2">
-      <div class="card">
-        <h3>Frozen</h3>
+      <div class="plate">
+        <div class="plate-title">
+          <h3>Frozen</h3>
+          <span class="pill">Consensus surface</span>
+        </div>
         <ul>
           <li>Marker magic, version byte and both opcodes.</li>
           <li>All eight tier thresholds.</li>
@@ -197,8 +228,12 @@
         </ul>
         <p class="small">Changing any of these means a different protocol under a new version byte, not an update to this one. Existing artifacts keep reading under the version byte they were written with.</p>
       </div>
-      <div class="card">
-        <h3>Can change</h3>
+
+      <div class="plate">
+        <div class="plate-title">
+          <h3>Can change</h3>
+          <span class="pill">Presentation and tooling</span>
+        </div>
         <ul>
           <li>This website, its wording and its layout.</li>
           <li>The app's interface, and which features it exposes.</li>
@@ -206,18 +241,68 @@
           <li>Which networks are enabled in Bitcoin Universe's own tools.</li>
           <li>Documentation, examples, and the test vector suite growing.</li>
         </ul>
-        <p class="small">Any deviation from the frozen baseline gets written down in <code>docs/deviations.md</code> in the protocol repository, rather than quietly shipped.</p>
+        <p class="small">None of these can move a threshold, alter a depth, or change what an existing marker means. They change what you look at, not what is true.</p>
       </div>
+    </div>
+
+    <div class="note">
+      <p class="note-title">Deviations get written down</p>
+      <p>Any departure from the frozen baseline is recorded in <code>docs/deviations.md</code> in the protocol repository, rather than quietly shipped. The boundary itself is specified, not improvised.</p>
+      <p><a href="docs/protocol/upgrade-boundary.html">Read the upgrade boundary in full</a></p>
     </div>
   </section>
 
   <section class="wrap band" id="switches">
-    <p class="eyebrow">Kill switches</p>
-    <h2>What the switches reach, and what they do not</h2>
+    <p class="eyebrow"><span class="num">06</span> Kill switches</p>
+    <h2>What the switches reach, and what they do not.</h2>
+
     <div class="note note-hard">
       <p class="note-title">The important sentence</p>
-      <p>The protocol cannot be paused. A PATINA marker is an ordinary Bitcoin transaction. Anyone can build one, anyone can broadcast one, and anyone can index one. Every switch below controls only Bitcoin Universe's own construction and broadcast surfaces.</p>
+      <p>The protocol cannot be paused. A PATINA marker is an ordinary Bitcoin transaction. Anyone can build one, anyone can broadcast one, and anyone can index one.</p>
+      <p>Every switch below controls only Bitcoin Universe's own construction and broadcast surfaces.</p>
     </div>
+
+    <figure class="figure">
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 680 240" role="img" aria-labelledby="reach-title reach-desc">
+          <title id="reach-title">The reach of a Bitcoin Universe switch</title>
+          <desc id="reach-desc">A dashed boundary encloses three Bitcoin Universe surfaces: the PATINA tab in the app, the backend module with its read proxy, and mainnet construction inside the app. Those are the only things a switch turns off. Outside the boundary sit Bitcoin itself, every artifact that already exists, other indexers, other wallets, and your keys, none of which a switch touches.</desc>
+
+          <text class="d-mono" x="20" y="26">WHAT A SWITCH TURNS OFF</text>
+          <rect class="d-line" x="20" y="38" width="300" height="186" rx="3" stroke-dasharray="4 4"/>
+
+          <rect class="d-box" x="36" y="56" width="268" height="46" rx="3"/>
+          <text class="d-soft" x="50" y="78">The PATINA tab in the app</text>
+          <text class="d-mono" x="50" y="94">VITE_PATINA_ENABLED</text>
+
+          <rect class="d-box" x="36" y="112" width="268" height="46" rx="3"/>
+          <text class="d-soft" x="50" y="134">The backend module and read proxy</text>
+          <text class="d-mono" x="50" y="150">PATINA_ENABLED</text>
+
+          <rect class="d-box" x="36" y="168" width="268" height="46" rx="3"/>
+          <text class="d-soft" x="50" y="190">Mainnet building inside the app</text>
+          <text class="d-mono" x="50" y="206">PATINA_MAINNET_AUTHORIZED</text>
+
+          <path class="d-bronze" d="M340 38 L340 224"/>
+
+          <text class="d-mono" x="360" y="26">WHAT IT CANNOT TOUCH</text>
+          <rect class="d-box" x="360" y="38" width="300" height="186" rx="3"/>
+          <text class="d-soft" x="378" y="74">Bitcoin itself, and every block in it</text>
+          <text class="d-soft" x="378" y="106">Every artifact that already exists</text>
+          <text class="d-soft" x="378" y="138">Other indexers reading the same chain</text>
+          <text class="d-soft" x="378" y="170">Other wallets building the same markers</text>
+          <text class="d-soft" x="378" y="202">Your keys, and your ability to spend</text>
+
+          <path class="d-accent" d="M366 70 L372 70"/>
+          <path class="d-accent" d="M366 102 L372 102"/>
+          <path class="d-accent" d="M366 134 L372 134"/>
+          <path class="d-accent" d="M366 166 L372 166"/>
+          <path class="d-accent" d="M366 198 L372 198"/>
+        </svg>
+      </div>
+      <figcaption>The dashed boundary is the whole reach of every flag in the table below. The bronze line is where our software ends and Bitcoin carries on without it.</figcaption>
+    </figure>
+
     <div class="table-scroll">
       <table>
         <caption>The flags that exist, and their true reach.</caption>
@@ -245,35 +330,42 @@
           </tr>
           <tr>
             <th scope="row" class="mono">PATINA_MAINNET_AUTHORIZED</th>
-            <td>Blocks mainnet transaction construction inside Bitcoin Universe entirely unless it is set, and a deployment record naming two approvers exists.</td>
+            <td>Blocks mainnet transaction construction inside Bitcoin Universe entirely unless it is set, and a deployment record naming at least two approvers exists.</td>
             <td>Mainnet itself. Anyone else can construct and broadcast a valid marker with their own tools.</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="prose">
-      <p>Two things follow from that, and both are worth saying out loud.</p>
-      <ul>
-        <li>Nobody can save you from a mistake. There is no freeze, no clawback and no support ticket that reverses a spend. Once a carrier moves, its stretch is over.</li>
-        <li>Nobody can stop you either. If every Bitcoin Universe service disappeared tomorrow, your artifact would still be exactly what it was: an unspent output at a known height, readable by anyone who runs the index.</li>
-      </ul>
+
+    <div class="grid grid-2">
+      <div class="note note-warn">
+        <p class="note-title">Nobody can save you</p>
+        <p>There is no freeze, no clawback and no support ticket that reverses a spend. Once a carrier moves, its stretch is over and the ring is written.</p>
+      </div>
+      <div class="note">
+        <p class="note-title">Nobody can stop you</p>
+        <p>If every Bitcoin Universe service disappeared tomorrow, your artifact would still be exactly what it was: an unspent output at a known height, readable by anyone who runs the index.</p>
+      </div>
     </div>
   </section>
 
   <section class="wrap band" id="custody">
-    <p class="eyebrow">Custody</p>
-    <h2>What Bitcoin Universe never holds</h2>
+    <p class="eyebrow"><span class="num">07</span> Custody</p>
+    <h2>What Bitcoin Universe never holds.</h2>
+    <p class="lede">The app builds unsigned transaction plans and a plain review summary. Everything after that is your key and your decision.</p>
+
     <dl class="kv">
-      <div><dt>Your keys</dt><dd>Never transmitted, never stored, never requested. The app builds unsigned transaction plans and a plain review summary. You sign.</dd></div>
-      <div><dt>Your coins</dt><dd>No custody at any point. Nothing is broadcast without your signature.</dd></div>
+      <div><dt>Your keys</dt><dd>Never transmitted, never stored, never requested. You sign, and nothing is broadcast without that signature.</dd></div>
+      <div><dt>Your coins</dt><dd>No custody at any point. The carrier stays in your wallet from the moment it is created.</dd></div>
       <div><dt>Outpoints you check</dt><dd>The safety endpoint that tells a wallet whether an outpoint is a carrier or a commit stores nothing.</dd></div>
       <div><dt>An account</dt><dd>There is nothing to register. The protocol has no idea who you are, which is also why it cannot limit anyone to one seal.</dd></div>
     </dl>
   </section>
 
   <section class="wrap band" id="risks">
-    <p class="eyebrow">Known risks</p>
-    <h2>The short version</h2>
+    <p class="eyebrow"><span class="num">08</span> Known risks</p>
+    <h2>The short version of what can go wrong.</h2>
+
     <div class="prose">
       <ul>
         <li><strong>Depth is not provenance.</strong> It proves the outpoint has not moved. Keys can be sold off chain, so it cannot prove one person held it throughout.</li>
@@ -284,8 +376,58 @@
         <li><strong>Reorgs can unmake recent facts</strong>, including founding status near a window edge.</li>
         <li><strong>Nobody owes this anything.</strong> No liquidity, no market, no floor, no buyer.</li>
       </ul>
-      <p><a href="risks.html">The full list, with what each one means in practice.</a></p>
+      <p><a href="risks.html">The full list, with what each one means in practice</a></p>
     </div>
+  </section>
+
+  <section class="wrap band" id="next">
+    <p class="eyebrow"><span class="num">09</span> Go and check</p>
+    <h2>Take none of this on trust.</h2>
+
+    <ul class="routes">
+      <li>
+        <a href="docs/protocol/upgrade-boundary.html">
+          <span class="r-who">I want the rule, not the summary</span>
+          <span class="r-title">The upgrade boundary</span>
+          <span class="r-desc">Exactly which fields are frozen, what a change to any of them would produce, and how an implementation declares what it reads.</span>
+        </a>
+      </li>
+      <li>
+        <a href="docs/operator/incidents.html">
+          <span class="r-who">I run infrastructure</span>
+          <span class="r-title">Incidents and their reach</span>
+          <span class="r-desc">What an operator can do when an indexer goes wrong, and the short list of things no incident response can touch.</span>
+        </a>
+      </li>
+      <li>
+        <a href="verify.html">
+          <span class="r-who">I want to check a claim</span>
+          <span class="r-title">Verify an artifact</span>
+          <span class="r-desc">Read depth off your own node, decode a marker by hand, and cross check two indexers against each other.</span>
+        </a>
+      </li>
+      <li>
+        <a href="protocol.html">
+          <span class="r-who">I want the mechanism</span>
+          <span class="r-title">How the protocol works</span>
+          <span class="r-desc">Markers, commits, carriers and rings, with the byte level rules that every implementation has to agree on.</span>
+        </a>
+      </li>
+      <li>
+        <a href="risks.html">
+          <span class="r-who">I want the downside first</span>
+          <span class="r-title">Risks in full</span>
+          <span class="r-desc">Every failure mode we know about, what it costs, and what you can do about it before it happens.</span>
+        </a>
+      </li>
+      <li>
+        <a href="docs/reference/glossary.html">
+          <span class="r-who">A word here is unfamiliar</span>
+          <span class="r-title">Glossary</span>
+          <span class="r-desc">Carrier, stretch, ring, marker, commit, endowment, relic, and the rest, each defined once.</span>
+        </a>
+      </li>
+    </ul>
   </section>
 
 </main>
@@ -298,10 +440,18 @@
         <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
       </div>
       <div>
-        <h2>Read</h2>
+        <h2>Understand</h2>
         <ul>
           <li><a href="index.html">Overview</a></li>
-          <li><a href="mint.html">Mint</a></li>
+          <li><a href="depth.html">How depth works</a></li>
+          <li><a href="tiers.html">Tier journey</a></li>
+          <li><a href="firstlight.html">Firstlight Seals</a></li>
+          <li><a href="mint.html">The mint</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Check</h2>
+        <ul>
           <li><a href="protocol.html">Protocol</a></li>
           <li><a href="verify.html">Verify</a></li>
           <li><a href="transparency.html">Transparency</a></li>
@@ -311,11 +461,12 @@
         </ul>
       </div>
       <div>
-        <h2>Source</h2>
+        <h2>Build</h2>
         <ul>
+          <li><a href="docs/index.html">Documentation</a></li>
+          <li><a href="docs/api/endpoints.html">Endpoint reference</a></li>
+          <li><a href="docs/compat/build.html">Build an implementation</a></li>
           <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
-          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
-          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
           <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
         </ul>
       </div>

@@ -13,7 +13,15 @@ import { join, resolve, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const MAX_TEXT = 4000;
+
+/*
+ * Every page is indexed in full. An index that quietly stops partway through a
+ * page is worse than a small one, because a search that finds nothing reads as
+ * proof the word is not there. The size is reported on every run and the build
+ * fails past the ceiling, so growth stays a decision somebody makes rather than
+ * something that happens to them.
+ */
+const MAX_INDEX_BYTES = 512 * 1024;
 
 async function loadNav() {
   const src = await readFile(join(ROOT, 'assets', 'nav-data.js'), 'utf8');
@@ -102,7 +110,7 @@ for (const file of files) {
     s: sectionOf.get(rel) || '',
     t: strip(title),
     h: headings(article),
-    x: text.slice(0, MAX_TEXT),
+    x: text,
     n: text.length,
   });
 }
@@ -126,9 +134,18 @@ await writeFile(
 );
 
 const words = pages.reduce((sum, p) => sum + p.x.split(' ').length, 0);
-console.log(`indexed ${pages.length} pages, ${words} indexed words`);
-console.log(`wrote assets/search-index.json (${json.length} bytes)`);
+const truncated = pages.filter((p) => p.x.length < p.n);
+console.log(`indexed ${pages.length} pages, ${words} words, every page in full`);
+console.log(`pages truncated ${truncated.length}`);
+console.log(`wrote assets/search-index.json (${json.length} bytes of ${MAX_INDEX_BYTES})`);
 console.log('wrote assets/search-index.js');
+
+if (json.length > MAX_INDEX_BYTES) {
+  problems.push(
+    `the index is ${json.length} bytes, past the ${MAX_INDEX_BYTES} byte ceiling. ` +
+    'Either raise the ceiling on purpose or stop indexing something on purpose.'
+  );
+}
 
 if (problems.length) {
   console.error('\nproblems:');

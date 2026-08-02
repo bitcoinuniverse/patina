@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Attestations | PATINA docs</title>
 <meta name="description" content="A PATINA attestation is a BIP-322 signature over the artifact id and a recent block hash. It shows the carrier key is still alive without spending anything.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/using/attestations.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Attestations, PATINA documentation">
+<meta property="og:description" content="A PATINA attestation is a BIP-322 signature over the artifact id and a recent block hash. It shows the carrier key is still alive without spending anything.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/using/attestations.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta property="og:image:alt" content="Two transactions on a block height line with a gap of at least 144 blocks between them.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Attestations, PATINA documentation">
+<meta name="twitter:description" content="A PATINA attestation is a BIP-322 signature over the artifact id and a recent block hash. It shows the carrier key is still alive without spending anything.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,12 +31,102 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
       <h1>Attestations</h1>
       <p class="lede">Depth says the output has not moved. An attestation adds that somebody with the key is here
         today. It costs nothing and spends nothing.</p>
+
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>The exact string to sign: the tag <code>PTNA/attest</code>, then the artifact id, then a recent block
+            hash, with nothing between them.</li>
+          <li>Why the block hash is what stops a signature from having been made earlier.</li>
+          <li>How to verify one starting from the carrier in the artifact record, rather than from an address
+            somebody sent you.</li>
+          <li>The three things an attestation shows and the three it does not, including whether anybody else holds
+            a copy of the key.</li>
+        </ul>
+      </div>
 
       <h2>The message</h2>
       <p>An attestation is a BIP-322 signature over one exact string, produced by the key that controls the
@@ -30,10 +136,12 @@
         lowercase hex. A worked example, with the values computed by
         <code>docs/tools/vectors.mjs</code>:</p>
       <pre data-label="Example message, 139 characters"><code>PTNA/attestd3b8d3013c23dd3df76882034df80935ba55aa75772007f0b142b63adce5eff06b86b9521630996bec957312d95d273f4e19e1d87e00ca8928f3c736c6d73308</code></pre>
+      <p>The cuts always fall at the same two offsets, so a message of the wrong length is the first thing to check
+        when a signature will not verify.</p>
       <div class="tablewrap">
         <table>
           <caption>The three parts of the message above.</caption>
-          <thead><tr><th>Part</th><th>Length</th><th>Value</th></tr></thead>
+          <thead><tr><th scope="col">Part</th><th scope="col">Length</th><th scope="col">Value</th></tr></thead>
           <tbody>
             <tr><td>Tag</td><td>11 characters</td><td><code>PTNA/attest</code></td></tr>
             <tr><td>Artifact id</td><td>64 characters</td><td><code>d3b8d301...ce5eff0</code></td></tr>
@@ -78,6 +186,8 @@
       </ol>
 
       <h2>Verifying one</h2>
+      <p>Five steps, in this order. The node commands for the lookups in steps one to three are on the public page
+        for <a href="../../verify.html">verifying it yourself</a>.</p>
       <ol>
         <li>Fetch the artifact and read <code>carrier.txid</code> and <code>carrier.vout</code>.</li>
         <li>Look up the address that carrier output pays.</li>
@@ -92,10 +202,12 @@
       </div>
 
       <h2>What it proves and what it does not</h2>
+      <p>The left column is what a verifier can state after the signature checks out. The right column is what
+        people will assume anyway, and none of it is supported.</p>
       <div class="tablewrap">
         <table>
           <caption>Reading an attestation honestly.</caption>
-          <thead><tr><th>Proves</th><th>Does not prove</th></tr></thead>
+          <thead><tr><th scope="col">Proves</th><th scope="col">Does not prove</th></tr></thead>
           <tbody>
             <tr><td>Somebody could sign for the carrier at or after that block</td><td>That the signer is the original minter</td></tr>
             <tr><td>The key is not lost, at least for that signer</td><td>That only one person holds the key</td></tr>

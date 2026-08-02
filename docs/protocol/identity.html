@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Identity and derivations | PATINA docs</title>
 <meta name="description" content="PATINA identity constants and the five derivations, with byte exact worked examples computed by a script you can rerun.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/protocol/identity.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Identity and derivations, PATINA documentation">
+<meta property="og:description" content="PATINA identity constants and the five derivations, with byte exact worked examples computed by a script you can rerun.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/protocol/identity.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta property="og:image:alt" content="The twenty six bytes of a PATINA marker, drawn as a grid with the magic bytes picked out.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Identity and derivations, PATINA documentation">
+<meta name="twitter:description" content="PATINA identity constants and the five derivations, with byte exact worked examples computed by a script you can rerun.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,18 +31,109 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
       <h1>Identity and derivations</h1>
-      <p class="lede">Five derivations, all single SHA-256, all with an ASCII domain tag and no separator byte.
-        Every hex string below was computed by <code>docs/tools/vectors.mjs</code>.</p>
+      <p class="lede">Five derivations, all with an ASCII domain tag and no separator byte. Four of them hash, each
+        a single SHA-256, and the fifth is the message a holder signs. Every hex string below was computed by
+        <code>docs/tools/vectors.mjs</code>.</p>
+
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>How to build a preimage: an ASCII tag concatenated straight onto the rest, with no length prefix and no separator byte.</li>
+          <li>How to recompute a commit commitment from a claimant key and a 16 byte salt, and check your answer with one command.</li>
+          <li>Which 68 byte leaf a new commit uses, what its BIP-341 tapleaf hash is, and why the 70 byte legacy leaf is still accepted.</li>
+          <li>Why the artifact id takes the txid in wire order and the carrier index as four little endian bytes.</li>
+          <li>Which fixed width encoding each of the last two derivations hashes, and what settles an argument about a state root.</li>
+        </ul>
+      </div>
 
       <h2>Identity constants</h2>
+      <p>Six values that never move. A parser compares the magic bytes and the version byte before it looks at
+        anything else, so those two rows are the ones to read carefully.</p>
       <div class="tablewrap">
         <table>
           <caption>Frozen identity values.</caption>
-          <thead><tr><th>Name</th><th>Value</th><th>Bytes</th></tr></thead>
+          <thead><tr><th scope="col">Name</th><th scope="col">Value</th><th scope="col">Bytes</th></tr></thead>
           <tbody>
             <tr><td>Protocol name</td><td>PATINA</td><td></td></tr>
             <tr><td>Protocol slug</td><td><code>patina</code></td><td></td></tr>
@@ -42,7 +149,8 @@
 
       <h2>Hashing conventions</h2>
       <ul>
-        <li>Every derivation is a <strong>single</strong> SHA-256. Not double, not tagged in the BIP-340 sense.</li>
+        <li>Every derivation that hashes is a <strong>single</strong> SHA-256. Not double, not tagged in the
+          BIP-340 sense.</li>
         <li>The domain tag is plain ASCII, concatenated directly with the rest of the preimage. There is no length
           prefix and no separator byte.</li>
         <li>Display ids are lowercase hex.</li>
@@ -52,7 +160,7 @@
       <div class="tablewrap">
         <table>
           <caption>The five domain tags as bytes.</caption>
-          <thead><tr><th>Tag</th><th>Length</th><th>Hex</th></tr></thead>
+          <thead><tr><th scope="col">Tag</th><th scope="col">Length</th><th scope="col">Hex</th></tr></thead>
           <tbody>
             <tr><td><code>PTNA/commit</code></td><td>11</td><td><code>50544e412f636f6d6d6974</code></td></tr>
             <tr><td><code>PTNA/artifact</code></td><td>13</td><td><code>50544e412f6172746966616374</code></td></tr>
@@ -75,6 +183,8 @@ salt (16)            2fe862993a92197e084e4070cc8aa1c3</code></pre>
       </div>
 
       <h2>Commit commitment</h2>
+      <p>One tag, one key, one salt, concatenated in that order and hashed once. The worked example prints the whole
+        59 byte preimage so you can line your own bytes up against it before you blame the hash.</p>
       <pre data-label="Definition"><code>commitment = SHA256("PTNA/commit" || claimant_xonly(32) || salt(16))</code></pre>
       <pre data-label="Worked example, 59 byte preimage"><code>preimage
   50544e412f636f6d6d6974                                            "PTNA/commit"
@@ -97,7 +207,7 @@ console.log(createHash("sha256").update(pre).digest("hex"));
       <div class="tablewrap">
         <table>
           <caption>The 68 byte reduced-data leaf, byte by byte.</caption>
-          <thead><tr><th>Offset</th><th>Bytes</th><th>Meaning</th></tr></thead>
+          <thead><tr><th scope="col">Offset</th><th scope="col">Bytes</th><th scope="col">Meaning</th></tr></thead>
           <tbody>
             <tr><td>0</td><td><code>20</code></td><td>Push 32 bytes</td></tr>
             <tr><td>1</td><td><code>f13dc99d ... 1878866a</code></td><td>claimant x-only public key</td></tr>
@@ -117,6 +227,8 @@ console.log(createHash("sha256").update(pre).digest("hex"));
 = 9ce5c961ee584cc444555feecd3d7d26201e69b85cf23ea4a830d237ac081111</code></pre>
 
       <h2>Artifact id</h2>
+      <p>The id is a hash of where the artifact was born, and both halves of that location are byte ordered in a way
+        that catches people out. The worked example prints the txid in both orders for exactly that reason.</p>
       <pre data-label="Definition"><code>artifact_id = SHA256("PTNA/artifact" || reveal_txid_wire(32) || carrier_vout_le(4))</code></pre>
       <p>Two details trip people up. The txid goes in <strong>wire order</strong>, reversed from what an explorer
         shows. The vout is <strong>four bytes little endian</strong>, not one byte, even though the marker payload
@@ -143,15 +255,17 @@ artifact_id
       <p>Usage is on <a href="../using/attestations.html">Attestations</a>.</p>
 
       <h2>Event leaf and state root</h2>
+      <p>These two are stated as definitions here. The note underneath says where the encodings they hash are set
+        out field by field.</p>
       <pre data-label="Definitions"><code>event_leaf = SHA256("PTNA/event" || canonical event encoding)
 state_root = SHA256("PTNA/state" || canonical snapshot encoding)</code></pre>
       <div class="note">
-        <span class="lbl">What is frozen here, and what is not</span>
-        <p>The baseline freezes the hash function, the domain tags, and the fact that the encoding is canonical. It
-          does not spell out the field order and widths of the two canonical encodings.</p>
-        <p>That means the golden vectors are the authority for these two derivations. An implementation matches by
-          reproducing the vector state roots byte for byte, not by reading prose. If your encoding produces a
-          different root on the same block, your encoding is wrong regardless of how reasonable it looks.</p>
+        <span class="lbl">Where the two encodings are defined</span>
+        <p>Both are fixed width, with no optional fields and nothing to guess: 86 bytes for an event, 88 bytes for
+          a snapshot. The baseline gives the offset, the width and the byte order of every field in each of them.</p>
+        <p>The golden vectors are still what settles an argument. An implementation matches by reproducing the
+          vector state roots byte for byte. If your encoding produces a different root on the same block, your
+          encoding is wrong regardless of how reasonable it looks.</p>
         <p>See <a href="../compat/golden-vectors.html">Golden vectors and state roots</a>.</p>
       </div>
 
@@ -159,6 +273,9 @@ state_root = SHA256("PTNA/state" || canonical snapshot encoding)</code></pre>
       <pre data-label="From the repo root"><code>node docs/tools/vectors.mjs</code></pre>
       <p>The script prints each preimage and each digest. If a number in these pages disagrees with the script, the
         script is right and the page is a bug.</p>
+      <p>If you would rather do it against a live artifact than a fixture, the public
+        <a href="../../verify.html">verify walkthrough</a> takes the same derivations with a block explorer open
+        beside them.</p>
     </article>
     <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
   </main>

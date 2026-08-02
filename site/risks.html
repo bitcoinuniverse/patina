@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Risks, PATINA</title>
-<meta name="description" content="Every way PATINA can disappoint you, in one place: depth is not provenance, founding membership can be farmed, buying resets depth, wallets can spend a carrier by accident, and nobody owes this anything.">
+<meta name="description" content="Every way PATINA can disappoint you, in one place: depth is not provenance, founding membership can be concentrated, buying resets depth, a wallet can spend a carrier by accident, and nobody owes this anything.">
 <link rel="canonical" href="https://bitcoinuniverse.github.io/patina/risks.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="PATINA">
 <meta property="og:title" content="Risks, PATINA">
-<meta property="og:description" content="Depth is not provenance. Founding membership can be farmed. Buying resets depth. The full list, written down rather than buried.">
+<meta property="og:description" content="Depth is not provenance. Founding membership can be concentrated. Buying resets depth. The full list, written down rather than buried.">
 <meta property="og:url" content="https://bitcoinuniverse.github.io/patina/risks.html">
 <meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
-<meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
+<meta property="og:image:alt" content="A PATINA artifact drawn as a ring cross section cut open at the top, beside the PATINA name.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Risks, PATINA">
-<meta name="twitter:description" content="Depth is not provenance. Founding membership can be farmed. Buying resets depth.">
+<meta name="twitter:description" content="Depth is not provenance. Founding membership can be concentrated. Buying resets depth.">
 <meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
-<meta name="theme-color" content="#0e1211">
+<meta name="theme-color" content="#14110d">
 <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
 <link rel="manifest" href="manifest.webmanifest">
@@ -41,20 +41,25 @@
       </svg>
       <span class="brand-name">Patina</span>
     </a>
-    <nav class="site-nav" aria-label="Primary">
+    <nav class="site-nav" id="site-nav" data-site-nav aria-label="Primary">
       <ul>
         <li><a href="index.html">Overview</a></li>
+        <li><a href="depth.html">Depth</a></li>
+        <li><a href="tiers.html">Tiers</a></li>
+        <li><a href="firstlight.html">Firstlight</a></li>
         <li><a href="mint.html">Mint</a></li>
         <li><a href="protocol.html">Protocol</a></li>
         <li><a href="verify.html">Verify</a></li>
-        <li><a href="transparency.html">Transparency</a></li>
         <li><a href="risks.html" aria-current="page">Risks</a></li>
-        <li><a href="faq.html">Questions</a></li>
-        <li><a href="press.html">Press</a></li>
+        <li><a class="to-docs" href="docs/index.html">Docs</a></li>
+        <li class="nav-more"><a href="transparency.html">Transparency</a></li>
+        <li class="nav-more"><a href="faq.html">Questions</a></li>
+        <li class="nav-more"><a href="press.html">Press</a></li>
       </ul>
     </nav>
     <div class="header-tools">
       <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+      <button type="button" class="btn btn-quiet btn-small menu-toggle" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open the menu">Menu</button>
     </div>
   </div>
 </header>
@@ -63,12 +68,18 @@
 
   <section class="hero wrap">
     <p class="eyebrow">Read this before you claim anything</p>
-    <h1>Risks</h1>
-    <p class="lede">This page exists because the things below are easier to accept before you act than after. None of it is hedging language for something we think is fine.</p>
+    <h1>Every way this can let you down.</h1>
+    <p class="lede">All of it is easier to accept before you act than after. None of it is hedging language for something we privately think is fine.</p>
+    <div class="actions">
+      <a class="btn" href="docs/start/limits.html">The limits, stated in full</a>
+      <a class="btn btn-quiet" href="verify.html">Check any of it against a node</a>
+    </div>
   </section>
 
   <section class="wrap band" id="meaning">
-    <h2>What the artifact means</h2>
+    <p class="eyebrow"><span class="num">01</span> What the number means</p>
+    <h2>Depth is a fact about an output, not a biography of a person.</h2>
+    <p class="lede">Depth is a subtraction between two block heights. That makes it exact, and it also makes it narrow. Here is what it refuses to tell you.</p>
 
     <div class="note note-hard">
       <h3>Depth is not provenance</h3>
@@ -78,61 +89,175 @@
 
     <div class="note note-warn">
       <h3>Depth cannot tell discipline from loss</h3>
-      <p>An output that has not moved for four years might belong to someone with conviction, or to someone who lost their seed phrase in 2022. The chain sees the same thing either way. Some of the deepest artifacts that ever exist will be ones nobody can spend.</p>
+      <p>An output that has not moved for four years might belong to someone with conviction, or to someone who lost the seed phrase the week after they claimed it. The chain sees the same thing either way. Some of the deepest artifacts that ever exist will be ones nobody can spend.</p>
     </div>
+  </section>
+
+  <section class="wrap band" id="acquiring">
+    <p class="eyebrow"><span class="num">02</span> Before you pay for one</p>
+    <h2>The founding cohort has no cap, and a purchase starts the count again.</h2>
 
     <div class="note note-warn">
-      <h3>Founding membership can be farmed</h3>
+      <h3>Founding membership can be concentrated</h3>
       <p>Anyone willing to park real bitcoin can claim as many Firstlight Seals as they can fund. There is no cap, no allowlist and no per person limit, because the protocol has no concept of a person. A single well funded participant could hold a large share of the founding cohort.</p>
-      <p>We publish <a href="transparency.html#concentration">live concentration figures</a> during the window rather than after it. That does not prevent farming. It only means you find out while you can still decide what to do about it.</p>
+      <p>We publish <a href="transparency.html">live concentration figures</a> during the window rather than after it. That does not prevent farming. It only means you find out while you can still decide what to do about it.</p>
     </div>
 
     <div class="note note-warn">
       <h3>Buying one resets it</h3>
       <p>A transfer is a Bitcoin spend, which destroys the carrier. The stretch you were paying for closes as a ring, and the artifact restarts at depth zero on the new output. You inherit the record of what happened. You do not inherit the depth.</p>
-      <p>If somebody offers you a deep artifact, what you can actually buy is a deep set of rings and a fresh stretch. Price it that way.</p>
+      <p>If somebody offers you a deep artifact, what you can actually buy is a deep set of rings and a fresh stretch. Price it that way, and read <a href="depth.html">what a ring records</a> before you agree a number.</p>
     </div>
   </section>
 
   <section class="wrap band" id="operational">
-    <h2>Ways to lose depth without meaning to</h2>
+    <p class="eyebrow"><span class="num">03</span> Accidents</p>
+    <h2>Four ways to end a stretch without meaning to.</h2>
+    <p class="lede">Nothing in ordinary Bitcoin software knows what a carrier is. A routine spend is enough, and the chain will not ask you twice.</p>
+
+    <figure class="figure">
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 640 220" role="img" aria-labelledby="sweep-title sweep-desc">
+          <title id="sweep-title">A consolidating spend that ends a stretch</title>
+          <desc id="sweep-desc">Three inputs enter one transaction and one of them is the carrier. The transaction confirms and the stretch closes as a ring. The default rule sends the artifact to the lowest index output that can hold it, which here is output zero, the payment, and not the change coming back.</desc>
+
+          <g class="d-mono">
+            <text x="16" y="18">INPUTS</text>
+            <text x="250" y="78">ONE SPEND</text>
+            <text x="434" y="34">OUTPUTS</text>
+          </g>
+
+          <rect class="d-box" x="16" y="28" width="180" height="44" rx="3"/>
+          <text class="d-soft" x="30" y="56">an ordinary coin</text>
+
+          <rect class="d-box" x="16" y="86" width="180" height="44" rx="3"/>
+          <text class="d-soft" x="30" y="114">an ordinary coin</text>
+
+          <rect class="d-box" x="16" y="144" width="180" height="44" rx="3"/>
+          <rect class="d-bronze" x="16" y="144" width="180" height="44" rx="3"/>
+          <text class="d-soft" x="30" y="172">the carrier</text>
+
+          <g class="d-line">
+            <path d="M196 50 L224 50 L224 108 L250 108"/>
+            <path d="M196 108 L250 108"/>
+            <path d="M196 166 L224 166 L224 108 L250 108"/>
+            <path d="M380 108 L408 108 L408 66 L434 66"/>
+            <path d="M380 108 L408 108 L408 150 L434 150"/>
+          </g>
+
+          <rect class="d-box" x="250" y="86" width="130" height="44" rx="3"/>
+          <text class="d-soft" x="262" y="113">coin selection</text>
+
+          <rect class="d-box" x="434" y="44" width="190" height="44" rx="3"/>
+          <rect class="d-accent" x="434" y="44" width="190" height="44" rx="3"/>
+          <text class="d-soft" x="448" y="72">output 0, the payment</text>
+          <text class="d-mono" x="434" y="108">SUCCESSOR, DEPTH 0</text>
+
+          <rect class="d-box" x="434" y="128" width="190" height="44" rx="3"/>
+          <text class="d-soft" x="448" y="156">output 1, your change</text>
+
+          <text class="d-mono" x="434" y="196">STRETCH CLOSES AS A RING</text>
+        </svg>
+      </div>
+      <figcaption>Coin selection picked the carrier because it was a coin. The default rule then handed the artifact to the lowest index output that could hold it, which is the one you were paying, not the one coming back to you.</figcaption>
+    </figure>
 
     <div class="grid grid-2">
-      <div class="card">
+      <div class="note note-warn">
         <h3>Your own wallet</h3>
-        <p>Ordinary coin selection knows nothing about carriers. A wallet consolidating dust, paying a fee from the wrong coin, or sweeping an address will spend a carrier without a warning, and the stretch ends there.</p>
-        <p>Check outpoints against the safety endpoint before you spend, or keep carriers in a wallet you never sweep. <a href="verify.html#indexer">How to check</a>.</p>
+        <p>Ordinary coin selection knows nothing about carriers. A wallet consolidating dust, paying a fee from the wrong coin, or sweeping an address will spend a carrier without a warning, and the stretch ends there. The default rule then hands the artifact to the lowest index output that can hold it, which in an ordinary payment is the person you paid.</p>
+        <p>Check outpoints against the safety endpoint before you spend, or keep carriers in a wallet you never sweep. <a href="verify.html">How to check</a>.</p>
       </div>
-      <div class="card">
+      <div class="note note-hard">
         <h3>Change below the floor</h3>
         <p>The default rule needs an output holding at least 10 000 sats that is not an OP_RETURN. A spend that leaves only smaller outputs finds no eligible successor, and the artifact becomes a relic. Terminal, immediately, with no way back.</p>
       </div>
-      <div class="card">
+      <div class="note note-warn">
         <h3>Bundles move together</h3>
-        <p>Several artifacts can ride one carrier. One input cannot go to two places, so splitting a bundle means spending the carrier once per destination, in separate transactions. Every one of those spends closes a stretch on every artifact in the bundle.</p>
+        <p>Several artifacts can ride one carrier. A KEEP entry names an input rather than an artifact, so every artifact on that carrier takes the same routing decision. No transaction can send one of them to one output and the rest to another, and the spend that moves any of them closes a stretch on all of them.</p>
       </div>
-      <div class="card">
+      <div class="note note-warn">
         <h3>A void marker</h3>
-        <p>Two outputs carrying a PTNA payload void the marker for that transaction, and the default rule applies as if you had written nothing. A KEEP entry naming a non carrier input, a missing vout, an OP_RETURN, or an output under 10 000 sats is void and falls through the same way.</p>
+        <p>Write a marker the indexer cannot read and it is discarded, not corrected. The default rule then applies as if you had written nothing, and the successor may not be the output you had in mind.</p>
       </div>
+    </div>
+
+    <h3 id="void">Void has two sizes</h3>
+    <p>Nothing here is an error you get to fix in the next block. The transaction is already confirmed and the default rule has already chosen a successor. What changes between these cases is how much falls through: the whole marker, or one entry inside it.</p>
+    <dl class="kv">
+      <div>
+        <dt>Two outputs carry a PTNA payload</dt>
+        <dd>The whole marker is void. Every carrier the transaction spends follows the default rule, as if you had written nothing at all.</dd>
+      </div>
+      <div>
+        <dt>The KEEP payload does not decode</dt>
+        <dd>A count outside 1 to 8, the wrong payload length, a push that is not minimal, or two entries naming the same input. These are decode failures, so the whole marker is inert and every spent carrier falls to the default rule.</dd>
+      </div>
+      <div>
+        <dt>An entry names an input that is not a carrier</dt>
+        <dd>That entry is void, and the other entries still stand. The input it named, if it was carrying anything at all, falls to the default rule on its own.</dd>
+      </div>
+      <div>
+        <dt>An entry names a vout that is missing</dt>
+        <dd>That entry is void. It has to point at an output the transaction actually created.</dd>
+      </div>
+      <div>
+        <dt>An entry names an OP_RETURN</dt>
+        <dd>That entry is void. An OP_RETURN cannot hold an artifact, so it cannot be a successor.</dd>
+      </div>
+      <div>
+        <dt>An entry names an output under 10 000 sats</dt>
+        <dd>That entry is void. The successor minimum is 10 000 sats, and an entry below it routes nothing, while the rest of the marker is applied as written.</dd>
+      </div>
+    </dl>
+
+    <div class="actions">
+      <a class="btn" href="docs/using/depth-resets.html">Every way depth resets, in order</a>
+      <a class="btn btn-quiet" href="protocol.html">The marker grammar and the default rule</a>
     </div>
   </section>
 
   <section class="wrap band" id="minting">
-    <h2>Risks at mint time</h2>
-    <div class="prose">
-      <ul>
-        <li><strong>A commit that is never revealed expires.</strong> The founding claim needs the reveal to land within the grace period. Miss it and the claim is gone. The coins in the commit output are still yours, because only your key can spend it, but the founding status is not.</li>
-        <li><strong>Fees can spike between the two transactions.</strong> There are at least 144 blocks between commit and reveal. The mempool can look very different by then, and the reveal still has to confirm.</li>
-        <li><strong>A reveal that fails a check creates nothing.</strong> It records an invalid event with a reason code, and you have paid a fee for it. Read the <a href="protocol.html#codes">reason codes</a> before you build anything by hand.</li>
-        <li><strong>Reorgs near a window edge can change founding status.</strong> If the commit output's height moves across the open or close boundary in a reorg, the founding flag moves with it. Claims near the edges deserve extra confirmations.</li>
-        <li><strong>A reorg can change the artifact id.</strong> The id derives from the reveal txid, so if the reveal is replaced by a different transaction the id is different too.</li>
-      </ul>
+    <p class="eyebrow"><span class="num">04</span> At mint time</p>
+    <h2>The gap between commit and reveal is where claims are lost.</h2>
+    <p class="lede">There are at least 144 blocks between the two transactions. A day is long enough for the mempool, the chain and your attention to move.</p>
+
+    <dl class="kv">
+      <div>
+        <dt>A commit that is never revealed creates nothing</dt>
+        <dd>The commit output only holds a commitment. No artifact exists until the reveal confirms, and the coins stay yours the whole time, because only your key can spend that output.</dd>
+      </div>
+      <div>
+        <dt>A reveal after the grace period is not founding</dt>
+        <dd>Founding needs the commit height inside the window and the reveal at or before the grace end, 4032 blocks after the window closes. A later reveal still creates an artifact, just an open era one, held to the 10 000 sat carrier minimum instead of 100 000.</dd>
+      </div>
+      <div>
+        <dt>Fees can spike between the two transactions</dt>
+        <dd>By the time you are allowed to reveal, your commit is published and your plan is fixed. The fee that looked comfortable when you committed is not the fee that has to get the reveal confirmed, and there is no way to go earlier: a reveal below the minimum age is rejected outright.</dd>
+      </div>
+      <div>
+        <dt>A reveal that fails a check creates nothing</dt>
+        <dd>It records an invalid event with a reason code, and you have paid a fee for it. Read the <a href="protocol.html">reason codes</a> before you build anything by hand.</dd>
+      </div>
+      <div>
+        <dt>Reorgs near a window edge can change founding status</dt>
+        <dd>If the commit output's height moves across the open or close boundary in a reorg, the founding flag moves with it. Six confirmations is where the protocol reports a fact as final, and a claim sitting on a window edge deserves more patience than that.</dd>
+      </div>
+      <div>
+        <dt>A reorg can change the artifact id</dt>
+        <dd>The id derives from the reveal txid, so if the reveal is replaced by a different transaction the id is different too.</dd>
+      </div>
+    </dl>
+
+    <div class="actions">
+      <a class="btn" href="mint.html">Walk through the mint before you spend anything</a>
     </div>
   </section>
 
   <section class="wrap band" id="systemic">
-    <h2>Risks that are not yours to control</h2>
+    <p class="eyebrow"><span class="num">05</span> Out of your hands</p>
+    <h2>What happens when the software, the company, or the interest goes away.</h2>
+
     <div class="table-scroll">
       <table>
         <caption>What can go wrong further out, and what it would actually do.</caption>
@@ -167,16 +292,59 @@
     </div>
   </section>
 
-  <section class="wrap band">
+  <section class="wrap band" id="guarantee">
+    <p class="eyebrow"><span class="num">06</span> Where the list ends</p>
+    <h2>What ownership actually guarantees.</h2>
+
     <div class="note">
-      <p class="note-title">What ownership guarantees</p>
+      <p class="note-title">The whole guarantee</p>
       <p>That the record is readable, that the rules were applied the same way to everyone, and that nobody can alter your artifact without your key. That is the complete list. It does not include value, liquidity, attention, or a future.</p>
     </div>
-    <div class="actions">
-      <a class="btn" href="faq.html">Questions and answers</a>
-      <a class="btn" href="transparency.html">Transparency</a>
-      <a class="btn btn-quiet" href="verify.html">Verify it yourself</a>
-    </div>
+
+    <ul class="routes">
+      <li>
+        <a href="docs/start/limits.html">
+          <span class="r-who">I want the limits in full</span>
+          <span class="r-title">What PATINA does not do</span>
+          <span class="r-desc">The boundaries of the protocol stated plainly, before you build an expectation on top of one.</span>
+        </a>
+      </li>
+      <li>
+        <a href="docs/using/depth-resets.html">
+          <span class="r-who">I am about to move one</span>
+          <span class="r-title">Every way depth resets</span>
+          <span class="r-desc">The spends that close a stretch, the ones that do not, and how to tell them apart before you sign.</span>
+        </a>
+      </li>
+      <li>
+        <a href="verify.html">
+          <span class="r-who">I do not want to trust you</span>
+          <span class="r-title">Verify it yourself</span>
+          <span class="r-desc">Read depth off your own node, decode a marker by hand, and cross check two indexers.</span>
+        </a>
+      </li>
+      <li>
+        <a href="transparency.html">
+          <span class="r-who">I want the numbers</span>
+          <span class="r-title">Transparency</span>
+          <span class="r-desc">What is published during the founding window, including concentration, and where each figure comes from.</span>
+        </a>
+      </li>
+      <li>
+        <a href="faq.html">
+          <span class="r-who">I still have questions</span>
+          <span class="r-title">Questions and answers</span>
+          <span class="r-desc">The things people ask first, answered without the marketing register.</span>
+        </a>
+      </li>
+      <li>
+        <a href="docs/reference/glossary.html">
+          <span class="r-who">A word here is unfamiliar</span>
+          <span class="r-title">Glossary</span>
+          <span class="r-desc">Carrier, stretch, ring, relic, marker, tier, and the rest, defined once.</span>
+        </a>
+      </li>
+    </ul>
   </section>
 
 </main>
@@ -189,10 +357,18 @@
         <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
       </div>
       <div>
-        <h2>Read</h2>
+        <h2>Understand</h2>
         <ul>
           <li><a href="index.html">Overview</a></li>
-          <li><a href="mint.html">Mint</a></li>
+          <li><a href="depth.html">How depth works</a></li>
+          <li><a href="tiers.html">Tier journey</a></li>
+          <li><a href="firstlight.html">Firstlight Seals</a></li>
+          <li><a href="mint.html">The mint</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Check</h2>
+        <ul>
           <li><a href="protocol.html">Protocol</a></li>
           <li><a href="verify.html">Verify</a></li>
           <li><a href="transparency.html">Transparency</a></li>
@@ -202,11 +378,12 @@
         </ul>
       </div>
       <div>
-        <h2>Source</h2>
+        <h2>Build</h2>
         <ul>
+          <li><a href="docs/index.html">Documentation</a></li>
+          <li><a href="docs/api/endpoints.html">Endpoint reference</a></li>
+          <li><a href="docs/compat/build.html">Build an implementation</a></li>
           <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
-          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
-          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
           <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
         </ul>
       </div>

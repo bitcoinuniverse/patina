@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="patina-mark-title patina-mark-desc">
   <title id="patina-mark-title">PATINA protocol mark</title>
-  <desc id="patina-mark-desc">A ring cross section cut open at the top. Six concentric strata run from a bronze core out to a verdigris rim, one band for each tier the artifact can reach.</desc>
+  <desc id="patina-mark-desc">A ring cross section cut open at the top. Six concentric strata run from a bronze core out to a verdigris rim, one band for each stage of ageing an artifact passes through.</desc>
   <defs>
     <mask id="patina-mark-kerf">
       <rect width="64" height="64" fill="#ffffff"/>
@@ -8,12 +8,12 @@
     </mask>
   </defs>
   <g mask="url(#patina-mark-kerf)" fill="none" stroke-width="2.6" stroke-linecap="butt">
-    <circle cx="32" cy="32" r="28.6" stroke="#3f8f78" stroke-width="1.2"/>
-    <circle cx="32" cy="32" r="25" stroke="#3f9f8c"/>
-    <circle cx="32" cy="32" r="20.5" stroke="#58aa85"/>
-    <circle cx="32" cy="32" r="16" stroke="#74a069"/>
-    <circle cx="32" cy="32" r="11.5" stroke="#a89147"/>
-    <circle cx="32" cy="32" r="7" stroke="#c08a3c"/>
+    <circle cx="32" cy="32" r="28.6" stroke="#52463a" stroke-width="1.2"/>
+    <circle cx="32" cy="32" r="25" stroke="#4ab7a4"/>
+    <circle cx="32" cy="32" r="20.5" stroke="#63b294"/>
+    <circle cx="32" cy="32" r="16" stroke="#8aa472"/>
+    <circle cx="32" cy="32" r="11.5" stroke="#b6a05a"/>
+    <circle cx="32" cy="32" r="7" stroke="#c9954f"/>
   </g>
-  <circle cx="32" cy="32" r="3" fill="#c39a58"/>
+  <circle cx="32" cy="32" r="3" fill="#e0a463"/>
 </svg>

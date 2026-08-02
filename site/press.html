@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Press and brand, PATINA</title>
-<meta name="description" content="Brand assets for PATINA: wordmark, protocol mark, favicon and social cards as SVG, a short description, a longer description, colour values and usage rules.">
+<meta name="description" content="Brand assets for PATINA: wordmark, protocol mark, favicon and social cards as SVG, a short description, a longer description, the palette in hex, and the rules for using any of it.">
 <link rel="canonical" href="https://bitcoinuniverse.github.io/patina/press.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="PATINA">
 <meta property="og:title" content="Press and brand, PATINA">
-<meta property="og:description" content="Wordmark, protocol mark, favicon and social cards, plus a short and a long description and the rules for using them.">
+<meta property="og:description" content="Wordmark, protocol mark, favicon and social cards, plus a short and a long description, the palette in hex, and the rules for using them.">
 <meta property="og:url" content="https://bitcoinuniverse.github.io/patina/press.html">
 <meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
 <meta property="og:image:alt" content="The PATINA wordmark beside a ring cross section cut open at the top.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Press and brand, PATINA">
-<meta name="twitter:description" content="Wordmark, protocol mark, favicon and social cards, plus descriptions and usage rules.">
+<meta name="twitter:description" content="Wordmark, protocol mark, favicon and social cards, plus descriptions, the palette in hex, and usage rules.">
 <meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-default.svg">
-<meta name="theme-color" content="#0e1211">
+<meta name="theme-color" content="#14110d">
 <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
 <link rel="manifest" href="manifest.webmanifest">
@@ -41,20 +41,25 @@
       </svg>
       <span class="brand-name">Patina</span>
     </a>
-    <nav class="site-nav" aria-label="Primary">
+    <nav class="site-nav" id="site-nav" data-site-nav aria-label="Primary">
       <ul>
         <li><a href="index.html">Overview</a></li>
+        <li><a href="depth.html">Depth</a></li>
+        <li><a href="tiers.html">Tiers</a></li>
+        <li><a href="firstlight.html">Firstlight</a></li>
         <li><a href="mint.html">Mint</a></li>
         <li><a href="protocol.html">Protocol</a></li>
         <li><a href="verify.html">Verify</a></li>
-        <li><a href="transparency.html">Transparency</a></li>
         <li><a href="risks.html">Risks</a></li>
-        <li><a href="faq.html">Questions</a></li>
-        <li><a href="press.html" aria-current="page">Press</a></li>
+        <li><a class="to-docs" href="docs/index.html">Docs</a></li>
+        <li class="nav-more"><a href="transparency.html">Transparency</a></li>
+        <li class="nav-more"><a href="faq.html">Questions</a></li>
+        <li class="nav-more"><a href="press.html" aria-current="page">Press</a></li>
       </ul>
     </nav>
     <div class="header-tools">
       <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+      <button type="button" class="btn btn-quiet btn-small menu-toggle" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open the menu">Menu</button>
     </div>
   </div>
 </header>
@@ -62,17 +67,57 @@
 <main id="main">
 
   <section class="hero wrap">
-    <p class="eyebrow">Press and brand</p>
-    <h1>Assets and words you can reuse</h1>
-    <p class="lede">Everything here is free to use when writing about PATINA. The only rule that really matters is not to imply we endorsed something we did not.</p>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Press and brand</p>
+        <h1>Assets and words you can reuse.</h1>
+        <p class="lede">Everything on this page is free to use when you write about PATINA. The one rule that really matters is not to imply we endorsed something we did not.</p>
+        <p>The descriptions below are the ones we would write ourselves, so copying them costs you nothing and gets the facts right. The files are hand authored SVG and need no licence, no attribution line and no email to us.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#copy">Take a description</a>
+          <a class="btn" href="#assets">Take the files</a>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="plate-title">
+          <h2>If you are on deadline</h2>
+          <span class="pill">Five lines</span>
+        </div>
+        <dl class="kv">
+          <div>
+            <dt>What it is</dt>
+            <dd>A Bitcoin protocol. An artifact points at one unspent output, and its depth is the number of blocks that output has stayed unspent.</dd>
+          </div>
+          <div>
+            <dt>The unit</dt>
+            <dd>Blocks, never days. Any figure in days is an estimate at ten minutes per block.</dd>
+          </div>
+          <div>
+            <dt>The reset</dt>
+            <dd>Spending the carrier ends the stretch and depth returns to zero, including when the artifact is sold.</dd>
+          </div>
+          <div>
+            <dt>The economics</dt>
+            <dd>No mint price, no supply cap, no team allocation, no reserve.</dd>
+          </div>
+          <div>
+            <dt>Who runs it</dt>
+            <dd>Built by Bitcoin Universe. Nobody, including us, can pause the protocol, freeze an artifact or reverse a spend.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
   </section>
 
   <section class="wrap band" id="copy">
-    <h2>Descriptions</h2>
+    <p class="eyebrow"><span class="num">01</span> Words to lift</p>
+    <h2>Two descriptions, written to be pasted.</h2>
+    <p class="lede">One paragraph for a caption or a link preview, and a longer one for a piece that has room to explain the mechanism. Both are accurate as written, so shortening them is where mistakes usually creep in.</p>
 
     <h3>One paragraph</h3>
     <div class="code">
-      <div class="code-head"><span>short description</span><button type="button" class="btn btn-small" data-copy="desc-short" hidden>Copy</button></div>
+      <div class="code-head"><span>short description</span><button type="button" class="btn btn-quiet btn-small" data-copy="desc-short" hidden>Copy</button></div>
       <pre id="desc-short">PATINA is a Bitcoin protocol that marks one unspent output as the carrier of an
 artifact. The artifact's depth is simply the number of blocks that output has
 stayed unspent, so it deepens on its own and resets to zero the moment the
@@ -84,9 +129,9 @@ with at least 100 000 sats of the minter's own bitcoin sealed inside as an
 endowment that stays theirs.</pre>
     </div>
 
-    <h3>Longer</h3>
+    <h3>The longer one</h3>
     <div class="code">
-      <div class="code-head"><span>long description</span><button type="button" class="btn btn-small" data-copy="desc-long" hidden>Copy</button></div>
+      <div class="code-head"><span>long description</span><button type="button" class="btn btn-quiet btn-small" data-copy="desc-long" hidden>Copy</button></div>
       <pre id="desc-long">PATINA is a Bitcoin protocol for artifacts that measure one thing: how long an
 output has been left alone.
 
@@ -126,18 +171,34 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
     </div>
 
     <h3>Names and spelling</h3>
-    <ul>
-      <li>The protocol is <strong>PATINA</strong> in running text, in capitals.</li>
-      <li>The genesis asset is <strong>Firstlight Seals</strong>, one word for Firstlight.</li>
-      <li>The tiers are Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder.</li>
-      <li>Depth is measured in blocks, never in days. Days are always an estimate.</li>
-      <li>There is no version number in the name. Please do not add one.</li>
-    </ul>
+    <dl class="kv">
+      <div>
+        <dt>The protocol</dt>
+        <dd><strong>PATINA</strong> in running text, in capitals.</dd>
+      </div>
+      <div>
+        <dt>The genesis asset</dt>
+        <dd><strong>Firstlight Seals</strong>, one word for Firstlight.</dd>
+      </div>
+      <div>
+        <dt>The tiers</dt>
+        <dd>Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder.</dd>
+      </div>
+      <div>
+        <dt>Depth</dt>
+        <dd>Measured in blocks, never in days. Days are always an estimate.</dd>
+      </div>
+      <div>
+        <dt>Release numbers</dt>
+        <dd>There is no version number in the name. Please do not add one.</dd>
+      </div>
+    </dl>
   </section>
 
   <section class="wrap band" id="assets">
-    <h2>Assets</h2>
-    <p class="prose">Every file is hand authored SVG. They scale to any size and stay sharp in print.</p>
+    <p class="eyebrow"><span class="num">02</span> The files</p>
+    <h2>Seven files, all of them hand authored SVG.</h2>
+    <p class="lede">They scale to any size and stay sharp in print. There is no binary asset anywhere in this kit and no build step behind it.</p>
 
     <div class="asset-row">
       <div class="asset-preview"><img src="assets/brand/wordmark.svg" alt="The PATINA wordmark, six monoline capital letters."></div>
@@ -152,7 +213,7 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
       <div class="asset-preview"><img src="assets/brand/mark.svg" alt="The PATINA protocol mark, six concentric rings with a wedge cut out at the top."></div>
       <div class="asset-meta">
         <h3>Protocol mark</h3>
-        <p>A ring cross section cut open at the top. Six strata run from a bronze core out to a verdigris rim, one band per tier the ladder can reach. The wedge is what makes it a cross section rather than a target.</p>
+        <p>A ring cross section cut open at the top. Six strata run from a bronze core out to a verdigris rim, the same direction the tier ramp travels. The wedge is what makes it a cross section rather than a target.</p>
         <p><a href="assets/brand/mark.svg">assets/brand/mark.svg</a></p>
       </div>
     </div>
@@ -170,8 +231,8 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
       <div class="asset-preview"><img src="assets/brand/og-default.svg" alt="Social card showing the PATINA wordmark and a ring cross section." width="200"></div>
       <div class="asset-meta">
         <h3>Social cards</h3>
-        <p>Three cards at 1200 by 630: a general one, one for the mint, one for the protocol pages.</p>
-        <p><a href="assets/brand/og-default.svg">og-default.svg</a>, <a href="assets/brand/og-mint.svg">og-mint.svg</a>, <a href="assets/brand/og-protocol.svg">og-protocol.svg</a></p>
+        <p>Eight cards at 1200 by 630, one per subject. Each is generated from the same colour tokens as the site by <code>site/tools/build-cards.mjs</code>, so a card and the page it represents can never fall out of step.</p>
+        <p><a href="assets/brand/og-default.svg">og-default.svg</a>, <a href="assets/brand/og-depth.svg">og-depth.svg</a>, <a href="assets/brand/og-tiers.svg">og-tiers.svg</a>, <a href="assets/brand/og-firstlight.svg">og-firstlight.svg</a>, <a href="assets/brand/og-mint.svg">og-mint.svg</a>, <a href="assets/brand/og-protocol.svg">og-protocol.svg</a>, <a href="assets/brand/og-verify.svg">og-verify.svg</a>, <a href="assets/brand/og-docs.svg">og-docs.svg</a></p>
       </div>
     </div>
 
@@ -182,29 +243,95 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
   </section>
 
   <section class="wrap band" id="colour">
-    <h2>Colour</h2>
+    <p class="eyebrow"><span class="num">03</span> Colour and type</p>
+    <h2>The palette is a set of tokens, not a mood board.</h2>
+    <p class="lede">Five interface colours and one eight step ramp, one stop per tier. Every value below is read out of <code>assets/site.css</code>, and every value has a dark reading and a light one because the light theme is designed rather than inverted.</p>
+
+    <h3>Interface colours</h3>
+    <ul class="swatch-row">
+      <li style="--tier-ink: var(--bg)"><span class="chipfill"></span><span class="chipname">bg</span></li>
+      <li style="--tier-ink: var(--ink)"><span class="chipfill"></span><span class="chipname">ink</span></li>
+      <li style="--tier-ink: var(--bronze)"><span class="chipfill"></span><span class="chipname">bronze</span></li>
+      <li style="--tier-ink: var(--verdigris)"><span class="chipfill"></span><span class="chipname">verdigris</span></li>
+      <li style="--tier-ink: var(--umber)"><span class="chipfill"></span><span class="chipname">umber</span></li>
+    </ul>
+
     <div class="table-scroll">
       <table>
-        <caption>The palette. The tier ramp runs from raw metal to green, one stop per tier.</caption>
-        <thead><tr><th scope="col">Role</th><th scope="col" class="mono">Dark</th><th scope="col" class="mono">Light</th></tr></thead>
+        <caption>The five interface colours, with the value each theme resolves to.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Token</th>
+            <th scope="col">Where it lands</th>
+            <th scope="col" class="mono">Dark</th>
+            <th scope="col" class="mono">Light</th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><th scope="row">Ground</th><td class="mono">#0e1211</td><td class="mono">#f2efe7</td></tr>
-          <tr><th scope="row">Ink</th><td class="mono">#ece7dd</td><td class="mono">#1c211f</td></tr>
-          <tr><th scope="row">Bronze</th><td class="mono">#c98f3c</td><td class="mono">#7a5312</td></tr>
-          <tr><th scope="row">Verdigris</th><td class="mono">#4fb094</td><td class="mono">#1e6b57</td></tr>
-          <tr><th scope="row">Tier 0, Raw</th><td class="mono">#8f8578</td><td class="mono">#6f675c</td></tr>
-          <tr><th scope="row">Tier 3, Verdigris</th><td class="mono">#a89147</td><td class="mono">#7b672a</td></tr>
-          <tr><th scope="row">Tier 7, Elder</th><td class="mono">#3f9f8c</td><td class="mono">#1f6f5f</td></tr>
+          <tr><th scope="row" class="mono">bg</th><td>The page ground everything sits on.</td><td class="mono">#14110d</td><td class="mono">#f3eee3</td></tr>
+          <tr><th scope="row" class="mono">ink</th><td>Body text and headings.</td><td class="mono">#f0e8dc</td><td class="mono">#1d1811</td></tr>
+          <tr><th scope="row" class="mono">bronze</th><td>Links, accents, the core of the mark.</td><td class="mono">#e0a463</td><td class="mono">#86500f</td></tr>
+          <tr><th scope="row" class="mono">verdigris</th><td>Live state, hover, anything that means kept.</td><td class="mono">#6cc7ab</td><td class="mono">#0e6250</td></tr>
+          <tr><th scope="row" class="mono">umber</th><td>Warnings and anything that means lost.</td><td class="mono">#c08658</td><td class="mono">#7c4a22</td></tr>
         </tbody>
       </table>
     </div>
+
+    <h3>The tier ramp</h3>
+    <p>Cold raw metal at the bottom, cast bronze and earth through the middle, verdigris at the top. The swatches take their colour from the stylesheet, so what you see here is what the site draws.</p>
+
+    <ul class="swatch-row">
+      <li data-tier="0"><span class="chipfill"></span><span class="chipname">t0 Raw</span></li>
+      <li data-tier="1"><span class="chipfill"></span><span class="chipname">t1 Sheen</span></li>
+      <li data-tier="2"><span class="chipfill"></span><span class="chipname">t2 Cast</span></li>
+      <li data-tier="3"><span class="chipfill"></span><span class="chipname">t3 Verdigris</span></li>
+      <li data-tier="4"><span class="chipfill"></span><span class="chipname">t4 Umber</span></li>
+      <li data-tier="5"><span class="chipfill"></span><span class="chipname">t5 Bronze</span></li>
+      <li data-tier="6"><span class="chipfill"></span><span class="chipname">t6 Oxide</span></li>
+      <li data-tier="7"><span class="chipfill"></span><span class="chipname">t7 Elder</span></li>
+    </ul>
+
+    <div class="table-scroll">
+      <table>
+        <caption>The tier ramp, one stop per tier, in the order the ladder climbs.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Token</th>
+            <th scope="col">Tier</th>
+            <th scope="col" class="mono">Dark</th>
+            <th scope="col" class="mono">Light</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" class="mono">t0</th><td>Raw</td><td class="mono">#9a9086</td><td class="mono">#5b544c</td></tr>
+          <tr><th scope="row" class="mono">t1</th><td>Sheen</td><td class="mono">#d8b57e</td><td class="mono">#8a6117</td></tr>
+          <tr><th scope="row" class="mono">t2</th><td>Cast</td><td class="mono">#c9954f</td><td class="mono">#7d5410</td></tr>
+          <tr><th scope="row" class="mono">t3</th><td>Verdigris</td><td class="mono">#b6a05a</td><td class="mono">#695a17</td></tr>
+          <tr><th scope="row" class="mono">t4</th><td>Umber</td><td class="mono">#a89464</td><td class="mono">#61511d</td></tr>
+          <tr><th scope="row" class="mono">t5</th><td>Bronze</td><td class="mono">#8aa472</td><td class="mono">#435f33</td></tr>
+          <tr><th scope="row" class="mono">t6</th><td>Oxide</td><td class="mono">#63b294</td><td class="mono">#1c6a53</td></tr>
+          <tr><th scope="row" class="mono">t7</th><td>Elder</td><td class="mono">#4ab7a4</td><td class="mono">#135f4d</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p class="note-title">Two things that trip people up</p>
+      <p>The tier named Bronze and the interface colour named bronze are different values. The interface colour runs links and accents, the tier is a stop on the ramp at 52 560 blocks.</p>
+      <p>Three tier names also read as colour words, so Verdigris, Umber and Bronze can mean either a depth band or a swatch. In running text, say tier when you mean the band.</p>
+    </div>
+
+    <h3>Type</h3>
     <p class="small faint">Typography is a system serif for headings, the system interface font for body text and a system monospace for anything numeric. No web fonts are loaded anywhere on this site, so there is no font file to license or ship.</p>
   </section>
 
   <section class="wrap band" id="rules">
-    <h2>Usage rules</h2>
+    <p class="eyebrow"><span class="num">04</span> Usage rules</p>
+    <h2>Use the marks freely. Do not use them to borrow our name.</h2>
+    <p class="lede">Critical coverage needs no permission from anyone here. The lines below exist to stop a reader mistaking your project for ours, and nothing else.</p>
+
     <div class="grid grid-2">
-      <div class="card">
+      <div class="plate">
         <h3>Please do</h3>
         <ul>
           <li>Use the assets as they are, at any size, in any medium.</li>
@@ -214,7 +341,7 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
           <li>Say what you actually think. Critical coverage does not need our permission.</li>
         </ul>
       </div>
-      <div class="card">
+      <div class="plate">
         <h3>Please do not</h3>
         <ul>
           <li>Stretch, skew, rotate or add effects to the wordmark or the mark.</li>
@@ -226,6 +353,7 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
         </ul>
       </div>
     </div>
+
     <div class="note">
       <p class="note-title">Facts worth checking before you publish</p>
       <ul>
@@ -238,9 +366,78 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
     </div>
   </section>
 
+  <section class="wrap band" id="checks">
+    <p class="eyebrow"><span class="num">05</span> Before you file</p>
+    <h2>Where to check a claim rather than trust one.</h2>
+    <p class="lede">Each of these pages exists so a sentence in your piece can be sourced to something other than a press release.</p>
+
+    <ul class="routes">
+      <li>
+        <a href="protocol.html">
+          <span class="r-who">I need the mechanism</span>
+          <span class="r-title">Protocol</span>
+          <span class="r-desc">Marker byte layout, the commit leaf, successor selection, rings, reason codes and reorg behaviour.</span>
+        </a>
+      </li>
+      <li>
+        <a href="verify.html">
+          <span class="r-who">I need to check a number</span>
+          <span class="r-title">Verify</span>
+          <span class="r-desc">Read depth off your own node, decode a marker by hand, and cross check two indexers against each other.</span>
+        </a>
+      </li>
+      <li>
+        <a href="risks.html">
+          <span class="r-who">I want the downside</span>
+          <span class="r-title">Risks</span>
+          <span class="r-desc">Every way PATINA can disappoint you, gathered on one page instead of buried in a footnote.</span>
+        </a>
+      </li>
+      <li>
+        <a href="transparency.html">
+          <span class="r-who">I am writing about control</span>
+          <span class="r-title">Transparency</span>
+          <span class="r-desc">Supply rules, zero allocations, who holds what authority, and what the kill switches can and cannot reach.</span>
+        </a>
+      </li>
+      <li>
+        <a href="tiers.html">
+          <span class="r-who">I need the tier names</span>
+          <span class="r-title">Tiers</span>
+          <span class="r-desc">Every tier, with its material, its threshold in blocks and the arithmetic behind it.</span>
+        </a>
+      </li>
+      <li>
+        <a href="firstlight.html">
+          <span class="r-who">I am covering the mint</span>
+          <span class="r-title">Firstlight Seals</span>
+          <span class="r-desc">What the founding cohort is, what a claimer provides, and what closes when the window closes.</span>
+        </a>
+      </li>
+      <li>
+        <a href="faq.html">
+          <span class="r-who">I want the short answers</span>
+          <span class="r-title">Questions</span>
+          <span class="r-desc">Plain answers to what comes up most, including what ownership does not guarantee.</span>
+        </a>
+      </li>
+      <li>
+        <a href="docs/reference/glossary.html">
+          <span class="r-who">I need a definition</span>
+          <span class="r-title">Glossary</span>
+          <span class="r-desc">Carrier, stretch, ring, relic and the rest of the vocabulary, defined once and used consistently.</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
   <section class="wrap band" id="contact">
-    <h2>Contact</h2>
-    <p class="prose">Brand and press questions go to <a href="mailto:legal@bitcoinuniverse.io" data-config="pressEmail">legal@bitcoinuniverse.io</a>. Technical questions are better as an issue on the <a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">protocol repository</a>, where the answer is public and stays findable.</p>
+    <p class="eyebrow"><span class="num">06</span> Contact</p>
+    <h2>Where to ask, and which answers stay public.</h2>
+    <div class="prose">
+      <p>Brand and press questions go to <a href="mailto:legal@bitcoinuniverse.io" data-config="pressEmail">legal@bitcoinuniverse.io</a>. Technical questions are better as an issue on the <a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">protocol repository</a>, where the answer is public and stays findable.</p>
+      <p>If you are quoting a live figure, ask an indexer rather than asking us. <a href="docs/api/endpoints.html">The endpoint reference</a> shows every request and response shape.</p>
+    </div>
   </section>
 
 </main>
@@ -253,10 +450,18 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
         <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
       </div>
       <div>
-        <h2>Read</h2>
+        <h2>Understand</h2>
         <ul>
           <li><a href="index.html">Overview</a></li>
-          <li><a href="mint.html">Mint</a></li>
+          <li><a href="depth.html">How depth works</a></li>
+          <li><a href="tiers.html">Tier journey</a></li>
+          <li><a href="firstlight.html">Firstlight Seals</a></li>
+          <li><a href="mint.html">The mint</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Check</h2>
+        <ul>
           <li><a href="protocol.html">Protocol</a></li>
           <li><a href="verify.html">Verify</a></li>
           <li><a href="transparency.html">Transparency</a></li>
@@ -266,11 +471,12 @@ anyone else can pause the protocol, freeze an artifact or reverse a spend.</pre>
         </ul>
       </div>
       <div>
-        <h2>Source</h2>
+        <h2>Build</h2>
         <ul>
+          <li><a href="docs/index.html">Documentation</a></li>
+          <li><a href="docs/api/endpoints.html">Endpoint reference</a></li>
+          <li><a href="docs/compat/build.html">Build an implementation</a></li>
           <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
-          <li><a data-config-href="specUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/docs/protocol">Specification</a></li>
-          <li><a data-config-href="vectorsUrl" href="https://github.com/bitcoinuniverse/patina/tree/main/vectors">Test vectors</a></li>
           <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
         </ul>
       </div>

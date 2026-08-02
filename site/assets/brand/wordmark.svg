@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 342 96" width="342" height="96" role="img" aria-labelledby="patina-wordmark-title">
   <title id="patina-wordmark-title">PATINA</title>
   <style>
-    :root { color: #1c211f; }
-    @media (prefers-color-scheme: dark) { :root { color: #ece7dd; } }
+    :root { color: #1d1811; }
+    @media (prefers-color-scheme: dark) { :root { color: #f0e8dc; } }
   </style>
   <g transform="translate(10,0)" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="butt" stroke-linejoin="miter">
     <path d="M0 80 L0 16 L22 16 A16 16 0 0 1 22 48 L0 48"/>

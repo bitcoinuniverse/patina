@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Transferring an artifact | PATINA docs</title>
 <meta name="description" content="How to move a PATINA artifact to a new carrier or a new owner, and why every transfer resets depth to zero.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/using/transfer.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Transferring an artifact, PATINA documentation">
+<meta property="og:description" content="How to move a PATINA artifact to a new carrier or a new owner, and why every transfer resets depth to zero.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/using/transfer.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta property="og:image:alt" content="Two transactions on a block height line with a gap of at least 144 blocks between them.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Transferring an artifact, PATINA documentation">
+<meta name="twitter:description" content="How to move a PATINA artifact to a new carrier or a new owner, and why every transfer resets depth to zero.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,11 +31,101 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
       <h1>Transferring an artifact</h1>
       <p class="lede">A transfer is a spend, and a spend resets depth. Read this before you agree a price.</p>
+
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>Why the artifact id, the founding status and every ring survive a move while the depth and the tier
+            restart at zero.</li>
+          <li>The 10000 sat successor minimum, and what happens to an artifact when no output in the transaction
+            clears it.</li>
+          <li>How to write a KEEP marker that sends the artifact to the output you meant.</li>
+          <li>Which mistakes hand the artifact to the lowest index eligible output instead of the buyer.</li>
+          <li>Why one transaction cannot split a bundle, and what it takes instead.</li>
+        </ul>
+      </div>
 
       <div class="warn">
         <span class="lbl">The reset is not avoidable</span>
@@ -29,10 +135,13 @@
       </div>
 
       <h2>What survives a transfer</h2>
+      <p>Read the right column as the buyer's opening position in the block their output confirms in. Nothing in
+        the record is erased. What starts over is the current stretch: the depth, the tier, and whatever the new
+        carrier holds.</p>
       <div class="tablewrap">
         <table>
           <caption>Before and after a transfer.</caption>
-          <thead><tr><th>Property</th><th>After the move</th></tr></thead>
+          <thead><tr><th scope="col">Property</th><th scope="col">After the move</th></tr></thead>
           <tbody>
             <tr><td>Artifact id</td><td>Unchanged, forever</td></tr>
             <tr><td>Founding status</td><td>Unchanged. A Firstlight Seal stays a Firstlight Seal.</td></tr>
@@ -40,7 +149,7 @@
             <tr><td>Birth fields</td><td>Unchanged</td></tr>
             <tr><td>Depth</td><td>Zero, counting from the new carrier's confirmation height</td></tr>
             <tr><td>Tier</td><td>Raw</td></tr>
-            <tr><td>Endowment</td><td>Whatever the new carrier holds, which must clear the minimum for a successor</td></tr>
+            <tr><td>Endowment</td><td>Unchanged. <code>endowment_sats</code> is the value recorded at birth. What the new carrier holds is <code>carrier.value</code>, and it must be at least 10000 sats.</td></tr>
           </tbody>
         </table>
       </div>
@@ -79,10 +188,12 @@ scriptPubKey  11 bytes  6a0950544e410102010002</code></pre>
       </ol>
 
       <h2>Ways a transfer goes wrong</h2>
+      <p>Each of these transactions confirms normally and pays everyone what they expected. What goes wrong is
+        where the artifact lands afterwards, or whether it survives the move at all.</p>
       <div class="tablewrap">
         <table>
           <caption>Failure modes when moving an artifact.</caption>
-          <thead><tr><th>What happened</th><th>Outcome</th></tr></thead>
+          <thead><tr><th scope="col">What happened</th><th scope="col">Outcome</th></tr></thead>
           <tbody>
             <tr><td>Every output is below 10000 sats</td><td>No eligible successor. The artifact becomes a <code>RELIC</code>, permanently.</td></tr>
             <tr><td>The only outputs are OP_RETURN</td><td>Same. Relic.</td></tr>
@@ -104,7 +215,8 @@ scriptPubKey  11 bytes  6a0950544e410102010002</code></pre>
           the carrier, which preserves depth. The buyer then has to trust that you kept no copy. That trust is
           unverifiable, and the protocol cannot see the difference.</li>
         <li><strong>Do not price the depth you are about to destroy.</strong> Anyone buying a deep artifact through
-          an on chain move is buying rings and an id, not depth. Say so plainly in the sale.</li>
+          an on chain move is buying rings and an id, not depth. Say so plainly in the sale. The public
+          <a href="../../risks.html">risks page</a> tells the buyer the same thing.</li>
       </ul>
 
       <h2>Bundles</h2>

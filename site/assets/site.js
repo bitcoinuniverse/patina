@@ -1,15 +1,20 @@
 /*
- * PATINA site behaviour.
+ * PATINA public site behaviour.
  *
  * Classic script, no modules, no dependencies, so the pages also work when
  * they are opened straight from disk. Loaded after assets/config.js.
  *
+ * Every piece of content lives in the HTML. This file adds state, never
+ * meaning: it selects, highlights, counts and connects. A page with scripts
+ * turned off loses the controls and keeps the words.
+ *
  * Responsibilities:
- *   1. theme toggle
+ *   1. theme choice and the mobile navigation drawer
  *   2. configuration driven links and text
- *   3. live data panels, with a timeout and an honest failure state
- *   4. the hold since simulator on the homepage
- *   5. copy buttons on code blocks
+ *   3. live indexer panels, with a timeout and an honest failure state
+ *   4. the artifact model and every view that reads from it
+ *   5. the anatomy selector and the mint wizard
+ *   6. copy buttons
  */
 (function () {
   'use strict';
@@ -28,6 +33,23 @@
 
   function $$(selector, root) {
     return Array.prototype.slice.call((root || document).querySelectorAll(selector));
+  }
+
+  function el(tag, attrs, kids) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (key) {
+        if (key === 'text') {
+          node.textContent = attrs[key];
+        } else if (attrs[key] !== null && attrs[key] !== undefined) {
+          node.setAttribute(key, attrs[key]);
+        }
+      });
+    }
+    (kids || []).forEach(function (kid) {
+      node.appendChild(kid);
+    });
+    return node;
   }
 
   function groupDigits(value) {
@@ -71,7 +93,10 @@
     return value;
   }
 
-  /* Blocks to a plain duration, always hedged because 10 minutes is nominal. */
+  /*
+   * Blocks to a plain duration. Always hedged, because ten minutes a block is
+   * the nominal target and never a promise. Depth itself is exact.
+   */
   function blocksToDuration(blocks) {
     if (!isFinite(blocks) || blocks < 0) {
       return '';
@@ -111,6 +136,10 @@
       }
     }
     return null;
+  }
+
+  function prefersReducedMotion() {
+    return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
   /* ------------------------------------------------------------- theming */
@@ -162,6 +191,56 @@
         query.addEventListener('change', onChange);
       } else if (query.addListener) {
         query.addListener(onChange);
+      }
+    }
+  }
+
+  /* -------------------------------------------------------- mobile drawer */
+
+  function initMenu() {
+    var toggle = $('[data-menu-toggle]');
+    var nav = $('[data-site-nav]');
+    if (!toggle || !nav) {
+      return;
+    }
+
+    function setOpen(open) {
+      nav.setAttribute('data-open', open ? 'true' : 'false');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close the menu' : 'Open the menu');
+    }
+
+    setOpen(false);
+
+    toggle.addEventListener('click', function () {
+      setOpen(nav.getAttribute('data-open') !== 'true');
+    });
+
+    nav.addEventListener('click', function (event) {
+      if (event.target && event.target.closest && event.target.closest('a')) {
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && nav.getAttribute('data-open') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    /* A drawer left open while the layout grows back to the wide nav is a trap. */
+    if (window.matchMedia) {
+      var wide = window.matchMedia('(min-width: 66.01rem)');
+      var onWide = function (event) {
+        if (event.matches) {
+          setOpen(false);
+        }
+      };
+      if (wide.addEventListener) {
+        wide.addEventListener('change', onWide);
+      } else if (wide.addListener) {
+        wide.addListener(onWide);
       }
     }
   }
@@ -237,15 +316,13 @@
     if (!usingOverride()) {
       return;
     }
-    var host = $('[data-override-banner]');
-    if (!host) {
-      return;
-    }
-    host.hidden = false;
-    var slot = $('[data-override-url]', host);
-    if (slot) {
-      slot.textContent = resolveIndexerBase();
-    }
+    $$('[data-override-banner]').forEach(function (host) {
+      host.hidden = false;
+      var slot = $('[data-override-url]', host);
+      if (slot) {
+        slot.textContent = resolveIndexerBase();
+      }
+    });
   }
 
   function fetchJson(path) {
@@ -377,7 +454,6 @@
     ];
   }
 
-  /* Panel specific rendering that goes beyond filling fields. */
   var renderers = {
     window: function (panel, data) {
       renderWindowState(data);
@@ -433,19 +509,28 @@
   /* ----------------------------------------------------- founding window */
 
   function renderWindowState(data) {
-    var note = $('[data-window-note]');
-    var cta = $('[data-mint-cta]');
-    if (!note) {
+    var notes = $$('[data-window-note]');
+    var ctas = $$('[data-mint-cta]');
+    if (!notes.length) {
       return;
     }
 
+    var appName = CONFIG.appName || 'app';
+
+    function setCta(label) {
+      ctas.forEach(function (cta) {
+        cta.textContent = label;
+      });
+    }
+
     if (!data) {
-      note.textContent =
-        'This page cannot tell you whether the founding window is open, because it could not read a PATINA indexer. ' +
-        'The Bitcoin Universe app checks the window before it builds anything, and refuses to build outside it.';
-      if (cta) {
-        cta.textContent = 'Open PATINA in the ' + (CONFIG.appName || 'app');
-      }
+      notes.forEach(function (note) {
+        note.textContent =
+          'This page cannot tell you whether the founding window is open, because it could not read a PATINA indexer. ' +
+          'The opening height has not been announced here, and this page will not invent one. ' +
+          'The Bitcoin Universe app checks the window before it builds anything, and refuses to build outside it.';
+      });
+      setCta('Open PATINA in the ' + appName);
       return;
     }
 
@@ -473,9 +558,7 @@
         'The commit window has closed. Only reveals of commits that were made inside the window are still accepted, and only until height ' +
         (typeof data.grace_end === 'number' ? groupDigits(data.grace_end) : 'the end of the grace period') +
         '. No new founding commit can qualify. Nothing new can be minted into the founding cohort.';
-      if (cta) {
-        cta.textContent = 'Reveal a founding commit in the ' + (CONFIG.appName || 'app');
-      }
+      setCta('Reveal a founding commit in the ' + appName);
     } else if (isPending) {
       text = 'The founding window has not opened yet, so nothing can be minted right now.';
       if (typeof data.h_open === 'number') {
@@ -484,34 +567,28 @@
       if (typeof untilOpen === 'number') {
         text += ' That is ' + groupDigits(untilOpen) + ' blocks away, ' + blocksToDuration(untilOpen) + ' at ten minutes per block.';
       }
-      if (cta) {
-        cta.textContent = 'Open PATINA in the ' + (CONFIG.appName || 'app');
-      }
+      setCta('Open PATINA in the ' + appName);
     } else if (isClosed) {
       text = 'The founding window is closed. The Firstlight Seals cannot be minted any more. Anything offered as a new Firstlight Seal is not one.';
-      if (cta) {
-        cta.textContent = 'Open PATINA in the ' + (CONFIG.appName || 'app');
-      }
+      setCta('Open PATINA in the ' + appName);
     } else if (isOpen) {
       text = 'The founding window is open.';
       if (typeof remaining === 'number') {
         text += ' ' + groupDigits(remaining) + ' blocks remain, ' + blocksToDuration(remaining) + ' at ten minutes per block.';
       }
       text += ' A commit must be at least ' + PROTOCOL.commitMinAge + ' blocks old before its reveal, so leave time for that.';
-      if (cta) {
-        cta.textContent = 'Start a Firstlight claim in the ' + (CONFIG.appName || 'app');
-      }
+      setCta('Start a Firstlight claim in the ' + appName);
     } else {
       text =
         'The connected indexer reports the window state as "' +
         String(data.state) +
         '". This page does not guess at states it does not recognise. Treat the app as the check that matters.';
-      if (cta) {
-        cta.textContent = 'Open PATINA in the ' + (CONFIG.appName || 'app');
-      }
+      setCta('Open PATINA in the ' + appName);
     }
 
-    note.textContent = text;
+    notes.forEach(function (note) {
+      note.textContent = text;
+    });
   }
 
   /* ------------------------------------------------ concentration figures */
@@ -544,42 +621,28 @@
       return;
     }
 
-    var wrap = document.createElement('div');
-    wrap.className = 'table-scroll';
-    var table = document.createElement('table');
-    var caption = document.createElement('caption');
-    caption.textContent = 'Concentration as reported by the connected indexer.';
-    table.appendChild(caption);
+    var wrap = el('div', { class: 'table-scroll' });
+    var table = el('table');
+    table.appendChild(el('caption', { text: 'Concentration as reported by the connected indexer.' }));
 
-    var thead = document.createElement('thead');
-    var headRow = document.createElement('tr');
+    var headRow = el('tr');
     ['Measure', 'Value'].forEach(function (label, index) {
-      var th = document.createElement('th');
-      th.setAttribute('scope', 'col');
-      if (index === 1) {
-        th.className = 'num';
-      }
-      th.textContent = label;
-      headRow.appendChild(th);
+      headRow.appendChild(el('th', { scope: 'col', class: index === 1 ? 'num' : null, text: label }));
     });
-    thead.appendChild(headRow);
-    table.appendChild(thead);
+    table.appendChild(el('thead', null, [headRow]));
 
-    var tbody = document.createElement('tbody');
+    var tbody = el('tbody');
     Object.keys(block).forEach(function (key) {
       var value = block[key];
       if (value === null || typeof value === 'object') {
         return;
       }
-      var row = document.createElement('tr');
-      var th = document.createElement('th');
-      th.setAttribute('scope', 'row');
-      th.textContent = humanKey(key);
-      var td = document.createElement('td');
-      td.className = 'num';
-      td.textContent = typeof value === 'number' || /^[0-9]+$/.test(String(value)) ? groupDigits(value) : String(value);
-      row.appendChild(th);
-      row.appendChild(td);
+      var row = el('tr');
+      row.appendChild(el('th', { scope: 'row', text: humanKey(key) }));
+      row.appendChild(el('td', {
+        class: 'num',
+        text: typeof value === 'number' || /^[0-9]+$/.test(String(value)) ? groupDigits(value) : String(value)
+      }));
       tbody.appendChild(row);
     });
     table.appendChild(tbody);
@@ -587,197 +650,783 @@
     host.appendChild(wrap);
   }
 
-  /* ---------------------------------------------------------- simulator */
+  /* ---------------------------------------------------- the artifact model */
 
-  var RING_MIN = 18;
-  var RING_MAX = 142;
+  /*
+   * One simulated artifact, shared by every view on the page. It holds the
+   * current stretch and the rings that earlier stretches left behind, which is
+   * exactly the distinction the site has to make unmistakable.
+   */
+  function createArtifact() {
+    var listeners = [];
+    var state = {
+      depth: 0,
+      rings: [],
+      moves: 0
+    };
 
-  function ringRadius(depth) {
+    function snapshot() {
+      var tier = tierForDepth(state.depth);
+      var next = nextTierForDepth(state.depth);
+      var span = next ? next.threshold - tier.threshold : 0;
+      return {
+        depth: Math.floor(state.depth),
+        rings: state.rings.slice(),
+        moves: state.moves,
+        tier: tier,
+        next: next,
+        toNext: next ? Math.max(0, next.threshold - Math.floor(state.depth)) : null,
+        progress: next && span > 0 ? Math.min(1, Math.max(0, (state.depth - tier.threshold) / span)) : 1
+      };
+    }
+
+    function emit() {
+      var view = snapshot();
+      listeners.forEach(function (fn) {
+        fn(view);
+      });
+    }
+
+    return {
+      subscribe: function (fn) {
+        listeners.push(fn);
+        fn(snapshot());
+      },
+      read: snapshot,
+      setDepth: function (value) {
+        state.depth = Math.max(0, value);
+        emit();
+      },
+      advance: function (blocks) {
+        state.depth = Math.max(0, state.depth + blocks);
+        emit();
+      },
+      /* Spending the carrier closes the stretch as a ring and starts a new one. */
+      move: function () {
+        var closing = Math.floor(state.depth);
+        state.rings.push({
+          index: state.rings.length,
+          depth: closing,
+          tier: tierForDepth(closing)
+        });
+        state.moves += 1;
+        state.depth = 0;
+        emit();
+      },
+      reset: function () {
+        state.depth = 0;
+        state.rings = [];
+        state.moves = 0;
+        emit();
+      }
+    };
+  }
+
+  /* ------------------------------------------------------------- specimen */
+
+  var SPEC_MIN_R = 26;
+  var SPEC_MAX_R = 152;
+
+  /*
+   * Radius uses one equal band per tier so the early tiers stay legible. The
+   * picture is deliberately not linear in blocks, and the caption says so.
+   */
+  function specimenRadius(depth) {
     var last = TIERS[TIERS.length - 1];
     if (!last) {
-      return RING_MIN;
+      return SPEC_MIN_R;
     }
-    var step = (RING_MAX - RING_MIN) / last.index;
     if (depth >= last.threshold) {
-      return RING_MAX;
+      return SPEC_MAX_R;
     }
+    var step = (SPEC_MAX_R - SPEC_MIN_R) / last.index;
     var tier = tierForDepth(depth);
     var next = nextTierForDepth(depth);
     var span = next.threshold - tier.threshold;
     var progress = span > 0 ? (depth - tier.threshold) / span : 0;
-    return RING_MIN + step * (tier.index + progress);
+    return SPEC_MIN_R + step * (tier.index + progress);
   }
 
-  function initSimulator() {
-    var form = $('[data-simulator]');
-    if (!form) {
+  function initSpecimen(artifact) {
+    var host = $('[data-specimen]');
+    if (!host) {
       return;
     }
 
-    var input = $('#sim-date', form);
-    var errorBox = $('[data-sim-error]', form);
+    var disc = $('[data-spec-disc]', host);
+    var edge = $('[data-spec-edge]', host);
+    var rim = $('[data-spec-rim]', host);
+    var desc = $('[data-spec-desc]', host);
+    var scribes = $$('[data-scribe]', host);
     var out = {
-      blocks: $('[data-sim="blocks"]'),
-      elapsed: $('[data-sim="elapsed"]'),
-      tier: $('[data-sim="tier"]'),
-      next: $('[data-sim="next"]'),
-      toNext: $('[data-sim="to-next"]'),
-      eta: $('[data-sim="eta"]')
+      depth: $('[data-spec="depth"]', host),
+      tier: $('[data-spec="tier"]', host),
+      next: $('[data-spec="next"]', host),
+      elapsed: $('[data-spec="elapsed"]', host),
+      rings: $('[data-spec="rings"]', host)
     };
-    var ringFill = $('#ring-fill');
-    var ringEdge = $('#ring-edge');
-    var ringDepthLabel = $('#ring-depth-label');
-    var ringTierLabel = $('#ring-tier-label');
-    var ladderItems = $$('[data-tier-item]');
-    var scribes = $$('[data-tier-circle]');
+    var rail = $('[data-spec-rail]', host);
+    var chipRow = $('[data-spec-chips]', host);
 
-    function toDateInputValue(date) {
-      var month = String(date.getUTCMonth() + 1);
-      var day = String(date.getUTCDate());
-      if (month.length < 2) {
-        month = '0' + month;
-      }
-      if (day.length < 2) {
-        day = '0' + day;
-      }
-      return date.getUTCFullYear() + '-' + month + '-' + day;
-    }
+    artifact.subscribe(function (view) {
+      var radius = specimenRadius(view.depth);
 
-    function setError(message) {
-      if (!errorBox) {
-        return;
+      if (disc) {
+        disc.setAttribute('r', radius.toFixed(2));
       }
-      if (message) {
-        errorBox.textContent = message;
-        errorBox.hidden = false;
-      } else {
-        errorBox.textContent = '';
-        errorBox.hidden = true;
+      if (edge) {
+        edge.setAttribute('r', radius.toFixed(2));
+        edge.setAttribute('stroke', 'var(--t' + view.tier.index + ')');
       }
-    }
-
-    function paint(depth) {
-      var tier = tierForDepth(depth);
-      var next = nextTierForDepth(depth);
-
-      if (out.blocks) {
-        out.blocks.textContent = groupDigits(depth);
-      }
-      if (out.elapsed) {
-        out.elapsed.textContent = depth === 0 ? 'none yet' : blocksToDuration(depth);
-      }
-      if (out.tier) {
-        out.tier.textContent = tier.name;
-      }
-      if (out.next) {
-        out.next.textContent = next ? next.name : 'none, Elder is the last tier';
-      }
-      if (out.toNext) {
-        out.toNext.textContent = next ? groupDigits(next.threshold - depth) : 'not applicable';
-      }
-      if (out.eta) {
-        out.eta.textContent = next ? blocksToDuration(next.threshold - depth) : 'not applicable';
-      }
-      if (ringDepthLabel) {
-        ringDepthLabel.textContent = groupDigits(depth);
-      }
-      if (ringTierLabel) {
-        ringTierLabel.textContent = tier.name;
+      if (rim) {
+        rim.setAttribute('stroke-dasharray', view.progress.toFixed(4) + ' 1');
       }
 
-      var radius = ringRadius(depth);
-      if (ringFill) {
-        ringFill.setAttribute('r', radius.toFixed(2));
-      }
-      if (ringEdge) {
-        ringEdge.setAttribute('r', radius.toFixed(2));
-        ringEdge.setAttribute('stroke', 'var(--t' + tier.index + ')');
-      }
+      host.setAttribute('data-tier', String(view.tier.index));
 
       scribes.forEach(function (circle) {
-        var index = Number(circle.getAttribute('data-tier-circle'));
-        var reached = TIERS[index] && depth >= TIERS[index].threshold;
-        circle.setAttribute('data-reached', reached ? 'true' : 'false');
-        circle.setAttribute('stroke-opacity', reached ? '0.85' : '0.28');
+        var index = Number(circle.getAttribute('data-scribe'));
+        var reached = TIERS[index] && view.depth >= TIERS[index].threshold;
+        circle.setAttribute('stroke-opacity', reached ? '0.9' : '0.3');
         circle.setAttribute('stroke-dasharray', reached ? 'none' : '2 4');
       });
 
-      ladderItems.forEach(function (item) {
-        var index = Number(item.getAttribute('data-tier-item'));
-        item.setAttribute('data-reached', depth >= TIERS[index].threshold ? 'true' : 'false');
-        item.setAttribute('data-current', index === tier.index ? 'true' : 'false');
-      });
+      if (out.depth) {
+        out.depth.textContent = groupDigits(view.depth);
+      }
+      if (out.tier) {
+        out.tier.textContent = view.tier.name;
+      }
+      if (out.elapsed) {
+        out.elapsed.textContent = view.depth === 0 ? 'none yet' : blocksToDuration(view.depth);
+      }
+      if (out.next) {
+        out.next.textContent = view.next
+          ? groupDigits(view.toNext) + ' blocks to ' + view.next.name
+          : 'Elder is the last tier';
+      }
+      if (out.rings) {
+        out.rings.textContent = view.rings.length === 0
+          ? 'none yet'
+          : String(view.rings.length) + (view.rings.length === 1 ? ' ring' : ' rings');
+      }
+      if (rail) {
+        rail.style.width = Math.round(view.progress * 100) + '%';
+      }
 
-      var figure = $('[data-ring-figure]');
-      if (figure) {
-        figure.setAttribute(
-          'aria-label',
-          'Ring cross section at depth ' + groupDigits(depth) + ' blocks, tier ' + tier.name + '.'
-        );
+      if (chipRow) {
+        chipRow.textContent = '';
+        view.rings.forEach(function (ring) {
+          var chip = el('span', {
+            class: 'ring-chip',
+            'data-tier': String(ring.tier.index),
+            title: 'A completed stretch of ' + groupDigits(ring.depth) + ' blocks, tier ' + ring.tier.name
+          });
+          chip.appendChild(el('span', { class: 'ring-chip-face', 'aria-hidden': 'true' }));
+          chip.appendChild(el('span', { class: 'ring-chip-label', text: groupDigits(ring.depth) }));
+          chipRow.appendChild(chip);
+        });
+      }
+
+      if (desc) {
+        desc.textContent =
+          'A cut section at depth ' + groupDigits(view.depth) + ' blocks, tier ' + view.tier.name + '. ' +
+          (view.rings.length
+            ? view.rings.length + ' completed ' + (view.rings.length === 1 ? 'ring is' : 'rings are') + ' engraved beneath it.'
+            : 'No stretch has closed yet, so there are no rings.');
+      }
+    });
+  }
+
+  /* ------------------------------------------------- the run of the clock */
+
+  /*
+   * The hero runs one artifact through a whole life so that a visitor sees the
+   * idea rather than reads it: depth grows, tiers arrive, a move resets the
+   * stretch and leaves a ring behind. Blocks are simulated and the panel says
+   * so. Nothing here describes a real artifact.
+   */
+  function initRunner(artifact) {
+    var host = $('[data-runner]');
+    if (!host) {
+      return;
+    }
+    var toggle = $('[data-runner-toggle]', host);
+    var last = TIERS[TIERS.length - 1];
+    if (!last) {
+      return;
+    }
+
+    var running = false;
+    var raf = null;
+    var previous = 0;
+    /* Seconds of wall clock for one tier band, so a life takes about half a minute. */
+    var SECONDS_PER_BAND = 3.6;
+    var HOLD_AT_ELDER = 2.6;
+    /*
+     * The band the page is already showing without scripts. Starting anywhere
+     * else would make the specimen jump the moment this file loads, and the
+     * written state would have been a lie for that instant.
+     */
+    var START_BAND = Number(host.getAttribute('data-runner')) || 0;
+    var position = Math.min(last.index, Math.max(0, START_BAND));
+    var holding = 0;
+
+    function depthForPosition(p) {
+      var index = Math.min(last.index, Math.floor(p));
+      var frac = Math.min(1, Math.max(0, p - index));
+      var tier = TIERS[index];
+      var next = TIERS[index + 1];
+      if (!next) {
+        return last.threshold;
+      }
+      return tier.threshold + frac * (next.threshold - tier.threshold);
+    }
+
+    function frame(now) {
+      if (!running) {
+        return;
+      }
+      var delta = previous ? Math.min(0.25, (now - previous) / 1000) : 0;
+      previous = now;
+
+      if (holding > 0) {
+        holding -= delta;
+        if (holding <= 0) {
+          artifact.move();
+          position = 0;
+        }
+      } else {
+        position += delta / SECONDS_PER_BAND;
+        if (position >= last.index) {
+          position = last.index;
+          holding = HOLD_AT_ELDER;
+        }
+        artifact.setDepth(depthForPosition(position));
+      }
+
+      raf = window.requestAnimationFrame(frame);
+    }
+
+    function setRunning(next) {
+      running = next;
+      if (toggle) {
+        toggle.setAttribute('aria-pressed', running ? 'true' : 'false');
+        toggle.textContent = running ? 'Pause' : 'Run';
+      }
+      if (running) {
+        previous = 0;
+        raf = window.requestAnimationFrame(frame);
+      } else if (raf !== null) {
+        window.cancelAnimationFrame(raf);
+        raf = null;
       }
     }
 
-    function recompute() {
-      if (!input || !input.value) {
-        setError('Pick a date to see the arithmetic.');
-        return;
-      }
-      var parts = input.value.split('-');
-      var chosen = Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-      if (!isFinite(chosen)) {
-        setError('That date could not be read.');
-        return;
-      }
+    /* Paint the written state before the first frame, so nothing flickers. */
+    artifact.setDepth(depthForPosition(position));
 
+    var handedOver = false;
+
+    if (toggle) {
+      toggle.hidden = false;
+      toggle.addEventListener('click', function () {
+        handedOver = false;
+        setRunning(!running);
+      });
+    }
+
+    /* A run nobody can see is only a way to spend a battery. */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && running) {
+        setRunning(false);
+      }
+    });
+
+    /* Once a visitor drives the artifact themselves, it stays theirs. */
+    document.addEventListener('patina:manual', function () {
+      handedOver = true;
+      if (running) {
+        setRunning(false);
+      }
+    });
+
+    if (prefersReducedMotion()) {
       /*
-       * The input has day granularity, so the answer should too. Both ends are
-       * midnight UTC, which makes the result exactly 144 blocks per whole day
-       * and the same for everyone who picks the same date.
+       * Reduced motion gets the same story told at rest: a worked example that
+       * has already lived through one stretch and is partway through another.
        */
-      var today = new Date();
-      var todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+      artifact.setDepth(TIERS[2] ? TIERS[2].threshold : 0);
+      artifact.move();
+      artifact.setDepth(12960 + 4200);
+      if (toggle) {
+        toggle.hidden = true;
+      }
+      return;
+    }
 
-      if (chosen > todayUtc) {
-        setError('That date is in the future. Pick a date that has already happened.');
-        paint(0);
+    if (window.IntersectionObserver) {
+      var observer = new window.IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !running && !handedOver && !document.hidden) {
+            setRunning(true);
+          } else if (!entry.isIntersecting && running) {
+            setRunning(false);
+          }
+        });
+      }, { threshold: 0.25 });
+      observer.observe(host);
+    } else {
+      setRunning(true);
+    }
+  }
+
+  /* --------------------------------------------------- passage of blocks */
+
+  function initPassage(artifact) {
+    var host = $('[data-passage]');
+    if (!host) {
+      return;
+    }
+
+    var out = {
+      depth: $('[data-pass="depth"]', host),
+      elapsed: $('[data-pass="elapsed"]', host),
+      tier: $('[data-pass="tier"]', host),
+      next: $('[data-pass="next"]', host),
+      toNext: $('[data-pass="to-next"]', host),
+      eta: $('[data-pass="eta"]', host)
+    };
+    var column = $('[data-strata]', host);
+    var announce = $('[data-pass-announce]', host);
+
+    /*
+     * Any hand on the controls stops the hero running by itself. Two things
+     * driving one artifact would fight each other, and the visitor should win.
+     */
+    function manual(run) {
+      return function () {
+        document.dispatchEvent(new CustomEvent('patina:manual'));
+        run();
+      };
+    }
+
+    $$('[data-advance]', host).forEach(function (button) {
+      button.addEventListener('click', manual(function () {
+        artifact.advance(Number(button.getAttribute('data-advance')));
+      }));
+    });
+
+    $$('[data-artifact-move]', host).forEach(function (button) {
+      button.addEventListener('click', manual(function () {
+        artifact.move();
+      }));
+    });
+
+    $$('[data-artifact-reset]', host).forEach(function (button) {
+      button.addEventListener('click', manual(function () {
+        artifact.reset();
+      }));
+    });
+
+    artifact.subscribe(function (view) {
+      host.setAttribute('data-tier', String(view.tier.index));
+
+      if (out.depth) {
+        out.depth.textContent = groupDigits(view.depth);
+      }
+      if (out.elapsed) {
+        out.elapsed.textContent = view.depth === 0 ? 'none yet' : blocksToDuration(view.depth);
+      }
+      if (out.tier) {
+        out.tier.textContent = view.tier.name;
+      }
+      if (out.next) {
+        out.next.textContent = view.next ? view.next.name : 'none, Elder is the last tier';
+      }
+      if (out.toNext) {
+        out.toNext.textContent = view.next ? groupDigits(view.toNext) : 'not applicable';
+      }
+      if (out.eta) {
+        out.eta.textContent = view.next ? blocksToDuration(view.toNext) : 'not applicable';
+      }
+
+      if (column) {
+        paintStrata(column, view);
+      }
+
+      if (announce) {
+        announce.textContent =
+          'Depth ' + groupDigits(view.depth) + ' blocks, tier ' + view.tier.name +
+          (view.next ? ', ' + groupDigits(view.toNext) + ' blocks to ' + view.next.name : ', the last tier') + '.';
+      }
+    });
+  }
+
+  /*
+   * The strata column: the current stretch drawn as sediment, with the tier
+   * thresholds scribed across it.
+   *
+   * The scale is one equal band per tier, the same mapping the disc uses, and
+   * the caption says so. A linear scale would pack Raw through Verdigris into
+   * the bottom seven percent of the column and leave five of the eight labels
+   * unreadable, which would be accurate and useless at the same time.
+   */
+  function paintStrata(column, view) {
+    var svg = $('svg', column);
+    if (!svg) {
+      return;
+    }
+    var layers = $('[data-strata-layers]', svg);
+    var marker = $('[data-strata-marker]', svg);
+    var label = $('[data-strata-label]', column);
+    if (!layers) {
+      return;
+    }
+
+    var last = TIERS[TIERS.length - 1];
+    var position = last ? Math.min(last.index, view.tier.index + (view.next ? view.progress : 0)) : 0;
+    var fraction = last && last.index > 0 ? position / last.index : 0;
+    var top = 12;
+    var bottom = 236;
+    var height = (bottom - top) * fraction;
+
+    var fill = $('[data-strata-fill]', layers);
+    if (fill) {
+      fill.setAttribute('y', String(bottom - height));
+      fill.setAttribute('height', height.toFixed(2));
+      fill.setAttribute('fill', 'var(--t' + view.tier.index + ')');
+    }
+    if (marker) {
+      marker.setAttribute('transform', 'translate(0 ' + (bottom - height).toFixed(2) + ')');
+    }
+    if (label) {
+      label.textContent = groupDigits(view.depth) + ' blocks';
+    }
+  }
+
+  /* --------------------------------------------------------- tier ladder */
+
+  function initLadder(artifact) {
+    var host = $('[data-ladder]');
+    if (!host) {
+      return;
+    }
+    var rungs = $$('[data-rung]', host);
+
+    artifact.subscribe(function (view) {
+      rungs.forEach(function (rung) {
+        var index = Number(rung.getAttribute('data-rung'));
+        var tier = TIERS[index];
+        var reached = tier && view.depth >= tier.threshold;
+        rung.setAttribute('data-reached', reached ? 'true' : 'false');
+        rung.setAttribute('data-current', index === view.tier.index ? 'true' : 'false');
+        var state = $('[data-rung-state]', rung);
+        if (state) {
+          if (index === view.tier.index) {
+            state.textContent = 'Held now';
+          } else if (reached) {
+            state.textContent = 'Passed';
+          } else if (view.next && index === view.next.index) {
+            state.textContent = groupDigits(view.toNext) + ' blocks away';
+          } else {
+            state.textContent = 'Ahead';
+          }
+        }
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------- anatomy */
+
+  /*
+   * The parts of an artifact live in the page as a definition list, so they
+   * read without scripts. Here that list becomes a selector: one part at a
+   * time, with the matching label lit in the drawing.
+   */
+  function initAnatomy() {
+    var host = $('[data-anatomy]');
+    if (!host) {
+      return;
+    }
+    var list = $('[data-anatomy-list]', host);
+    var figure = $('[data-anatomy-figure]', host);
+    if (!list) {
+      return;
+    }
+
+    var terms = $$('dt', list);
+    if (!terms.length) {
+      return;
+    }
+
+    var parts = terms.map(function (dt, index) {
+      var body = [];
+      var node = dt.nextElementSibling;
+      while (node && node.tagName === 'DD') {
+        body.push(node);
+        node = node.nextElementSibling;
+      }
+      return {
+        index: index,
+        key: dt.getAttribute('data-part') || String(index),
+        label: dt.getAttribute('data-part-label') || dt.textContent.trim(),
+        title: dt.textContent.trim(),
+        value: dt.getAttribute('data-part-value') || '',
+        dt: dt,
+        body: body
+      };
+    });
+
+    var buttons = el('ul', { class: 'anatomy-parts' });
+    var detail = el('div', { class: 'part-detail', id: 'anatomy-detail', role: 'region', 'aria-live': 'polite' });
+    list.parentNode.insertBefore(buttons, list);
+    list.parentNode.insertBefore(detail, list);
+    list.hidden = true;
+
+    function show(part) {
+      detail.textContent = '';
+      detail.appendChild(el('h3', { text: part.title }));
+      if (part.value) {
+        detail.appendChild(el('p', { class: 'part-value', text: part.value }));
+      }
+      part.body.forEach(function (dd) {
+        var p = el('p');
+        p.innerHTML = dd.innerHTML;
+        detail.appendChild(p);
+      });
+
+      $$('.part-btn', buttons).forEach(function (btn) {
+        btn.setAttribute('aria-pressed', btn.getAttribute('data-for') === part.key ? 'true' : 'false');
+      });
+
+      if (figure) {
+        $$('[data-part-mark]', figure).forEach(function (mark) {
+          var on = mark.getAttribute('data-part-mark') === part.key;
+          mark.setAttribute('class', mark.getAttribute('data-base-class') + (on ? ' ' + mark.getAttribute('data-on-class') : ''));
+        });
+      }
+    }
+
+    parts.forEach(function (part) {
+      var button = el('button', {
+        type: 'button',
+        class: 'part-btn',
+        'data-for': part.key,
+        'aria-pressed': 'false',
+        'aria-controls': 'anatomy-detail',
+        text: part.label
+      });
+      button.addEventListener('click', function () {
+        show(part);
+      });
+      buttons.appendChild(el('li', null, [button]));
+    });
+
+    if (figure) {
+      $$('[data-part-mark]', figure).forEach(function (mark) {
+        mark.setAttribute('data-base-class', mark.getAttribute('class') || '');
+        mark.setAttribute('data-on-class', mark.getAttribute('data-on-class') || 'lbl-on');
+      });
+      $$('[data-part-pick]', figure).forEach(function (hot) {
+        hot.addEventListener('click', function () {
+          var key = hot.getAttribute('data-part-pick');
+          var match = parts.filter(function (p) {
+            return p.key === key;
+          })[0];
+          if (match) {
+            show(match);
+          }
+        });
+      });
+    }
+
+    show(parts[0]);
+  }
+
+  /* ---------------------------------------------------------- mint wizard */
+
+  /*
+   * The mint steps are ordinary sections in the page. With scripts available
+   * they become a tab set, so the journey is one step at a time instead of one
+   * long wall.
+   */
+  function initWizard() {
+    var host = $('[data-wizard]');
+    if (!host) {
+      return;
+    }
+    var steps = $$('[data-step]', host);
+    if (steps.length < 2) {
+      return;
+    }
+
+    var track = el('div', { class: 'wizard-track', role: 'tablist', 'aria-label': 'Mint steps' });
+    host.insertBefore(track, host.firstChild);
+
+    var nav = el('div', { class: 'wizard-nav' });
+    var back = el('button', { type: 'button', class: 'btn btn-small', text: 'Back' });
+    var forward = el('button', { type: 'button', class: 'btn btn-small btn-primary', text: 'Next step' });
+    nav.appendChild(back);
+    nav.appendChild(forward);
+    host.appendChild(nav);
+
+    var current = 0;
+
+    function select(index) {
+      current = Math.min(steps.length - 1, Math.max(0, index));
+      steps.forEach(function (step, i) {
+        step.hidden = i !== current;
+      });
+      $$('button', track).forEach(function (tab, i) {
+        tab.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        tab.setAttribute('tabindex', i === current ? '0' : '-1');
+      });
+      back.disabled = current === 0;
+      forward.disabled = current === steps.length - 1;
+      back.setAttribute('aria-disabled', current === 0 ? 'true' : 'false');
+      forward.setAttribute('aria-disabled', current === steps.length - 1 ? 'true' : 'false');
+    }
+
+    steps.forEach(function (step, index) {
+      /* A step that already has an id keeps it, so deep links stay valid. */
+      var id = step.id || 'wizard-step-' + (index + 1);
+      step.id = id;
+      step.setAttribute('role', 'tabpanel');
+      step.setAttribute('tabindex', '0');
+      step.setAttribute('aria-labelledby', id + '-tab');
+
+      var tab = el('button', {
+        type: 'button',
+        role: 'tab',
+        id: id + '-tab',
+        'aria-controls': id,
+        'aria-selected': 'false',
+        tabindex: '-1'
+      });
+      tab.appendChild(el('span', { class: 'n', text: 'Step ' + (index + 1) }));
+      tab.appendChild(el('span', { class: 's', text: step.getAttribute('data-step') }));
+      tab.addEventListener('click', function () {
+        select(index);
+      });
+      tab.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+          event.preventDefault();
+          var next = index + (event.key === 'ArrowRight' ? 1 : -1);
+          if (next >= 0 && next < steps.length) {
+            select(next);
+            $$('button', track)[next].focus();
+          }
+        }
+      });
+      track.appendChild(tab);
+    });
+
+    back.addEventListener('click', function () {
+      select(current - 1);
+      steps[current].focus();
+    });
+    forward.addEventListener('click', function () {
+      select(current + 1);
+      steps[current].focus();
+    });
+
+    /*
+     * A link from another page can name a step. Landing on a step that the
+     * wizard has hidden would look like a broken page, so honour the fragment.
+     */
+    function selectFromHash() {
+      var wanted = String(window.location.hash || '').slice(1);
+      if (!wanted) {
+        return false;
+      }
+      for (var i = 0; i < steps.length; i += 1) {
+        if (steps[i].id === wanted) {
+          select(i);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    window.addEventListener('hashchange', selectFromHash);
+
+    if (!selectFromHash()) {
+      select(0);
+    }
+  }
+
+  /* ------------------------------------------------------- fee estimator */
+
+  /*
+   * What the two mint transactions cost in miner fees at a fee rate the
+   * visitor picks. Nothing is fetched: this is arithmetic over the transaction
+   * sizes in config.js, and the page says so. The endowment is not a fee and
+   * is deliberately not added in here.
+   */
+  function initFeeEstimator() {
+    var host = $('[data-fee-estimator]');
+    if (!host) {
+      return;
+    }
+    var input = $('[data-fee-rate]', host);
+    var sizes = PROTOCOL.mintVbytes || { commit: 154, reveal: 173, total: 327 };
+    var out = {
+      commit: $('[data-fee="commit"]', host),
+      reveal: $('[data-fee="reveal"]', host),
+      total: $('[data-fee="total"]', host)
+    };
+    var error = $('[data-fee-error]', host);
+
+    function paint() {
+      var rate = input ? Number(input.value) : NaN;
+      var valid = isFinite(rate) && rate > 0 && rate <= 5000;
+
+      if (error) {
+        if (input && input.value !== '' && !valid) {
+          error.textContent = 'Enter a fee rate between 1 and 5000 satoshis per virtual byte.';
+          error.hidden = false;
+        } else {
+          error.textContent = '';
+          error.hidden = true;
+        }
+      }
+
+      if (!valid) {
         return;
       }
-      var genesis = Date.UTC(2009, 0, 3);
-      if (chosen < genesis) {
-        setError('Bitcoin block zero was mined on 3 January 2009. Nothing can have been held longer than that.');
-        chosen = genesis;
-      } else {
-        setError('');
+
+      if (out.commit) {
+        out.commit.textContent = groupDigits(Math.ceil(sizes.commit * rate));
       }
-      var depth = Math.max(0, Math.floor((todayUtc - chosen) / 1000 / BLOCK_SECONDS));
-      paint(depth);
+      if (out.reveal) {
+        out.reveal.textContent = groupDigits(Math.ceil(sizes.reveal * rate));
+      }
+      if (out.total) {
+        out.total.textContent = groupDigits(Math.ceil(sizes.total * rate));
+      }
     }
 
     if (input) {
-      if (!input.value) {
-        input.value = toDateInputValue(new Date(Date.now() - 365 * 86400000));
-      }
-      input.max = toDateInputValue(new Date());
-      input.addEventListener('input', recompute);
-      input.addEventListener('change', recompute);
+      input.addEventListener('input', paint);
+      input.addEventListener('change', paint);
     }
 
-    $$('[data-sim-days]', form).forEach(function (button) {
+    $$('[data-fee-preset]', host).forEach(function (button) {
       button.addEventListener('click', function () {
-        var days = Number(button.getAttribute('data-sim-days'));
         if (input) {
-          input.value = toDateInputValue(new Date(Date.now() - days * 86400000));
+          input.value = button.getAttribute('data-fee-preset');
         }
-        recompute();
+        paint();
       });
     });
 
-    form.addEventListener('submit', function (event) {
+    host.addEventListener('submit', function (event) {
       event.preventDefault();
-      recompute();
+      paint();
     });
 
-    recompute();
+    paint();
   }
 
   /* -------------------------------------------------------- copy buttons */
@@ -820,9 +1469,19 @@
 
   function start() {
     initTheme();
+    initMenu();
     initConfigBindings();
     initCopyButtons();
-    initSimulator();
+
+    var artifact = createArtifact();
+    initSpecimen(artifact);
+    initLadder(artifact);
+    initPassage(artifact);
+    initRunner(artifact);
+    initAnatomy();
+    initWizard();
+    initFeeEstimator();
+
     initLivePanels();
   }
 

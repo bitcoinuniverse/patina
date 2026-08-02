@@ -1,7 +1,11 @@
 /* PATINA documentation styles.
    Hand written. No build step, no imports, no third party fonts.
    Design language: engraved plates, strata rules, ring cross sections,
-   bronze that ages into verdigris as depth increases. */
+   bronze that ages into verdigris as depth increases.
+
+   The token block below is shared with site/assets/site.css, name for name and
+   value for value. The public site and these pages are one product at two
+   depths. site/tools/check-site.mjs proves the two files stay in step. */
 
 /* ------------------------------------------------------------ tokens */
 :root {
@@ -20,6 +24,7 @@
   --bronze:        #e0a463;
   --bronze-deep:   #b97a3c;
   --verdigris:     #6cc7ab;
+  --verdigris-deep: #2f7d68;
   --umber:         #c08658;
   --alert:         #f0937f;
   --focus:         #ffd28f;
@@ -27,18 +32,30 @@
   --code-bg:       #100d0a;
   --code-ink:      #ece3d4;
   --code-rule:     #3a3128;
+  --code-accent:   #b97a3c;
 
   --plate:         #191510;
-  --shadow:        0 1px 0 rgba(0, 0, 0, .5);
+
+  /* Tier ramp. Cold raw metal, through cast bronze and earth, into verdigris. */
+  --t0: #9a9086;
+  --t1: #d8b57e;
+  --t2: #c9954f;
+  --t3: #b6a05a;
+  --t4: #a89464;
+  --t5: #8aa472;
+  --t6: #63b294;
+  --t7: #4ab7a4;
 
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  --sidebar-w: 17rem;
+  --radius: 3px;
+
+  --shadow:        0 1px 0 rgba(0, 0, 0, .5);
+  --sidebar-w: 17.5rem;
   --toc-w: 13rem;
   --measure: 46rem;
-  --radius: 3px;
 }
 
 :root[data-theme="light"] {
@@ -57,6 +74,7 @@
   --bronze:        #86500f;
   --bronze-deep:   #6d4009;
   --verdigris:     #0e6250;
+  --verdigris-deep: #0a4b3d;
   --umber:         #7c4a22;
   --alert:         #9b2f16;
   --focus:         #7a4a10;
@@ -64,8 +82,19 @@
   --code-bg:       #17130f;
   --code-ink:      #ece3d4;
   --code-rule:     #3a3128;
+  --code-accent:   #b97a3c;
 
   --plate:         #fffdf7;
+
+  --t0: #5b544c;
+  --t1: #8a6117;
+  --t2: #7d5410;
+  --t3: #695a17;
+  --t4: #61511d;
+  --t5: #435f33;
+  --t6: #1c6a53;
+  --t7: #135f4d;
+
   --shadow:        0 1px 0 rgba(120, 96, 60, .18);
 }
 
@@ -86,14 +115,35 @@
     --bronze:        #86500f;
     --bronze-deep:   #6d4009;
     --verdigris:     #0e6250;
+    --verdigris-deep: #0a4b3d;
     --umber:         #7c4a22;
     --alert:         #9b2f16;
     --focus:         #7a4a10;
 
     --plate:         #fffdf7;
+
+    --t0: #5b544c;
+    --t1: #8a6117;
+    --t2: #7d5410;
+    --t3: #695a17;
+    --t4: #61511d;
+    --t5: #435f33;
+    --t6: #1c6a53;
+    --t7: #135f4d;
+
     --shadow:        0 1px 0 rgba(120, 96, 60, .18);
   }
 }
+
+/* Tier colour applied by index, so markup names a tier and never a colour. */
+[data-tier="0"] { --tier-ink: var(--t0); }
+[data-tier="1"] { --tier-ink: var(--t1); }
+[data-tier="2"] { --tier-ink: var(--t2); }
+[data-tier="3"] { --tier-ink: var(--t3); }
+[data-tier="4"] { --tier-ink: var(--t4); }
+[data-tier="5"] { --tier-ink: var(--t5); }
+[data-tier="6"] { --tier-ink: var(--t6); }
+[data-tier="7"] { --tier-ink: var(--t7); }
 
 /* ------------------------------------------------------------ base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -328,12 +378,123 @@ a:hover { color: var(--verdigris); }
   font-weight: 600;
 }
 
+/* The way back to the public site, kept beside the brand where it belongs. */
+.tosite {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-decoration: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: .3rem .55rem;
+  white-space: nowrap;
+}
+.tosite::before { content: "\2190"; margin-right: .4rem; color: var(--bronze); }
+.tosite:hover { color: var(--ink); border-color: var(--bronze); }
+
 /* ------------------------------------------------------------ breadcrumb, pager */
-.crumb { font-size: .8rem; color: var(--ink-3); margin: 0 0 1rem; }
+.crumb {
+  font-size: .8rem;
+  color: var(--ink-3);
+  margin: 0 0 1.1rem;
+  padding-bottom: .7rem;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+}
 .crumb ol { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; }
 .crumb li::after { content: "/"; margin-left: .4rem; color: var(--rule-strong); }
 .crumb li:last-child::after { content: ""; }
 .crumb a { color: var(--ink-3); }
+
+/* What kind of page this is, where it sits, and how long it takes to read. */
+.pagemeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pagemeta .kind {
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: .15rem .55rem;
+  cursor: help;
+}
+.pagemeta .kind[data-kind="normative"] { border-color: var(--bronze); color: var(--bronze); }
+.pagemeta .kind[data-kind="generated"] { border-color: var(--verdigris-deep); color: var(--verdigris); }
+.pagemeta .kind[data-kind="operational"] { border-color: var(--rule-strong); color: var(--ink-2); }
+.pagemeta .where::before,
+.pagemeta .read::before { content: "\00B7"; margin-right: .5rem; color: var(--rule-strong); }
+
+/* A compact promise at the top of a long page. */
+.willknow {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--verdigris);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: .85rem 1rem;
+  margin: 0 0 1.6rem;
+  font-size: .93rem;
+}
+.willknow .lbl {
+  display: block;
+  font: 600 .7rem/1.4 var(--sans);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--verdigris);
+  margin-bottom: .35rem;
+}
+.willknow ul { margin: 0; padding-left: 1.1rem; }
+.willknow li { margin: .2rem 0; color: var(--ink-2); }
+
+/* Intent routes on the front page. Doorways, not a table of contents. */
+.intents {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: .8rem;
+  margin: 0 0 1.6rem;
+  padding: 0;
+  list-style: none;
+}
+.intents li { margin: 0; }
+.intents a {
+  display: block;
+  height: 100%;
+  padding: .9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--rule-strong);
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+.intents a:hover { border-top-color: var(--bronze); }
+.intents .i-said {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.06rem;
+  color: var(--bronze);
+  margin-bottom: .2rem;
+}
+.intents .i-desc { display: block; font-size: .87rem; color: var(--ink-2); }
+.intents .i-where {
+  display: block;
+  margin-top: .5rem;
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
 
 .pager {
   display: flex;
@@ -416,7 +577,7 @@ pre {
   background: var(--code-bg);
   color: var(--code-ink);
   border: 1px solid var(--code-rule);
-  border-left: 3px solid var(--bronze-deep);
+  border-left: 3px solid var(--code-accent);
   border-radius: var(--radius);
   padding: .9rem 1rem;
   font-size: .84rem;
@@ -543,7 +704,8 @@ ol.steps > li::before {
 }
 ol.steps > li > h3 { margin-top: .1rem; }
 
-/* Tier strip: bronze ageing into verdigris. */
+/* Tier strip: raw metal ageing into verdigris. The colour comes from the tier
+   index, so this strip and the discs on the public site can never disagree. */
 .tierstrip { display: flex; flex-wrap: wrap; gap: 2px; margin: 0 0 1.3rem; list-style: none; padding: 0; }
 .tierstrip li {
   flex: 1 1 5.5rem;
@@ -551,10 +713,10 @@ ol.steps > li > h3 { margin-top: .1rem; }
   padding: .5rem .55rem;
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-top: 3px solid var(--tc, var(--bronze));
+  border-top: 3px solid var(--tier-ink, var(--bronze));
   font-size: .78rem;
 }
-.tierstrip .n { display: block; font-family: var(--serif); font-size: .98rem; color: var(--ink); }
+.tierstrip .n { display: block; font-family: var(--serif); font-size: .98rem; color: var(--tier-ink, var(--ink)); }
 .tierstrip .b { display: block; color: var(--ink-3); font-family: var(--mono); }
 
 /* On this page. */
@@ -592,21 +754,61 @@ ol.steps > li > h3 { margin-top: .1rem; }
   .toc { display: none; }
 }
 
+/* The backdrop only exists while the drawer is open, and only on narrow screens. */
+.backdrop { display: none; }
+
 @media (max-width: 56rem) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .menubtn { display: inline-block; }
+
+  /*
+   * The contents list becomes an overlay drawer rather than a block that
+   * shoves the page down. A reader who opens it to look for a page should not
+   * lose their place in the one they are on.
+   */
   .sidebar {
     display: none;
-    position: static;
+    position: fixed;
+    top: 3.1rem;
+    left: 0;
+    bottom: 0;
+    z-index: 45;
+    width: min(21rem, 88vw);
     max-height: none;
-    border-right: 0;
-    border-bottom: 1px solid var(--rule);
+    overflow-y: auto;
+    padding: 1rem 1rem 3rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 0;
     background: var(--bg-deep);
+    box-shadow: 6px 0 24px rgba(0, 0, 0, .4);
   }
   .sidebar.open { display: block; }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 3.1rem 0 0 0;
+    z-index: 44;
+    background: rgba(0, 0, 0, .5);
+  }
+  .backdrop[hidden] { display: none; }
+
+  .navsection a { padding: .5rem .55rem; font-size: .95rem; }
+
   .search { flex: 1 1 100%; order: 3; }
   .topbar { flex-wrap: wrap; }
   .brand span.sub { display: none; }
+  .tosite { order: 2; }
+
+  /* 44 pixels of target on anything driven by a finger. */
+  .iconbtn { min-height: 2.75rem; }
+  .copybtn { min-height: 2.4rem; }
+}
+
+/* A phone must never zoom the page just because a field took focus. */
+@media (max-width: 40rem) {
+  .search input,
+  .probe input { font-size: 1rem; }
 }
 
 @media (max-width: 24rem) {
@@ -620,6 +822,48 @@ ol.steps > li > h3 { margin-top: .1rem; }
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
   .copybtn, .cards a, .pager a { transition: border-color .15s ease, color .15s ease; }
+}
+
+/* The contents list a reader gets when our scripts are not running. It sits
+   between the sidebar mount and the article, in ordinary document flow. */
+.noscript-nav {
+  grid-column: 1 / -1;
+  padding: 1.25rem clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg-deep);
+  font-size: .9rem;
+}
+.noscript-nav p { max-width: var(--measure); color: var(--ink-2); }
+.noscript-nav h2 {
+  font: 600 .72rem/1.3 var(--sans);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-3);
+  border: 0;
+  margin: 1rem 0 .3rem;
+  padding: 0;
+}
+.noscript-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem 1rem;
+}
+.noscript-nav li { margin: 0; }
+
+/* Windows high contrast and similar modes replace the palette wholesale, so
+   anything that carried meaning in a colour alone gets a border instead. */
+@media (forced-colors: active) {
+  .iconbtn, .copybtn, .cards a, .pager a, .intents a, .note, .warn, .honest,
+  .willknow, .probe, .tierstrip li, .pagemeta .kind {
+    border: 1px solid CanvasText;
+  }
+  .navsection a[aria-current="page"] { border-left-color: LinkText; border-left-width: 3px; }
+  .toc a.here { border-left-color: LinkText; }
+  ol.steps > li::before { border: 1px solid CanvasText; }
+  :focus-visible { outline: 2px solid Highlight; }
 }
 
 @media print {

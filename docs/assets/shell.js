@@ -28,8 +28,17 @@
   function flatten() {
     var out = [];
     NAV.forEach(function (sec) {
-      sec.pages.forEach(function (page) {
-        out.push({ path: page.path, title: page.title, blurb: page.blurb, section: sec.title, sectionId: sec.id });
+      sec.pages.forEach(function (page, i) {
+        out.push({
+          path: page.path,
+          title: page.title,
+          blurb: page.blurb,
+          kind: page.kind || 'introductory',
+          section: sec.title,
+          sectionId: sec.id,
+          position: i + 1,
+          sectionSize: sec.pages.length
+        });
       });
     });
     return out;
@@ -60,6 +69,17 @@
   function buildTopbar() {
     var bar = document.querySelector('.topbar');
     if (!bar) return;
+
+    /*
+     * The way back out. The public site and these pages are one product, and a
+     * reader who arrived deep in the protocol reference should never have to
+     * reach for the back button to find the surface again.
+     */
+    bar.appendChild(el('a', {
+      class: 'tosite',
+      href: ROOT + '../index.html',
+      text: 'patina'
+    }));
 
     bar.appendChild(el('span', { class: 'spacer' }));
 
@@ -100,14 +120,65 @@
       'aria-expanded': 'false',
       text: 'Contents'
     });
-    menuBtn.addEventListener('click', function () {
-      var side = document.getElementById('sidebar');
-      var open = side.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
     bar.appendChild(menuBtn);
 
+    wireDrawer(menuBtn);
     wireSearch(input, results);
+  }
+
+  /* ---------------------------------------------------------- drawer */
+
+  /*
+   * Below the wide breakpoint the contents list is an overlay, not a block
+   * that shoves the page down. It closes on Escape, on a backdrop press, and
+   * on choosing a page, and it hands focus back to the button that opened it.
+   */
+  function wireDrawer(menuBtn) {
+    var side = document.getElementById('sidebar');
+    if (!side) return;
+
+    var backdrop = el('div', { class: 'backdrop', hidden: 'hidden' });
+    backdrop.hidden = true;
+    document.body.appendChild(backdrop);
+
+    function setOpen(open) {
+      if (open) side.classList.add('open');
+      else side.classList.remove('open');
+      backdrop.hidden = !open;
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute('aria-label', open ? 'Close the contents' : 'Open the contents');
+    }
+
+    function isOpen() {
+      return menuBtn.getAttribute('aria-expanded') === 'true';
+    }
+
+    setOpen(false);
+
+    menuBtn.addEventListener('click', function () {
+      var next = !isOpen();
+      setOpen(next);
+      if (next) {
+        var first = side.querySelector('a');
+        if (first) first.focus();
+      }
+    });
+
+    backdrop.addEventListener('click', function () {
+      setOpen(false);
+      menuBtn.focus();
+    });
+
+    side.addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        menuBtn.focus();
+      }
+    });
   }
 
   /* ---------------------------------------------------------- sidebar */
@@ -143,6 +214,47 @@
       list.appendChild(el('li', { 'aria-current': 'page', text: here.title }));
     }
     mount.appendChild(list);
+    mount.appendChild(buildPageMeta());
+  }
+
+  /* ---------------------------------------------------------- page meta */
+
+  /*
+   * What kind of page this is, where it sits in its section, and how long it
+   * takes to read. The kind matters most: a reader deciding whether to argue
+   * with a sentence should know whether that sentence binds.
+   */
+  function buildPageMeta() {
+    var meta = el('div', { class: 'pagemeta' });
+    if (!here) return meta;
+
+    var kinds = window.PATINA_KINDS || {};
+    var kind = here.kind || 'introductory';
+    meta.appendChild(el('span', {
+      class: 'kind',
+      'data-kind': kind,
+      title: kinds[kind] || '',
+      text: kind
+    }));
+
+    if (here.sectionSize > 1) {
+      meta.appendChild(el('span', {
+        class: 'where',
+        text: 'page ' + here.position + ' of ' + here.sectionSize
+      }));
+    }
+
+    var article = document.querySelector('.content article');
+    if (article) {
+      var words = String(article.textContent || '').trim().split(/\s+/).filter(Boolean).length;
+      var minutes = Math.max(1, Math.round(words / 200));
+      meta.appendChild(el('span', {
+        class: 'read',
+        text: minutes + (minutes === 1 ? ' minute read' : ' minutes read')
+      }));
+    }
+
+    return meta;
   }
 
   /* ---------------------------------------------------------- pager */

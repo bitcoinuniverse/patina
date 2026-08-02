@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="card-title">
+  <title id="card-title">The PATINA tier journey, from Raw at zero blocks to Elder at 210000 blocks.</title>
+  <defs>
+    <pattern id="strata" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1" fill="#f0e8dc" fill-opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#14110d"/>
+  <rect width="1200" height="630" fill="url(#strata)"/>
+  <path d="M600 0 L600 630" stroke="#52463a" stroke-width="1" stroke-opacity="0.5"/>
+
+  <g>
+    <path d="M630 250 L1152 250" stroke="#52463a" stroke-width="1"/>
+    <g>
+      <circle cx="660" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="660" cy="315" r="16.0" fill="#9a9086" fill-opacity="0.42" stroke="#9a9086" stroke-width="2.4"/>
+      <circle cx="660" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="726" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="726" cy="315" r="19.6" fill="#d8b57e" fill-opacity="0.42" stroke="#d8b57e" stroke-width="2.4"/>
+      <circle cx="726" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="792" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="792" cy="315" r="23.2" fill="#c9954f" fill-opacity="0.42" stroke="#c9954f" stroke-width="2.4"/>
+      <circle cx="792" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="858" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="858" cy="315" r="26.8" fill="#b6a05a" fill-opacity="0.42" stroke="#b6a05a" stroke-width="2.4"/>
+      <circle cx="858" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="924" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="924" cy="315" r="30.4" fill="#a89464" fill-opacity="0.42" stroke="#a89464" stroke-width="2.4"/>
+      <circle cx="924" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="990" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="990" cy="315" r="34.0" fill="#8aa472" fill-opacity="0.42" stroke="#8aa472" stroke-width="2.4"/>
+      <circle cx="990" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="1056" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="1056" cy="315" r="37.6" fill="#63b294" fill-opacity="0.42" stroke="#63b294" stroke-width="2.4"/>
+      <circle cx="1056" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <g>
+      <circle cx="1122" cy="315" r="30" fill="none" stroke="#52463a" stroke-width="1.2"/>
+      <circle cx="1122" cy="315" r="41.2" fill="#4ab7a4" fill-opacity="0.42" stroke="#4ab7a4" stroke-width="2.4"/>
+      <circle cx="1122" cy="315" r="2.6" fill="#e0a463"/>
+    </g>
+    <text x="660" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">RAW</text>
+    <text x="726" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">SHEEN</text>
+    <text x="792" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">CAST</text>
+    <text x="858" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">VERD</text>
+    <text x="924" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">UMBER</text>
+    <text x="990" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">BRONZE</text>
+    <text x="1056" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">OXIDE</text>
+    <text x="1122" y="382" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="13" text-anchor="middle">ELDER</text>
+  </g>
+
+  <g transform="translate(80,150) scale(1.28)" fill="none" stroke="#f0e8dc" stroke-width="9" stroke-linecap="butt">
+    <g transform="translate(10,0)">
+      <path d="M0 80 L0 16 L22 16 A16 16 0 0 1 22 48 L0 48"/>
+      <g transform="translate(58,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+      <g transform="translate(122,0)">
+        <path d="M0 16 L44 16"/>
+        <path d="M22 16 L22 80"/>
+      </g>
+      <path d="M192 16 L192 80"/>
+      <path d="M218 80 L218 16 L258 80 L258 16"/>
+      <g transform="translate(278,0)">
+        <path d="M0 80 L22 16 L44 80"/>
+        <path d="M6.9 60 L37.1 60"/>
+      </g>
+    </g>
+  </g>
+
+  <text x="80" y="120" fill="#6cc7ab" font-family="ui-monospace, Consolas, monospace" font-size="20" letter-spacing="6">THE TIER JOURNEY</text>
+
+  <text x="80" y="350" fill="#f0e8dc" font-family="Georgia, 'Times New Roman', serif" font-size="44">Eight names for how far</text>
+  <text x="80" y="404" fill="#f0e8dc" font-family="Georgia, 'Times New Roman', serif" font-size="44">an output has come.</text>
+  <text x="80" y="472" fill="#a4977f" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="22">Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder. Each one a band of depth.</text>
+
+  <path d="M80 520 L520 520" stroke="#52463a" stroke-width="1"/>
+  <text x="80" y="558" fill="#a4977f" font-family="ui-monospace, Consolas, monospace" font-size="18" letter-spacing="2">Elder is 210 000 blocks, about four years</text>
+</svg>

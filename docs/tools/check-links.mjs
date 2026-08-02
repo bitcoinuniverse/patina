@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 // Link checker for the PATINA documentation.
-// Every href and src must resolve to a file inside docs/. Fragments must match
-// an id that exists, or a heading the shell will give that id at runtime.
-// No network requests are made, and none are needed: the site links to nothing
-// outside itself.
+// Every href and src must resolve to a real file. Fragments must match an id
+// that exists, or a heading the shell will give that id at runtime.
+// No network requests are made, and none are needed: these pages link to
+// nothing outside the two directories the project publishes.
+//
+// The publish step copies site/ to the root of the published tree and docs/ to
+// <root>/docs, so a documentation page that reaches one level above the docs
+// root lands on the public site. Those links are allowed and are resolved
+// against site/ here, because the two trees are one product and a reader deep
+// in the protocol reference has to be able to get back out. Nothing may escape
+// further than that, and a target that does not exist is still a failure.
 // Run: node docs/tools/check-links.mjs
 
 import { readFile, readdir, stat } from 'node:fs/promises';
@@ -11,6 +18,8 @@ import { join, resolve, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const REPO = resolve(ROOT, '..');
+const SITE = join(REPO, 'site');
 
 async function walk(dir) {
   const out = [];
@@ -53,6 +62,7 @@ async function html(file) {
 
 let checked = 0;
 let external = 0;
+let crossed = 0;
 const broken = [];
 
 for (const file of files) {
@@ -70,7 +80,21 @@ for (const file of files) {
 
     if (pathPart) {
       target = resolve(dirname(file), pathPart);
-      if (!target.startsWith(ROOT)) { broken.push(`${rel} -> ${raw} (escapes the docs root)`); continue; }
+      if (!target.startsWith(ROOT)) {
+        /*
+         * A link that climbs above the docs root lands on the public site once
+         * published, because docs/ sits inside the site root there. On disk the
+         * two are siblings, so re-root the remainder at site/ and check that.
+         * Anything that leaves the repository is a mistake wherever it points.
+         */
+        const above = relative(REPO, target);
+        if (above.startsWith('..') || !above) {
+          broken.push(`${rel} -> ${raw} (escapes the repository)`);
+          continue;
+        }
+        target = join(SITE, above);
+        crossed += 1;
+      }
       try {
         const info = await stat(target);
         if (!info.isFile()) { broken.push(`${rel} -> ${raw} (not a file)`); continue; }
@@ -91,6 +115,7 @@ for (const file of files) {
 console.log(`pages scanned      ${files.length}`);
 console.log(`internal links     ${checked}`);
 console.log(`external links     ${external}`);
+console.log(`links to the site  ${crossed}`);
 console.log(`broken links       ${broken.length}`);
 
 if (broken.length) {

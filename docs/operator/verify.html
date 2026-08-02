@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Verify and monitor | PATINA docs</title>
 <meta name="description" content="How to prove a PATINA indexer is correct, and what to watch continuously: sync gap, readiness, root agreement, and invalid event rates.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/operator/verify.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Verify and monitor, PATINA documentation">
+<meta property="og:description" content="How to prove a PATINA indexer is correct, and what to watch continuously: sync gap, readiness, root agreement, and invalid event rates.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/operator/verify.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-docs.svg">
+<meta property="og:image:alt" content="Stacked engraved plates, one per section of the PATINA documentation.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Verify and monitor, PATINA documentation">
+<meta name="twitter:description" content="How to prove a PATINA indexer is correct, and what to watch continuously: sync gap, readiness, root agreement, and invalid event rates.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-docs.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,11 +115,26 @@
       <p class="lede">Verification proves the state is right. Monitoring tells you when that stops being true.
         You need both.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>Which two checks can actually catch a wrong state, and which four pass happily while it is
+            wrong.</li>
+          <li>How to compare state roots with a second indexer, and why comparing at the tip wastes a night.</li>
+          <li>The nine signals to watch, and why a rise in 503 during sync is the correct behaviour.</li>
+          <li>Which four reason code spikes mean a broken tool in the wild rather than a broken indexer.</li>
+          <li>What to write in the verification log so the next investigation is a bisection rather than a
+            search.</li>
+        </ul>
+      </div>
+
       <h2>Verification, in order of strength</h2>
+      <p>Strength increases down the table, and so does cost. Start at the bottom when you have a real doubt, and
+        keep the top rows for the things that run continuously.</p>
       <div class="tablewrap">
         <table>
           <caption>Ways to check an indexer, weakest first.</caption>
-          <thead><tr><th>Check</th><th>Proves</th><th>Run it</th></tr></thead>
+          <thead><tr><th scope="col">Check</th><th scope="col">Proves</th><th scope="col">Run it</th></tr></thead>
           <tbody>
             <tr><td>The process answers</td><td>Almost nothing</td><td>Continuously</td></tr>
             <tr><td>Sync gap is small</td><td>The data is current, not that it is correct</td><td>Continuously</td></tr>
@@ -40,6 +148,9 @@
       <p>The last two are the ones that matter. Everything above them can pass while the state is wrong.</p>
 
       <h2>Daily verification</h2>
+      <p>Four steps and about a minute. Read both status responses, pick a height they have both passed, and
+        compare the state roots there. The public site walks the same check by hand on
+        <a href="../../verify.html">take nobody's word for it</a>.</p>
       <pre data-label="Compare with a second indexer at a fixed height"><code># pick a height both have passed, then compare state roots at that height
 curl -s https://mine.example.org/patina/status
 curl -s https://other.example.org/patina/status</code></pre>
@@ -53,10 +164,12 @@ curl -s https://other.example.org/patina/status</code></pre>
         is not one.</p>
 
       <h2>Signals to monitor</h2>
+      <p>Nine signals. The middle column is what a working indexer looks like, and the last column describes the
+        shape of a change rather than a number, because the number depends on your hardware.</p>
       <div class="tablewrap">
         <table>
           <caption>What to watch, and what a change means.</caption>
-          <thead><tr><th>Signal</th><th>Healthy</th><th>Investigate when</th></tr></thead>
+          <thead><tr><th scope="col">Signal</th><th scope="col">Healthy</th><th scope="col">Investigate when</th></tr></thead>
           <tbody>
             <tr><td>Sync gap, <code>tip_height - indexed_height</code></td><td>Zero or one</td><td>It grows for several blocks in a row, or stops changing</td></tr>
             <tr><td>Time since last processed block</td><td>Roughly block interval</td><td>Much longer than the node's own gap. Blocks are irregular, so alert on the difference from the node, not on absolute time.</td></tr>

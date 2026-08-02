@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The tier journey, PATINA</title>
+<meta name="description" content="Eight tiers from Raw to Elder, each one a band of depth with an exact block threshold. Raw at 0, Sheen at 1008, Cast at 4032, Verdigris at 12960, Umber at 26280, Bronze at 52560, Oxide at 105120 and Elder at 210000 blocks.">
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/tiers.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="The tier journey, PATINA">
+<meta property="og:description" content="Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder. Eight names for how far one Bitcoin output has come without moving.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/tiers.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-tiers.svg">
+<meta property="og:image:alt" content="Eight tier discs in a row, from cold raw metal through cast bronze and earth into deep verdigris.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The tier journey, PATINA">
+<meta name="twitter:description" content="Eight names for how far one Bitcoin output has come without moving, with the exact block threshold for each.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-tiers.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var t=localStorage.getItem('patina-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+        <mask id="brandkerf"><rect width="24" height="24" fill="#ffffff"/><path d="M12 12 L10.7 0 L13.3 0 Z" fill="#000000"/></mask>
+        <g mask="url(#brandkerf)" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="12" cy="12" r="10.6" stroke-opacity="0.35"/>
+          <circle cx="12" cy="12" r="7.4" stroke-opacity="0.55"/>
+          <circle cx="12" cy="12" r="4.2" stroke-opacity="0.8"/>
+        </g>
+        <circle cx="12" cy="12" r="1.7" fill="var(--bronze)"/>
+      </svg>
+      <span class="brand-name">Patina</span>
+    </a>
+    <nav class="site-nav" id="site-nav" data-site-nav aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="depth.html">Depth</a></li>
+        <li><a href="tiers.html" aria-current="page">Tiers</a></li>
+        <li><a href="firstlight.html">Firstlight</a></li>
+        <li><a href="mint.html">Mint</a></li>
+        <li><a href="protocol.html">Protocol</a></li>
+        <li><a href="verify.html">Verify</a></li>
+        <li><a href="risks.html">Risks</a></li>
+        <li><a class="to-docs" href="docs/index.html">Docs</a></li>
+        <li class="nav-more"><a href="transparency.html">Transparency</a></li>
+        <li class="nav-more"><a href="faq.html">Questions</a></li>
+        <li class="nav-more"><a href="press.html">Press</a></li>
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <button type="button" class="btn btn-quiet btn-small" data-theme-toggle aria-label="Switch theme"><span data-theme-label>Light</span></button>
+      <button type="button" class="btn btn-quiet btn-small menu-toggle" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open the menu">Menu</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">The tier journey</p>
+      <h1>Raw, Sheen, Cast, Verdigris, Umber, Bronze, Oxide, Elder.</h1>
+      <p class="lede">A tier is the highest threshold your depth has passed. That is the entire rule. Nothing is granted, nothing is claimed, and nothing about a tier changes what you can do with your bitcoin.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="depth.html#advance">Push an artifact through the ladder</a>
+        <a class="btn" href="docs/protocol/depth-and-tiers.html">The normative table</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="cards">
+    <p class="eyebrow"><span class="num">01</span> Eight bands</p>
+    <h2>Each one is a material, and a number you can check.</h2>
+    <p class="lede">The discs are drawn from the same geometry as the specimen on the overview, so a card and a live artifact are recognisably the same object. Each disc is filled to its own band, with the bands still ahead scribed as dashes.</p>
+
+    <ul class="tier-cards">
+      <li>
+        <article class="tier-card" data-tier="0">
+          <div class="tier-card-head">
+            <h3>Raw</h3>
+            <span class="index">TIER 0</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the innermost band, the first of eight.">
+            <mask id="kerf0"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf0)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="9" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="15.5"/><circle cx="60" cy="60" r="22"/><circle cx="60" cy="60" r="28.5"/>
+                <circle cx="60" cy="60" r="35"/><circle cx="60" cy="60" r="41.5"/><circle cx="60" cy="60" r="48"/>
+                <circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">0 blocks<small>where every artifact starts</small></p>
+          <p class="material">Cold metal, straight off the mould. The carrier exists and nothing has happened to it yet.</p>
+          <p class="exact">0 days, 0 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="1">
+          <div class="tier-card-head">
+            <h3>Sheen</h3>
+            <span class="index">TIER 1</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the second band of eight.">
+            <mask id="kerf1"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf1)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="15.5" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="22"/><circle cx="60" cy="60" r="28.5"/><circle cx="60" cy="60" r="35"/>
+                <circle cx="60" cy="60" r="41.5"/><circle cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">1 008 blocks<small>about 7 days</small></p>
+          <p class="material">The first thin film on the surface. A week without touching something is longer than most people manage.</p>
+          <p class="exact">7.00 days, 0.02 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="2">
+          <div class="tier-card-head">
+            <h3>Cast</h3>
+            <span class="index">TIER 2</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the third band of eight.">
+            <mask id="kerf2"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf2)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="22" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="28.5"/><circle cx="60" cy="60" r="35"/><circle cx="60" cy="60" r="41.5"/>
+                <circle cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">4 032 blocks<small>about 28 days</small></p>
+          <p class="material">Set hard. Exactly as long as the founding window itself, spent standing still.</p>
+          <p class="exact">28.00 days, 0.08 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="3">
+          <div class="tier-card-head">
+            <h3>Verdigris</h3>
+            <span class="index">TIER 3</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the fourth band of eight.">
+            <mask id="kerf3"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf3)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="28.5" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="35"/><circle cx="60" cy="60" r="41.5"/><circle cx="60" cy="60" r="48"/>
+                <circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">12 960 blocks<small>about 90 days</small></p>
+          <p class="material">The green has come through. A quarter of a year of separate decisions not to spend.</p>
+          <p class="exact">90.00 days, 0.25 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="4">
+          <div class="tier-card-head">
+            <h3>Umber</h3>
+            <span class="index">TIER 4</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the fifth band of eight.">
+            <mask id="kerf4"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf4)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="35" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="41.5"/><circle cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">26 280 blocks<small>about 182 days</small></p>
+          <p class="material">Darkened all the way through. Half a year of fee spikes, price moves and second thoughts survived.</p>
+          <p class="exact">182.50 days, 0.50 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="5">
+          <div class="tier-card-head">
+            <h3>Bronze</h3>
+            <span class="index">TIER 5</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the sixth band of eight.">
+            <mask id="kerf5"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf5)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="41.5" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">52 560 blocks<small>about 1 year</small></p>
+          <p class="material">A full year on one outpoint. The wallet has been opened and closed many times without touching this.</p>
+          <p class="exact">365.00 days, 1.00 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="6">
+          <div class="tier-card-head">
+            <h3>Oxide</h3>
+            <span class="index">TIER 6</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the seventh band of eight.">
+            <mask id="kerf6"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf6)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="48" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <g fill="none" stroke="var(--rule-strong)" stroke-width="0.8" stroke-dasharray="1.5 3">
+                <circle cx="60" cy="60" r="54.5"/>
+              </g>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">105 120 blocks<small>about 2 years</small></p>
+          <p class="material">Two years. Long enough that the reason it was left alone has turned into a habit.</p>
+          <p class="exact">730.00 days, 2.00 years</p>
+        </article>
+      </li>
+
+      <li>
+        <article class="tier-card" data-tier="7">
+          <div class="tier-card-head">
+            <h3>Elder</h3>
+            <span class="index">TIER 7</span>
+          </div>
+          <svg viewBox="0 0 120 120" role="img" aria-label="A cut section filled to the outermost band, the last of eight.">
+            <mask id="kerf7"><rect width="120" height="120" fill="#ffffff"/><path d="M60 60 L57 2 L63 2 Z" fill="#000000"/></mask>
+            <g mask="url(#kerf7)">
+              <circle cx="60" cy="60" r="56" fill="none" stroke="var(--rule)"/>
+              <circle cx="60" cy="60" r="54.5" fill="var(--tier-ink)" fill-opacity="0.4" stroke="var(--tier-ink)" stroke-width="1.6"/>
+              <circle cx="60" cy="60" r="1.8" fill="var(--bronze)"/>
+            </g>
+          </svg>
+          <p class="threshold">210 000 blocks<small>about 4 years</small></p>
+          <p class="material">The last tier. Roughly one halving of a single output going absolutely nowhere.</p>
+          <p class="exact">1458.33 days, 3.99 years</p>
+        </article>
+      </li>
+    </ul>
+
+    <div class="note note-warn">
+      <p class="note-title">What a tier is not</p>
+      <p>A tier grants nothing. There is no fee discount, no governance weight, no allocation, no queue position and no protocol behaviour that depends on it. It does not make an artifact worth more, and nobody here will tell you it does. It is a name for a band of depth, and its only job is to make a number easy to say.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="table">
+    <p class="eyebrow"><span class="num">02</span> The arithmetic</p>
+    <h2>Every threshold, and how the elapsed figures are produced.</h2>
+    <p class="lede">Days are blocks multiplied by ten minutes. Years divide those days by 365.25. Both are conversions from a nominal block time, and the documentation runs the same arithmetic as a test so the two can never drift apart.</p>
+
+    <div class="table-scroll">
+      <table>
+        <caption>The tier ladder. Tier is the highest index whose threshold is not greater than the depth.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Index</th>
+            <th scope="col">Name</th>
+            <th scope="col" class="num">Threshold, blocks</th>
+            <th scope="col" class="num">Days</th>
+            <th scope="col" class="num">Years</th>
+            <th scope="col" class="num">Blocks from the tier below</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">0</th><td>Raw</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">not applicable</td></tr>
+          <tr><th scope="row">1</th><td>Sheen</td><td class="num">1 008</td><td class="num">7.00</td><td class="num">0.02</td><td class="num">1 008</td></tr>
+          <tr><th scope="row">2</th><td>Cast</td><td class="num">4 032</td><td class="num">28.00</td><td class="num">0.08</td><td class="num">3 024</td></tr>
+          <tr><th scope="row">3</th><td>Verdigris</td><td class="num">12 960</td><td class="num">90.00</td><td class="num">0.25</td><td class="num">8 928</td></tr>
+          <tr><th scope="row">4</th><td>Umber</td><td class="num">26 280</td><td class="num">182.50</td><td class="num">0.50</td><td class="num">13 320</td></tr>
+          <tr><th scope="row">5</th><td>Bronze</td><td class="num">52 560</td><td class="num">365.00</td><td class="num">1.00</td><td class="num">26 280</td></tr>
+          <tr><th scope="row">6</th><td>Oxide</td><td class="num">105 120</td><td class="num">730.00</td><td class="num">2.00</td><td class="num">52 560</td></tr>
+          <tr><th scope="row">7</th><td>Elder</td><td class="num">210 000</td><td class="num">1458.33</td><td class="num">3.99</td><td class="num">104 880</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="note">
+        <p class="note-title">Worked edges</p>
+        <p>Depth 1 007 is still Raw. Depth 1 008 is Sheen. Depth 4 031 is Sheen with one block to go. Depth 209 999 is Oxide, and 210 000 is Elder with no next tier and no blocks to count toward one.</p>
+      </div>
+      <div class="note">
+        <p class="note-title">Why the gaps grow</p>
+        <p>Sheen takes a week. Elder takes four years. The ladder is deliberately not linear, so the early tiers arrive often enough to mean something and the late ones stay rare without anyone rationing them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band" id="reset">
+    <p class="eyebrow"><span class="num">03</span> The catch</p>
+    <h2>A tier is held by an output, and outputs can be spent.</h2>
+    <p class="lede">Reaching Elder does not put a mark on you. It puts a number on one unspent output. Spend that output and the tier goes back to Raw on the successor, while the stretch you just finished is engraved as a ring at the depth it reached.</p>
+
+    <div class="grid grid-2">
+      <div class="prose">
+        <p>This is why a tier is worth something to look at and not worth trading on. An artifact advertised as Elder is Elder only while nobody moves it. Buying it moves it.</p>
+        <p>What survives the sale is the ring: a permanent record that this artifact once held an unbroken stretch of 210 000 blocks. The buyer inherits that record and starts their own stretch at zero.</p>
+      </div>
+      <div class="prose">
+        <p>So there are two ways to read an artifact, and both are honest.</p>
+        <p>The current tier says what is happening now. The ring list says what has already happened and can never be undone. An artifact with three deep rings and a shallow current stretch has a better story than a fresh one at the same tier.</p>
+        <p><a href="depth.html#history">See a six year ring history</a></p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="firstlight.html">Start your own record</a>
+      <a class="btn" href="risks.html">Read the risks first</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Patina</h2>
+        <p class="small">A Bitcoin artifact whose depth is the number of blocks its carrier output has stayed unspent. Built by Bitcoin Universe. The protocol runs on Bitcoin and needs no permission from us.</p>
+      </div>
+      <div>
+        <h2>Understand</h2>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="depth.html">How depth works</a></li>
+          <li><a href="tiers.html">Tier journey</a></li>
+          <li><a href="firstlight.html">Firstlight Seals</a></li>
+          <li><a href="mint.html">The mint</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Check</h2>
+        <ul>
+          <li><a href="protocol.html">Protocol</a></li>
+          <li><a href="verify.html">Verify</a></li>
+          <li><a href="transparency.html">Transparency</a></li>
+          <li><a href="risks.html">Risks</a></li>
+          <li><a href="faq.html">Questions</a></li>
+          <li><a href="press.html">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Build</h2>
+        <ul>
+          <li><a href="docs/index.html">Documentation</a></li>
+          <li><a href="docs/api/endpoints.html">Endpoint reference</a></li>
+          <li><a href="docs/compat/build.html">Build an implementation</a></li>
+          <li><a data-config-href="repoUrl" href="https://github.com/bitcoinuniverse/patina">Protocol repository</a></li>
+          <li><a data-config-href="indexerRepoUrl" href="https://github.com/bitcoinuniverse/index-patina">Indexer</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">PATINA is a protocol, not an investment. Nothing here is financial advice, a price forecast, or a promise that anything will be worth anything. Every live figure on this site comes from a request made when the page loaded. When no indexer answers, the panels say so instead of showing a number.</p>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rules that keep renders honest | PATINA docs</title>
 <meta name="description" content="What a PATINA render must always show, what it must never invent, and how to test a render for honesty rather than beauty.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/creator/render-rules.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Rules that keep renders honest, PATINA documentation">
+<meta property="og:description" content="What a PATINA render must always show, what it must never invent, and how to test a render for honesty rather than beauty.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/creator/render-rules.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-tiers.svg">
+<meta property="og:image:alt" content="Eight tier discs in a row, from cold raw metal through cast bronze and earth into deep verdigris.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rules that keep renders honest, PATINA documentation">
+<meta name="twitter:description" content="What a PATINA render must always show, what it must never invent, and how to test a render for honesty rather than beauty.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-tiers.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,7 +115,22 @@
       <p class="lede">A render is the part of this system most people will actually see. It is also the easiest
         place to lie.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>The five things every render shows, including the live tier when the live tier is Raw.</li>
+          <li>The twelve things a render must never do, and why summing rings into a lifetime total is one of
+            them.</li>
+          <li>What an honest empty state looks like when the state could not be read, and which four substitutes
+            are not acceptable.</li>
+          <li>What a share card may print, and what turns false the moment the next block arrives.</li>
+          <li>Five checks to run on your own render, starting with an artifact that was Elder and is Raw now.</li>
+        </ul>
+      </div>
+
       <h2>Always show</h2>
+      <p>Five things, on every render, at every size it supports. If one of them will not fit, the render is too
+        small rather than the rule too strict.</p>
       <ol>
         <li><strong>The height</strong> the numbers were read at. Depth changes every block.</li>
         <li><strong>The live tier</strong>, even when it is Raw. Especially when it is Raw.</li>
@@ -32,10 +140,13 @@
       </ol>
 
       <h2>Never do</h2>
+      <p>Twelve entries. The second column is the part to read, because it names what the render would be getting
+        wrong. Several of them exist because there is no supply plan, no cap and no price at all,
+        which the public site states in full on <a href="../../transparency.html">the transparency page</a>.</p>
       <div class="tablewrap">
         <table>
           <caption>Each of these has been done by somebody, somewhere, and each one is a lie.</caption>
-          <thead><tr><th>Never</th><th>Because</th></tr></thead>
+          <thead><tr><th scope="col">Never</th><th scope="col">Because</th></tr></thead>
           <tbody>
             <tr><td>Show the deepest ring where the live tier belongs</td><td>It presents past depth as present depth</td></tr>
             <tr><td>Sum rings into a lifetime total</td><td>Stretches do not concatenate. The protocol computes no such number.</td></tr>
@@ -68,7 +179,8 @@
       <h2>Share cards deserve extra care</h2>
       <p>A share card escapes its context immediately. It gets screenshotted, reposted, and read months later.</p>
       <ul>
-        <li>Print the height and the artifact id, so anyone can check it against an indexer.</li>
+        <li>Print the height and the artifact id, so anyone can check it against an indexer, the way
+          <a href="../../verify.html">take nobody's word for it</a> walks a reader through doing.</li>
         <li>Never print anything that will become false as blocks pass, unless the height is next to it.</li>
         <li>Do not print an achievement framing. "Unmoved for 26280 blocks as of height 906280" is a fact.
           Anything congratulatory is an interpretation.</li>

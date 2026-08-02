@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wallet setup | PATINA docs</title>
 <meta name="description" content="What your wallet must be able to do before you mint a PATINA artifact: Taproot script path spends, an OP_RETURN output, coin control, and message signing.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/using/wallet-setup.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Wallet setup, PATINA documentation">
+<meta property="og:description" content="What your wallet must be able to do before you mint a PATINA artifact: Taproot script path spends, an OP_RETURN output, coin control, and message signing.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/using/wallet-setup.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta property="og:image:alt" content="Two transactions on a block height line with a gap of at least 144 blocks between them.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wallet setup, PATINA documentation">
+<meta name="twitter:description" content="What your wallet must be able to do before you mint a PATINA artifact: Taproot script path spends, an OP_RETURN output, coin control, and message signing.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-mint.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,11 +115,27 @@
       <p class="lede">Minting needs more than a send button. Check these five capabilities before the window opens,
         not during it.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>The five things your signing setup has to do, including a Taproot script path spend that reveals one
+            specific leaf.</li>
+          <li>Why the 16 byte salt is the one item in your backup that nothing else can recompute.</li>
+          <li>How to rehearse the whole mint on regtest by mining the 144 block wait yourself.</li>
+          <li>Which wallet features spend a carrier without asking you, and how to lock the output against them.</li>
+          <li>Why you pay two fees, and why you keep a second funded output for bumping.</li>
+        </ul>
+      </div>
+
       <h2>The five capabilities</h2>
+      <p>Each row is a yes or no question about your tools. Answer all five before you fund anything, because the
+        answers decide whether you build the two mint transactions yourself or hand the shape to a planner. The two
+        transactions and the gap between them are drawn end to end on the public page for
+        <a href="../../mint.html">commit, wait, reveal</a>.</p>
       <div class="tablewrap">
         <table>
           <caption>What the mint needs from your signing setup.</caption>
-          <thead><tr><th>Capability</th><th>Needed for</th><th>How to check</th></tr></thead>
+          <thead><tr><th scope="col">Capability</th><th scope="col">Needed for</th><th scope="col">How to check</th></tr></thead>
           <tbody>
             <tr>
               <td>Send to an arbitrary Taproot output</td>
@@ -79,11 +188,11 @@ POST /patina/plan/seed      returns an unsigned reveal plan and a review summary
       <div class="tablewrap">
         <table>
           <caption>Networks and what they are for.</caption>
-          <thead><tr><th>Network</th><th>Use it for</th><th>Notes</th></tr></thead>
+          <thead><tr><th scope="col">Network</th><th scope="col">Use it for</th><th scope="col">Notes</th></tr></thead>
           <tbody>
             <tr><td><code>regtest</code></td><td>Your own machine, instant blocks</td><td>Mine 144 blocks yourself to clear the commit age check in seconds</td></tr>
             <tr><td><code>signet</code></td><td>A shared rehearsal with real block timing</td><td>Coins have no value, timing is realistic</td></tr>
-            <tr><td><code>mainnet</code></td><td>The real thing</td><td>Gated by activation control. Tools must refuse to build mainnet transactions until a mainnet deployment record exists.</td></tr>
+            <tr><td><code>mainnet</code></td><td>The real thing</td><td>Gated by activation control. The mainnet record ships with null heights, and tools must refuse to build mainnet transactions until an authorised record naming at least two approvers is loaded.</td></tr>
           </tbody>
         </table>
       </div>
@@ -104,10 +213,12 @@ POST /patina/plan/seed      returns an unsigned reveal plan and a review summary
       <p><a href="depth-resets.html">What resets depth</a> lists every accidental path in one table.</p>
 
       <h2>Back up three things, not one</h2>
+      <p>Write all three down before you broadcast the commit, not after it confirms. Only the first is a backup you
+        already have a habit for, and the third is the one nothing on the chain can give back to you.</p>
       <div class="tablewrap">
         <table>
           <caption>Back these up before you broadcast the commit.</caption>
-          <thead><tr><th>Item</th><th>Size</th><th>If you lose it</th></tr></thead>
+          <thead><tr><th scope="col">Item</th><th scope="col">Size</th><th scope="col">If you lose it</th></tr></thead>
           <tbody>
             <tr><td>Wallet seed</td><td>12 or 24 words</td><td>You lose the endowment and the artifact</td></tr>
             <tr><td>Claimant x-only public key</td><td>32 bytes</td><td>Recomputable from the key path, but keep it anyway</td></tr>
@@ -126,8 +237,9 @@ POST /patina/plan/seed      returns an unsigned reveal plan and a review summary
       <p>Two transactions, two fees. The reveal is the larger one because it carries a witness with the commit leaf
         and control block, plus a 26 byte OP_RETURN output.</p>
       <ul>
-        <li>Do not target the cheapest possible confirmation for the commit. A commit that takes a long time to
-          confirm may confirm after the window closes, which costs founding status.</li>
+        <li>Do not target the cheapest possible confirmation for the commit. Whether a commit sits inside the
+          <a href="../../firstlight.html">founding window</a> is decided by the height it confirms at, so a commit
+          left sitting in the mempool can land after the window closes and miss the cohort.</li>
         <li>Budget the reveal fee at the time you reveal, not at the time you commit. That is at least 144 blocks
           later and the fee market will have moved.</li>
         <li>Keep a separate funded output for fee bumping. Bumping with the carrier itself defeats the purpose.</li>

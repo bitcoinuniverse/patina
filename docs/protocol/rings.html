@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rings | PATINA docs</title>
 <meta name="description" content="A ring is a permanent record of one completed holding stretch on a PATINA artifact: start height, end height, depth, value carried, and where it went next.">
+<!-- sharing metadata, written by docs/tools/stamp-meta.mjs -->
+<link rel="canonical" href="https://bitcoinuniverse.github.io/patina/docs/protocol/rings.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PATINA">
+<meta property="og:title" content="Rings, PATINA documentation">
+<meta property="og:description" content="A ring is a permanent record of one completed holding stretch on a PATINA artifact: start height, end height, depth, value carried, and where it went next.">
+<meta property="og:url" content="https://bitcoinuniverse.github.io/patina/docs/protocol/rings.html">
+<meta property="og:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta property="og:image:alt" content="The twenty six bytes of a PATINA marker, drawn as a grid with the magic bytes picked out.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rings, PATINA documentation">
+<meta name="twitter:description" content="A ring is a permanent record of one completed holding stretch on a PATINA artifact: start height, end height, depth, value carried, and where it went next.">
+<meta name="twitter:image" content="https://bitcoinuniverse.github.io/patina/assets/brand/og-protocol.svg">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="../../assets/brand/favicon.svg" type="image/svg+xml">
+<!-- end sharing metadata -->
 <link rel="stylesheet" href="../assets/style.css">
 <script>try{var t=localStorage.getItem('patina-docs-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
@@ -15,6 +31,83 @@
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar"><nav id="nav" aria-label="Documentation contents"></nav></aside>
+<!-- scriptless contents, written by docs/tools/stamp-meta.mjs -->
+<noscript>
+  <nav class="noscript-nav" aria-label="Documentation contents">
+    <p>The contents list, the breadcrumb and the previous and next links on this site are built by a small script. With scripts unavailable, here is every page.</p>
+    <p><a href="../../index.html">The public PATINA site</a></p>
+    <h2>Start here</h2>
+    <ul>
+      <li><a href="../index.html">What PATINA is</a></li>
+      <li><a href="../start/firstlight-seals.html">Firstlight Seals</a></li>
+      <li><a href="../start/what-you-own.html">What you actually own</a></li>
+      <li><a href="../start/limits.html">What it does not promise</a></li>
+    </ul>
+    <h2>Using it</h2>
+    <ul>
+      <li><a href="../using/wallet-setup.html">Wallet setup</a></li>
+      <li><a href="../using/mint.html">Mint walkthrough</a></li>
+      <li><a href="../using/artifact-page.html">Reading your artifact</a></li>
+      <li><a href="../using/depth-resets.html">What resets depth</a></li>
+      <li><a href="../using/attestations.html">Attestations</a></li>
+      <li><a href="../using/transfer.html">Transferring an artifact</a></li>
+      <li><a href="../using/recovery.html">When something goes wrong</a></li>
+    </ul>
+    <h2>Protocol reference</h2>
+    <ul>
+      <li><a href="../protocol/identity.html">Identity and derivations</a></li>
+      <li><a href="../protocol/marker-grammar.html">Marker grammar</a></li>
+      <li><a href="../protocol/seed-rules.html">SEED rules</a></li>
+      <li><a href="../protocol/keep-rules.html">KEEP and the default rule</a></li>
+      <li><a href="../protocol/state-machine.html">State machine</a></li>
+      <li><a href="../protocol/rings.html">Rings</a></li>
+      <li><a href="../protocol/depth-and-tiers.html">Depth and tiers</a></li>
+      <li><a href="../protocol/reason-codes.html">Reason codes</a></li>
+      <li><a href="../protocol/reorgs.html">Reorg behavior</a></li>
+      <li><a href="../protocol/upgrade-boundary.html">The upgrade boundary</a></li>
+    </ul>
+    <h2>Indexer and API</h2>
+    <ul>
+      <li><a href="../api/conventions.html">API conventions</a></li>
+      <li><a href="../api/endpoints.html">Endpoint reference</a></li>
+      <li><a href="../api/errors.html">Error taxonomy</a></li>
+      <li><a href="../api/run-an-indexer.html">Run your own indexer</a></li>
+    </ul>
+    <h2>Build a compatible implementation</h2>
+    <ul>
+      <li><a href="../compat/build.html">Build it</a></li>
+      <li><a href="../compat/golden-vectors.html">Golden vectors and state roots</a></li>
+      <li><a href="../compat/disagreements.html">Report a disagreement</a></li>
+    </ul>
+    <h2>Operator guide</h2>
+    <ul>
+      <li><a href="../operator/deploy.html">Deploy and configure</a></li>
+      <li><a href="../operator/run.html">Sync and reindex</a></li>
+      <li><a href="../operator/verify.html">Verify and monitor</a></li>
+      <li><a href="../operator/backup.html">Back up and restore</a></li>
+      <li><a href="../operator/incidents.html">Incident actions</a></li>
+    </ul>
+    <h2>Creator guide</h2>
+    <ul>
+      <li><a href="../creator/tier-renders.html">Deterministic tier renders</a></li>
+      <li><a href="../creator/render-packs.html">Publish a render pack</a></li>
+      <li><a href="../creator/render-rules.html">Rules that keep renders honest</a></li>
+    </ul>
+    <h2>Launch operations</h2>
+    <ul>
+      <li><a href="../launch/checklist.html">Pre launch checklist</a></li>
+      <li><a href="../launch/timeline.html">Timeline</a></li>
+      <li><a href="../launch/monitoring.html">Monitoring and incident response</a></li>
+      <li><a href="../launch/go-no-go.html">Go, conditional go, no go</a></li>
+    </ul>
+    <h2>Glossary and FAQ</h2>
+    <ul>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+      <li><a href="../reference/faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+</noscript>
+<!-- end scriptless contents -->
   <main class="content" id="content">
     <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
     <article>
@@ -22,7 +115,20 @@
       <p class="lede">A ring is what a finished stretch leaves behind. It is written once, when the carrier is
         spent, and never edited.</p>
 
+      <div class="willknow">
+        <span class="lbl">What you will know after this page</span>
+        <ul>
+          <li>What the eight fields of a ring hold, and which two are null on the ring that ends an artifact.</li>
+          <li>That one ring is written per confirmed spend of a carrier, never per block and never on request.</li>
+          <li>Why the current stretch is not a ring, so an artifact deep at 13000 blocks can still have none.</li>
+          <li>Why ring depths must never be summed, and which three numbers to show instead.</li>
+          <li>Which endpoint answers which question about rings, and how the museum differs from the leaderboard.</li>
+        </ul>
+      </div>
+
       <h2>The record</h2>
+      <p>Eight fields, written once when the carrier is spent. The two successor fields are null exactly when
+        <code>relic</code> is true, and never otherwise.</p>
       <pre data-label="Ring"><code>Ring {
   index             position in the list, from 0
   start_height      height of the block that created the carrier
@@ -49,7 +155,7 @@
       <div class="tablewrap">
         <table>
           <caption>The life of one artifact, read from its rings plus its live carrier.</caption>
-          <thead><tr><th>index</th><th>start</th><th>end</th><th>depth</th><th>carried</th><th>result</th></tr></thead>
+          <thead><tr><th scope="col">index</th><th scope="col">start</th><th scope="col">end</th><th scope="col">depth</th><th scope="col">carried</th><th scope="col">result</th></tr></thead>
           <tbody>
             <tr><td>0</td><td>880000</td><td>893000</td><td>13000</td><td>100000</td><td>moved to a successor</td></tr>
             <tr><td>1</td><td>893000</td><td>894008</td><td>1008</td><td>96000</td><td>moved again</td></tr>
@@ -57,8 +163,8 @@
           </tbody>
         </table>
       </div>
-      <p>Reading that record honestly: this holder once went 13000 blocks without moving, which is Verdigris tier,
-        then moved twice. The current stretch started at 894008 and its depth is whatever the tip is minus that.
+      <p>Reading that record honestly: this holder once went 13000 blocks without moving, which is
+        <a href="../../tiers.html">Verdigris tier</a>, then moved twice. The current stretch started at 894008 and its depth is whatever the tip is minus that.
         The carried value drops each time because fees come out of the successor.</p>
 
       <h2>Depth is per stretch, never cumulative</h2>
@@ -74,7 +180,8 @@
       <p>Without rings, a move would erase the entire history and the artifact would be indistinguishable from one
         minted yesterday. That would make a single mistake, or a single sale, delete years of evidence.</p>
       <p>With rings, the record is honest in both directions. It shows what was achieved, and it shows that it
-        ended. Nothing is inflated and nothing is hidden.</p>
+        ended. Nothing is inflated and nothing is hidden. The public <a href="../../depth.html">depth page</a> walks
+        one artifact through four stretches and leaves it sitting at depth 40 with three rings behind it.</p>
 
       <h2>Rings across a transfer</h2>
       <p>The buyer receives the seller's rings, because rings belong to the artifact and not to a holder. That is a
@@ -82,6 +189,8 @@
         earned it. Read <a href="../start/limits.html">What it does not promise</a>.</p>
 
       <h2>Reading rings from the API</h2>
+      <p>Three endpoints for three different questions: the history of one artifact, the stretches that closed
+        recently, and the longest ever completed.</p>
       <pre data-label="Rings on the artifact record"><code>GET /patina/artifacts/:id     rings, oldest first, inside the full record</code></pre>
       <pre data-label="Recently closed rings, across all artifacts"><code>GET /patina/shatter           newest first</code></pre>
       <pre data-label="The longest completed rings"><code>GET /patina/museum            longest completed rings</code></pre>

@@ -16,9 +16,17 @@
  *   9. no occurrence of the string "v1"
  *  10. structural sanity: doctype, html lang, balanced tags, unique ids,
  *      an alt attribute on every img
+ *  11. the design tokens shared with the documentation still match, value for
+ *      value, in both themes
  *
  * Check 10 is a structural pass written here, not a full W3C validation.
  * There is no network access and no dependency to install.
+ *
+ * The publish step copies site/ to the root of the published tree and docs/ to
+ * <root>/docs, so a reference beginning with "docs/" is a real path once the
+ * site is assembled. This checker resolves those against the repository's docs
+ * directory rather than reporting them as broken, and it still checks that the
+ * target file and any fragment actually exist. Nothing else may escape site/.
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
@@ -27,6 +35,8 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
+const REPO = resolve(ROOT, '..');
+const DOCS_ROOT = join(REPO, 'docs');
 const SITE_ORIGIN = 'https://bitcoinuniverse.github.io/patina/';
 
 const EM_DASH = '—';
@@ -114,6 +124,31 @@ function references(html) {
 const idIndex = new Map();
 for (const file of htmlFiles) {
   idIndex.set(file, new Set(idsIn(stripComments(readFileSync(file, 'utf8')))));
+}
+
+/*
+ * Ids on a documentation page. The documentation shell gives every h2 and h3 an
+ * id derived from its text at runtime, so a link into a docs heading is valid
+ * even though the id is not written in the file. This mirrors the rule in
+ * docs/tools/check-links.mjs, deliberately, so the two trees agree.
+ */
+const docIdCache = new Map();
+function docIds(file) {
+  if (docIdCache.has(file)) {
+    return docIdCache.get(file);
+  }
+  const html = stripComments(readFileSync(file, 'utf8'));
+  const ids = new Set(idsIn(html));
+  const heads = /<h([23])[^>]*>([\s\S]*?)<\/h\1>/gi;
+  let m;
+  while ((m = heads.exec(html)) !== null) {
+    const text = m[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    if (text) {
+      ids.add(text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
+    }
+  }
+  docIdCache.set(file, ids);
+  return ids;
 }
 
 /* ------------------------------------------------------------ tag balance */
@@ -242,14 +277,36 @@ for (const file of htmlFiles) {
     }
 
     const [pathPart, fragment] = ref.split('#');
-    const target = resolve(dirname(file), pathPart.split('?')[0]);
+    const clean = pathPart.split('?')[0];
+
+    /*
+     * A reference into the documentation resolves against the repository docs
+     * directory, because the publish step places docs/ inside the site root.
+     * Only a reference written from a top level page can reach it, which is
+     * the same rule the published tree enforces.
+     */
+    const intoDocs = clean.startsWith('docs/');
+    let target;
+    if (intoDocs) {
+      if (dirname(file) !== ROOT) {
+        fail(rel, 'a docs/ reference only resolves from a top level page: ' + ref);
+        continue;
+      }
+      target = join(DOCS_ROOT, clean.slice('docs/'.length));
+    } else {
+      target = resolve(dirname(file), clean);
+      if (!target.startsWith(ROOT)) {
+        fail(rel, 'reference escapes the site root: ' + ref);
+        continue;
+      }
+    }
 
     if (!existsSync(target)) {
       fail(rel, 'broken reference: ' + ref);
       continue;
     }
     if (fragment && target.endsWith('.html')) {
-      const targetIds = idIndex.get(target) || new Set(idsIn(stripComments(readFileSync(target, 'utf8'))));
+      const targetIds = idIndex.get(target) || docIds(target);
       if (!targetIds.has(fragment)) {
         fail(rel, 'fragment ' + ref + ' has no matching id in the target page');
       }
@@ -269,6 +326,156 @@ for (const file of textFiles) {
   if (raw.includes(EM_DASH)) {
     const line = raw.slice(0, raw.indexOf(EM_DASH)).split('\n').length;
     fail(rel, 'em dash found on line ' + line);
+  }
+}
+
+/* ------------------------------------------ the constants have one source */
+
+/*
+ * assets/config.js carries the protocol constants the pages do arithmetic
+ * with. They are frozen values that already exist in src/constants.ts, and the
+ * site cannot import TypeScript because it has no build step and has to open
+ * from disk. So the copy stays, and this check makes it a copy that cannot
+ * quietly go wrong: every value here is read out of the real source and
+ * compared. src/constants.ts wins every disagreement.
+ */
+{
+  const constantsPath = join(REPO, 'src', 'constants.ts');
+  const configPath = join(ROOT, 'assets', 'config.js');
+
+  if (!existsSync(constantsPath) || !existsSync(configPath)) {
+    fail('assets/config.js', 'cannot compare protocol constants, a source file is missing');
+  } else {
+    const ts = readFileSync(constantsPath, 'utf8');
+    const js = readFileSync(configPath, 'utf8');
+
+    /* Some constants are written in hex, because that is how they appear on the wire. */
+    const fromTs = (name) => {
+      const m = ts.match(new RegExp('export const ' + name + '\\s*=\\s*(0x[0-9a-fA-F]+|[0-9]+);'));
+      return m ? Number(m[1]) : null;
+    };
+    const fromConfig = (key) => {
+      const m = js.match(new RegExp('\\b' + key + ':\\s*([0-9]+)'));
+      return m ? Number(m[1]) : null;
+    };
+
+    const PAIRS = [
+      ['COMMIT_MIN_AGE', 'commitMinAge'],
+      ['WINDOW_LENGTH', 'windowLength'],
+      ['GRACE_LENGTH', 'graceLength'],
+      ['MIN_CARRIER_FOUNDING', 'minCarrierFounding'],
+      ['MIN_CARRIER_OPEN', 'minCarrierOpen'],
+      ['MIN_SUCCESSOR', 'minSuccessor'],
+      ['MAX_KEEP_ENTRIES', 'maxKeepEntries'],
+      ['CONFIRMATIONS_FINAL', 'confirmationsFinal'],
+      ['MARKER_VERSION', 'markerVersion'],
+    ];
+
+    for (const [tsName, configKey] of PAIRS) {
+      checksRun += 1;
+      const a = fromTs(tsName);
+      const b = fromConfig(configKey);
+      if (a === null) {
+        fail('assets/config.js', 'could not read ' + tsName + ' out of src/constants.ts');
+      } else if (b === null) {
+        fail('assets/config.js', 'no ' + configKey + ' to compare against ' + tsName);
+      } else if (a !== b) {
+        fail('assets/config.js', configKey + ' is ' + b + ', but src/constants.ts says ' + tsName + ' is ' + a);
+      }
+    }
+
+    /* The tier ladder, name for name and threshold for threshold. */
+    const tsTiers = [...ts.matchAll(/\{ index: (\d+), name: '([A-Za-z]+)', threshold: (null|\d+) \}/g)]
+      .map((m) => ({ index: Number(m[1]), name: m[2], threshold: m[3] === 'null' ? 0 : Number(m[3]) }));
+    const jsTiers = [...js.matchAll(/\{ index: (\d+), name: '([A-Za-z]+)', threshold: (\d+) \}/g)]
+      .map((m) => ({ index: Number(m[1]), name: m[2], threshold: Number(m[3]) }));
+
+    checksRun += 1;
+    if (tsTiers.length !== 8 || jsTiers.length !== 8) {
+      fail('assets/config.js', 'expected eight tiers in both files, found ' + tsTiers.length + ' and ' + jsTiers.length);
+    } else {
+      for (let i = 0; i < 8; i += 1) {
+        checksRun += 1;
+        /*
+         * Tier 0 has no threshold in the specification. The site writes it as 0
+         * because it does arithmetic with it, and zero is what "no threshold"
+         * means to a comparison against a depth that is never negative.
+         */
+        if (tsTiers[i].name !== jsTiers[i].name || tsTiers[i].threshold !== jsTiers[i].threshold) {
+          fail(
+            'assets/config.js',
+            'tier ' + i + ' is ' + jsTiers[i].name + ' at ' + jsTiers[i].threshold +
+            ', but src/constants.ts says ' + tsTiers[i].name + ' at ' + tsTiers[i].threshold
+          );
+        }
+      }
+    }
+  }
+}
+
+/* ------------------------------------------- one design system, two trees */
+
+/*
+ * site/assets/site.css and docs/assets/style.css declare the same token names
+ * with the same values on purpose. The public site and the documentation are
+ * one product at two depths, and a colour that drifts in one of them turns
+ * that claim into a lie. Every token the two files share must match in both
+ * themes, and the tokens listed as required must exist in both.
+ */
+const REQUIRED_TOKENS = [
+  'bg', 'bg-deep', 'surface', 'surface-2', 'plate',
+  'rule', 'rule-strong', 'edge',
+  'ink', 'ink-2', 'ink-3',
+  'bronze', 'bronze-deep', 'verdigris', 'verdigris-deep', 'umber', 'alert', 'focus',
+  'code-bg', 'code-ink', 'code-rule', 'code-accent',
+  't0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'
+];
+
+function themeTokens(css, startRe, where) {
+  const at = css.search(startRe);
+  if (at < 0) {
+    fail(where, 'could not find the token block ' + startRe);
+    return null;
+  }
+  const open = css.indexOf('{', at);
+  const close = css.indexOf('}', open);
+  const out = {};
+  for (const m of css.slice(open, close).matchAll(/--([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
+    out[m[1]] = m[2].toLowerCase();
+  }
+  return out;
+}
+
+{
+  const sitePath = join(ROOT, 'assets', 'site.css');
+  const docsPath = join(DOCS_ROOT, 'assets', 'style.css');
+
+  if (!existsSync(sitePath) || !existsSync(docsPath)) {
+    fail('assets/site.css', 'cannot compare design tokens, one of the stylesheets is missing');
+  } else {
+    const siteCss = readFileSync(sitePath, 'utf8');
+    const docsCss = readFileSync(docsPath, 'utf8');
+
+    for (const [theme, startRe] of [['dark', /^:root \{/m], ['light', /^:root\[data-theme="light"\] \{/m]]) {
+      const a = themeTokens(siteCss, startRe, 'assets/site.css');
+      const b = themeTokens(docsCss, startRe, '../docs/assets/style.css');
+      if (!a || !b) {
+        continue;
+      }
+      for (const name of REQUIRED_TOKENS) {
+        checksRun += 1;
+        if (!(name in a)) {
+          fail('assets/site.css', theme + ' theme is missing the token --' + name);
+        } else if (!(name in b)) {
+          fail('../docs/assets/style.css', theme + ' theme is missing the token --' + name);
+        } else if (a[name] !== b[name]) {
+          fail(
+            'assets/site.css',
+            'shared token --' + name + ' differs in the ' + theme + ' theme: site ' + a[name] + ', docs ' + b[name]
+          );
+        }
+      }
+    }
   }
 }
 
